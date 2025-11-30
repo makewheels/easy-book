@@ -11,27 +11,18 @@ PYTHON_CMD="python3.12"
 PIP_CMD="pip3.12"
 # ========================================
 
-# 1. 国内镜像安装 Python3.12
-echo "=== 安装 Python3.12（国内镜像）==="
-yum install -y https://mirrors.aliyun.com/epel/epel-release-latest-$(rpm -E %rhel).noarch.rpm
-yum install -y https://mirrors.aliyun.com/ius/ius-release-el$(rpm -E %rhel).rpm
-sed -i "s|repo.ius.io|mirrors.aliyun.com/ius|g" /etc/yum.repos.d/ius.repo
-sed -i "s|download.fedoraproject.org/pub/epel|mirrors.aliyun.com/epel|g" /etc/yum.repos.d/epel.repo
-yum clean all && yum makecache fast
-yum install -y python3.12 python3.12-pip
-
-# 2. 安装后端依赖
+# 安装后端依赖
 echo "=== 安装后端依赖 ==="
 cd "$BACKEND_DIR" || exit 1
 $PIP_CMD config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 $PIP_CMD install -r requirements.txt  # 确保backend目录下有requirements.txt
 
-# 3. 重启后端服务
+# 重启后端服务
 echo "=== 重启 easy-book 后端 ==="
 pkill -f "$PYTHON_CMD $MAIN_FILE" || true
 nohup $PYTHON_CMD "$MAIN_FILE" > "$LOG_FILE" 2>&1 &
 
-# 4. 验证启动
+# 验证启动
 sleep 2
 if ps -ef | grep -v grep | grep "$PYTHON_CMD $MAIN_FILE"; then
   echo "✅ easy-book 后端启动成功！日志：$LOG_FILE"
