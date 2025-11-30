@@ -30,13 +30,6 @@ stages:
       - powershell
     steps:
       - step: build@node
-        name: setup-node
-        displayName: 安装Node.js环境
-        nodeVersion: '18'
-        commands:
-          - echo "Node.js环境准备完成"
-          
-      - step: build@node
         name: build-frontend
         displayName: 构建前端应用
         nodeVersion: '18'
@@ -55,13 +48,6 @@ stages:
       - powershell
     steps:
       - step: build@python
-        name: setup-python
-        displayName: 安装Python环境
-        pythonVersion: '3.11'
-        commands:
-          - echo "Python环境准备完成"
-          
-      - step: build@python
         name: build-backend
         displayName: 构建后端应用
         pythonVersion: '3.11'
@@ -69,6 +55,7 @@ stages:
           - cd backend
           - pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
           - pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+          - pip install --upgrade pip setuptools
           - pip install -r requirements.txt
           - python -m pytest || echo "测试跳过"
           - echo "后端构建完成"
