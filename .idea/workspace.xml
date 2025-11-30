@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用">
-      <change afterPath="$PROJECT_DIR$/python-shell.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flow.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.iflow/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.iflow/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/test_db.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +13,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="fix-pipeline" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectLevelVcsManager">
@@ -29,7 +28,7 @@
     "Python.main.executor": "Debug",
     "Python.run.executor": "Debug",
     "SHELLCHECK.PATH": "C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe",
-    "git-widget-placeholder": "fix-pipeline"
+    "git-widget-placeholder": "master"
   }
 }]]></component>
   <component name="RunManager" selected="Python.run">
