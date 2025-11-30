@@ -53,10 +53,8 @@ stages:
         pythonVersion: '3.11'
         commands:
           - cd backend
-          - pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-          - pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
-          - pip install --upgrade pip setuptools
-          - pip install -r requirements.txt
+          - pip install --upgrade pip setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+          - pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
           - python -m pytest || echo "测试跳过"
           - echo "后端构建完成"
           
