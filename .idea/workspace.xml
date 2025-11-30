@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="部署">
-      <change beforePath="$PROJECT_DIR$/.flow.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.flow.yml" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用">
+      <change afterPath="$PROJECT_DIR$/python-shell.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flow.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.iflow/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.iflow/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/test_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +28,8 @@
   "keyToString": {
     "Python.main.executor": "Debug",
     "Python.run.executor": "Debug",
-    "git-widget-placeholder": "master"
+    "SHELLCHECK.PATH": "C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe",
+    "git-widget-placeholder": "fix-pipeline"
   }
 }]]></component>
   <component name="RunManager" selected="Python.run">
@@ -134,13 +141,33 @@
       <option name="project" value="LOCAL" />
       <updated>1764509427813</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用">
+      <option name="closed" value="true" />
+      <created>1764509767940</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1764509767940</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="设计" />
     <MESSAGE value="第一版实现基础功能" />
     <MESSAGE value="部署" />
-    <option name="LAST_COMMIT_MESSAGE" value="部署" />
+    <MESSAGE value="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用" />
+    <option name="LAST_COMMIT_MESSAGE" value="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用" />
   </component>
 </project>
