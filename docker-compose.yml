@@ -1,0 +1,48 @@
+# Docker Compose 配置
+version: '3.8'
+
+services:
+  # 后端 API 服务
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: easy-book-backend
+    restart: unless-stopped
+    environment:
+      MONGODB_URL: mongodb://easy-book:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/easy_book
+      DB_NAME: easy_book
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      PORT: 8002
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    networks:
+      - easy-book-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: easy-book-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - easy-book-network
+
+networks:
+  easy-book-network:
+    driver: bridge

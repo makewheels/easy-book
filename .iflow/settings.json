@@ -7,6 +7,17 @@
         "-y",
         "@iflow-mcp/chrome-devtools-mcp"
       ]
+    },
+    "alibabacloud-devops-mcp-server": {
+      "description": "提供阿里云云效DevOps平台的完整API访问能力，支持代码管理、项目协作、流水线管理、制品仓库等功能",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/alibabacloud-devops-mcp-server"
+      ],
+      "env": {
+        "YUNXIAO_ACCESS_TOKEN": "pt-o7aimIlV1nT2zxaN0vFbb8Bu_260e58eb-41bd-4c28-beb2-c0cb810d875a"
+      }
     }
   }
 }

@@ -43,6 +43,15 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
+@app.get("/api/health/db")
+async def db_health_check():
+    try:
+        from api_server.database import test_connection
+        db_status = await test_connection()
+        return {"database": "healthy", "connection": db_status}
+    except Exception as e:
+        return {"database": "unhealthy", "error": str(e)}
+
 if __name__ == "__main__":
     import uvicorn
     import sys
