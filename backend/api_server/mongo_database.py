@@ -289,3 +289,19 @@ async def create_indexes():
 def get_database():
     """获取数据库实例"""
     return db
+
+async def test_connection():
+    """测试数据库连接"""
+    try:
+        if db.client is None:
+            await db.connect()
+        
+        # 执行简单的ping测试
+        await db.client.admin.command('ping')
+        
+        # 测试数据库访问
+        await db.db.command('ping')
+        
+        return "connected"
+    except Exception as e:
+        return f"error: {str(e)}"

@@ -1,0 +1,85 @@
+# GitHub Actions CI/CD 流水线配置
+name: Deploy Easy Book
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+    
+    - name: Run backend tests
+      run: |
+        cd backend
+        python -m pytest
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+    
+    - name: Run frontend tests
+      run: |
+        cd frontend
+        npm run test:unit
+    
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd /opt/easy-book
+          git pull origin main
+          
+          # 创建环境变量文件（包含MongoDB密码）
+          cat > .env << EOF
+          MONGODB_URL=mongodb://easy-book:${{ secrets.MONGO_PASSWORD }}@10.0.20.14/easy_book
+          DB_NAME=easy_book
+          MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}
+          PORT=8002
+          EOF
+          
+          docker-compose down
+          docker-compose up -d --build
+          docker system prune -f
+    
+    - name: Health check
+      run: |
+        sleep 30
+        curl -f ${{ secrets.DOMAIN }}/health || exit 1
