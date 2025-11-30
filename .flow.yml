@@ -22,30 +22,56 @@ global:
     
 # 流水线阶段
 stages:
-  - name: build-and-test
-    displayName: 构建和测试
+  - name: build-frontend
+    displayName: 构建前端
+    strategy: naturally
+    trigger: auto
+    executor:
+      - powershell
+    steps:
+      - step: build@node
+        name: setup-node
+        displayName: 安装Node.js环境
+        nodeVersion: '18'
+        commands:
+          - echo "Node.js环境准备完成"
+          
+      - step: build@node
+        name: build-frontend
+        displayName: 构建前端应用
+        nodeVersion: '18'
+        commands:
+          - cd frontend
+          - npm config set registry https://registry.npmmirror.com/
+          - npm install
+          - npm run build
+          - echo "前端构建完成"
+          
+  - name: build-backend
+    displayName: 构建后端
     strategy: naturally
     trigger: auto
     executor:
       - powershell
     steps:
       - step: build@python
+        name: setup-python
+        displayName: 安装Python环境
+        pythonVersion: '3.11'
+        commands:
+          - echo "Python环境准备完成"
+          
+      - step: build@python
         name: build-backend
-        displayName: 构建后端
+        displayName: 构建后端应用
         pythonVersion: '3.11'
         commands:
           - cd backend
+          - pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          - pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
           - pip install -r requirements.txt
           - python -m pytest || echo "测试跳过"
-          
-      - step: build@node
-        name: build-frontend
-        displayName: 构建前端
-        nodeVersion: '18'
-        commands:
-          - cd frontend
-          - npm install
-          - npm run build
+          - echo "后端构建完成"
           
   - name: deploy
     displayName: 部署到腾讯云服务器
