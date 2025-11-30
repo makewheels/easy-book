@@ -12,5 +12,6 @@ from api_server.main import app
 
 if __name__ == "__main__":
     import uvicorn
+
     port = 8002 if len(sys.argv) < 2 else int(sys.argv[1])
     uvicorn.run(app, host="0.0.0.0", port=port)

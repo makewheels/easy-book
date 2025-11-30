@@ -18,6 +18,13 @@
       "env": {
         "YUNXIAO_ACCESS_TOKEN": "REDACTED_YUNXIAO_TOKEN"
       }
+    },
+    "ssh-mcp-server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@iflow-mcp/ssh-mcp-server"
+      ]
     }
   }
 }
