@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -206,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764588194623</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置">
+      <option name="closed" value="true" />
+      <created>1764588399450</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1764588399450</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -229,7 +237,8 @@
     <MESSAGE value="chore: 新增 node-shell.sh 实现前端自动部署脚本并优化工作区配置" />
     <MESSAGE value="build: 更新Dockerfile和docker-compose配置，升级Python和Node.js版本，添加健康检查和nginx支持" />
     <MESSAGE value="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
-    <option name="LAST_COMMIT_MESSAGE" value="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
+    <MESSAGE value="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置" />
+    <option name="LAST_COMMIT_MESSAGE" value="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
