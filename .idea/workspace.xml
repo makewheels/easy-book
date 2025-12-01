@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: 更新Dockerfile，切换到网易云镜像的Python、Node.js和nginx" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: 更新Dockerfile，切换到华为云镜像的Python、Node.js和nginx">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -270,7 +273,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764589155425</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="build: 更新Dockerfile，切换到腾讯云镜像的Python、Node.js和nginx">
+      <option name="closed" value="true" />
+      <created>1764589267969</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1764589267969</updated>
+    </task>
+    <task id="LOCAL-00022" summary="build: 更新Dockerfile，切换到华为云镜像的Python、Node.js和nginx">
+      <option name="closed" value="true" />
+      <created>1764589449773</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1764589449773</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -295,12 +314,13 @@
     <MESSAGE value="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置" />
     <MESSAGE value="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
     <MESSAGE value="build: 更新Dockerfile，切换到官方库的Python、Node.js和nginx镜像" />
-    <MESSAGE value="build: 更新Dockerfile，切换到腾讯云镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到USTC镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到官方镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到阿里云镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到网易云镜像的Python、Node.js和nginx" />
-    <option name="LAST_COMMIT_MESSAGE" value="build: 更新Dockerfile，切换到网易云镜像的Python、Node.js和nginx" />
+    <MESSAGE value="build: 更新Dockerfile，切换到腾讯云镜像的Python、Node.js和nginx" />
+    <MESSAGE value="build: 更新Dockerfile，切换到华为云镜像的Python、Node.js和nginx" />
+    <option name="LAST_COMMIT_MESSAGE" value="build: 更新Dockerfile，切换到华为云镜像的Python、Node.js和nginx" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

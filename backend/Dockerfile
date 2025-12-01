@@ -1,5 +1,5 @@
-# 使用Python 3.12官方镜像
-FROM swr.cn-north-4.myhuaweicloud.com/library/python:3.12-slim
+# 使用Python 3.11官方镜像
+FROM swr.cn-north-4.myhuaweicloud.com/library/python:3.11-slim
 
 # 设置工作目录
 WORKDIR /app
