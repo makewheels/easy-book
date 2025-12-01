@@ -7,8 +7,8 @@ WORKDIR /app
 # 复制package文件
 COPY package*.json ./
 
-# 安装依赖
-RUN npm ci --only=production
+# 安装所有依赖（包括devDependencies，构建需要）
+RUN npm install
 
 # 复制源代码
 COPY . .
@@ -18,3 +18,15 @@ RUN npm run build
 
 # 生产阶段 - 使用nginx
 FROM swr.cn-north-4.myhuaweicloud.com/library/nginx:alpine
+
+# 复制构建产物到nginx目录
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# 复制nginx配置文件
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# 暴露端口
+EXPOSE 80
+
+# 启动nginx
+CMD ["nginx", "-g", "daemon off;"]

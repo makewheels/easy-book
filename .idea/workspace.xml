@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="build: switch to official Python 3.10 slim image in Dockerfile">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -340,7 +340,31 @@
       <option name="project" value="LOCAL" />
       <updated>1764590687376</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="build: 更新Dockerfile，切换到163镜像的Python 3.10">
+      <option name="closed" value="true" />
+      <created>1764591258529</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1764591258529</updated>
+    </task>
+    <task id="LOCAL-00029" summary="build: update vite.config.js to specify output directory and assets directory">
+      <option name="closed" value="true" />
+      <created>1764591319567</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1764591319567</updated>
+    </task>
+    <task id="LOCAL-00030" summary="build: switch to official Python 3.10 slim image in Dockerfile">
+      <option name="closed" value="true" />
+      <created>1764591401312</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1764591401312</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -376,7 +400,10 @@
     <MESSAGE value="build: 更新Dockerfile，切换到阿里云镜像的Python 3.10" />
     <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.10" />
     <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12" />
-    <option name="LAST_COMMIT_MESSAGE" value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12" />
+    <MESSAGE value="build: 更新Dockerfile，切换到163镜像的Python 3.10" />
+    <MESSAGE value="build: update vite.config.js to specify output directory and assets directory" />
+    <MESSAGE value="build: switch to official Python 3.10 slim image in Dockerfile" />
+    <option name="LAST_COMMIT_MESSAGE" value="build: switch to official Python 3.10 slim image in Dockerfile" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
