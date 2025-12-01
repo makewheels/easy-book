@@ -1,5 +1,5 @@
 # 多阶段构建 - 构建阶段
-FROM swr.cn-north-4.myhuaweicloud.com/library/node:18-alpine AS builder
+FROM swr.cn-north-4.myhuaweicloud.com/library/node:16-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
