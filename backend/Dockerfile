@@ -1,5 +1,5 @@
 # 使用Python 3.10官方镜像
-FROM dockerhub.azk8s.cn/library/python:3.12-slim
+FROM hub-mirror.c.163.com/library/python:3.10-slim
 
 # 设置工作目录
 WORKDIR /app
