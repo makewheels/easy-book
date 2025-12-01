@@ -1,5 +1,5 @@
 # 多阶段构建 - 构建阶段
-FROM ccr.ccs.tencentyun.com/library/node:18-alpine AS builder
+FROM docker.mirrors.ustc.edu.cn/library/node:18-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # 生产阶段 - 使用nginx
-FROM ccr.ccs.tencentyun.com/library/nginx:alpine
+FROM docker.mirrors.ustc.edu.cn/library/nginx:alpine
 
 # 复制构建产物到nginx目录
 COPY --from=builder /app/dist /usr/share/nginx/html
