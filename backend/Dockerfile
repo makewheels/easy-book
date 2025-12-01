@@ -1,5 +1,5 @@
 # 使用Python 3.12官方镜像
-FROM ccr.ccs.tencentyun.com/library/python:3.12-slim
+FROM docker.mirrors.ustc.edu.cn/library/python:3.12-slim
 
 # 设置工作目录
 WORKDIR /app
