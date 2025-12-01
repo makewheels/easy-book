@@ -1,5 +1,5 @@
 # 多阶段构建 - 构建阶段
-FROM hub.c.163.com/library/node:18-alpine AS builder
+FROM mirror.ccs.tencentyun.com/library/node:18-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,4 +17,4 @@ COPY . .
 RUN npm run build
 
 # 生产阶段 - 使用nginx
-FROM hub.c.163.com/library/nginx:alpine
+FROM mirror.ccs.tencentyun.com/library/nginx:alpine
