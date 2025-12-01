@@ -1,5 +1,5 @@
 前端# 使用Python 3.12官方镜像
-FROM python:3.12-slim
+FROM registry.cn-hangzhou.aliyuncs.com/google_containers/python:3.12-slim
 
 # 设置工作目录
 WORKDIR /app
