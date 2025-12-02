@@ -131,24 +131,40 @@ sudo systemctl reload nginx
 ## 常见问题解决
 
 ### 1. 后端无法启动
-- 检查端口是否被占用: `netstat -tlnp | grep 8002`
+- 检查端口是否被占用:
+  - Windows: `netstat -ano | findstr :8002`
+  - Linux: `netstat -tlnp | grep 8002`
+- 如果端口被占用，需要杀掉进程:
+  - Windows: `taskkill /F /PID <进程ID>`
+  - Linux: `kill -9 <进程ID>`
 - 查看错误日志: `tail /tmp/backend.log`
 - 检查环境变量和配置文件
 
-### 2. API 404错误
+### 2. 前端开发服务器端口冲突
+- Vite会自动尝试其他端口（5174, 5175等）
+- 查看实际运行的端口地址
+- 更新浏览器访问正确的端口地址
+
+### 3. API 404错误
 - 检查nginx配置是否正确加载
 - 验证nginx主配置是否包含 `include /etc/nginx/sites-enabled/*;`
 - 测试后端直接访问: `curl http://localhost:8002/api/students/`
 
-### 3. 数据库连接问题
+### 4. 数据库连接问题
 - 检查MongoDB服务状态
 - 验证连接字符串
 - 检查数据库索引和权限
 
-### 4. 前端页面无法访问
+### 5. 前端页面无法访问
 - 检查nginx配置中的静态文件路径
 - 验证前端构建文件是否正确部署
 - 查看nginx错误日志
+
+### 6. 签到/缺席后按钮不消失
+- 检查后端API返回的状态是否正确（should be 'checked' or 'absent'）
+- 验证前端是否正确接收到更新后的状态数据
+- 强制刷新浏览器页面（Ctrl+F5）清除缓存
+- 检查前端状态更新逻辑：`student.status === 'scheduled'`
 
 ## 数据库操作
 ```bash

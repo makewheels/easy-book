@@ -122,16 +122,20 @@ class MongoDatabase:
         """更新学生"""
         from bson import ObjectId
         update_data["update_time"] = datetime.utcnow()
-        try:
-            result = await self.db.students.update_one(
-                {"_id": ObjectId(student_id)}, 
-                {"$set": update_data}
-            )
-        except:
-            result = await self.db.students.update_one(
-                {"_id": student_id}, 
-                {"$set": update_data}
-            )
+        # 首先尝试字符串查找，因为我们的ID是字符串格式
+        result = await self.db.students.update_one(
+            {"_id": student_id},
+            {"$set": update_data}
+        )
+        # 如果字符串查找失败，尝试ObjectId查找
+        if result.modified_count == 0:
+            try:
+                result = await self.db.students.update_one(
+                    {"_id": ObjectId(student_id)},
+                    {"$set": update_data}
+                )
+            except:
+                pass
         return result.modified_count > 0
     
     async def delete_student(self, student_id: str) -> bool:
