@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="fix: update check-in condition to include scheduled status">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="fix: improve appointment update logic and enhance student check-in conditions">
       <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/api/students.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/students.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -395,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764600874037</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="fix: improve appointment update logic and enhance student check-in conditions">
+      <option name="closed" value="true" />
+      <created>1764678259763</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1764678259763</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -410,9 +419,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用" />
-    <MESSAGE value="chore: 简化 python-shell.sh 安装流程并优化工作区配置" />
-    <MESSAGE value="chore: 新增 node-shell.sh 实现前端自动部署脚本并优化工作区配置" />
     <MESSAGE value="build: 更新Dockerfile和docker-compose配置，升级Python和Node.js版本，添加健康检查和nginx支持" />
     <MESSAGE value="build: 更新Dockerfile，使用阿里云镜像并调整前端构建配置" />
     <MESSAGE value="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
@@ -435,7 +441,10 @@
     <MESSAGE value="build: update Dockerfile to use Node.js 16-alpine as the builder image" />
     <MESSAGE value="build: add CLAUDE.md for project guidance and update settings.local.json for permissions" />
     <MESSAGE value="fix: update check-in condition to include scheduled status" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: update check-in condition to include scheduled status" />
+    <MESSAGE value="fix: update appointment update logic to handle string and ObjectId" />
+    <MESSAGE value="fix: update check-in condition to include scheduled status and refactor Home.vue layout" />
+    <MESSAGE value="fix: improve appointment update logic and enhance student check-in conditions" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: improve appointment update logic and enhance student check-in conditions" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

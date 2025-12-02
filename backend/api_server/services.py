@@ -253,16 +253,22 @@ class AttendanceService:
     @staticmethod
     async def mark_absent(appointment_id: str, student_id: str) -> AttendanceModel:
         db = get_database()
-        
+
         # 获取预约信息
         appointment = await db.get_appointment(appointment_id)
         if not appointment:
             raise ValueError("预约不存在")
-        
+
         # 获取学员信息
         student = await db.get_student(student_id)
         if not student:
             raise ValueError("学员不存在")
+
+        # 检查是否已经有考勤记录
+        attendances = await db.get_attendances()
+        for att in attendances:
+            if att.get("appointment_id") == appointment_id and att.get("student_id") == student_id:
+                raise ValueError("已经标记过考勤了")
         
         # 创建上课记录
         attendance_data = {
