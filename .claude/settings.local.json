@@ -63,7 +63,13 @@
       "Bash(create_mongo_user.py )",
       "Bash(test_mongo_user.py )",
       "Bash(test_server.py )",
-      "Bash(test_db_connection.py)"
+      "Bash(test_db_connection.py)",
+      "Bash(scp:*)",
+      "Bash(pip install:*)",
+      "Bash(Scripts\\activate:*)",
+      "Bash(testsinstall:*)",
+      "Bash(.venv/Scripts/pip.exe install:*)",
+      "Bash(.venv/Scripts/python.exe:*)"
     ],
     "deny": [],
     "ask": []

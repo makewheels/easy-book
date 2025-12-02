@@ -10,12 +10,10 @@ router = APIRouter()
 async def create_student(student: StudentCreate):
     try:
         student_data = student.dict()
-        # 字段映射：前端发送 learning_item，后端期望 learning_item
-        if "learning_item" in student_data:
-            student_data["learning_item"] = student_data.pop("learning_item")
-        # 字段映射：前端发送 note，后端期望 notes
-        if "note" in student_data:
-            student_data["notes"] = student_data.pop("note")
+        # 所有字段都不需要额外映射，直接使用原有字段名
+
+        # 调试日志：打印接收到的数据
+        print(f"DEBUG: 收到学生创建数据: {student_data}")
 
         # 检查必填字段
         required_fields = ["name", "learning_item", "package_type", "total_lessons", "price", "venue_share"]

@@ -28,13 +28,33 @@
           
           <div class="form-group">
             <label>别称</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="form.nickname"
               placeholder="请输入别称（可选）"
             />
           </div>
-          
+
+          <div class="form-group">
+            <label>身份证号码</label>
+            <input
+              type="text"
+              v-model="form.id_card"
+              placeholder="请输入身份证号码（可选）"
+              maxlength="18"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>手机号码</label>
+            <input
+              type="tel"
+              v-model="form.phone"
+              placeholder="请输入手机号码（可选）"
+              maxlength="11"
+            />
+          </div>
+
           <div class="form-group">
             <label>学习项目 *</label>
             <select v-model="form.learning_item" required>
@@ -150,6 +170,8 @@ const initialLoading = ref(true)
 const form = reactive({
   name: '',
   nickname: '',
+  id_card: '',
+  phone: '',
   learning_item: '',
   package_type: '',
   total_lessons: '',
@@ -173,6 +195,8 @@ const fetchStudentData = async (studentId) => {
     if (student) {
       form.name = student.name || ''
       form.nickname = student.nickname || ''
+      form.id_card = student.id_card || ''
+      form.phone = student.phone || ''
       form.learning_item = student.learning_item || ''
       form.package_type = student.package_type || ''
       form.total_lessons = student.total_lessons || ''
@@ -215,6 +239,8 @@ const handleSubmit = async () => {
     await studentStore.updateStudent(route.params.id, {
       name: form.name,
       nickname: form.nickname || undefined,
+      id_card: form.id_card || undefined,
+      phone: form.phone || undefined,
       learning_item: form.learning_item,
       package_type: form.package_type,
       total_lessons: parseInt(form.total_lessons),
