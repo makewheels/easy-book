@@ -23,6 +23,14 @@
             <label>别称:</label>
             <span>{{ student.nickname }}</span>
           </div>
+          <div class="info-item" v-if="student.id_card">
+            <label>身份证号码:</label>
+            <span>{{ student.id_card }}</span>
+          </div>
+          <div class="info-item" v-if="student.phone">
+            <label>手机号码:</label>
+            <span>{{ student.phone }}</span>
+          </div>
           <div class="info-item">
             <label>学习项目:</label>
             <span>{{ student.learning_item }}</span>

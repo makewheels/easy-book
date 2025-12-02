@@ -24,13 +24,43 @@
           
           <div class="form-group">
             <label>别称</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="form.nickname"
               placeholder="请输入别称（可选）"
             />
           </div>
-          
+
+          <div class="form-group">
+            <label>身份证号码</label>
+            <input
+              type="text"
+              v-model="form.id_card"
+              placeholder="请输入身份证号码（可选）"
+              maxlength="18"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>手机号码</label>
+            <input
+              type="tel"
+              v-model="form.phone"
+              placeholder="请输入手机号码（可选）"
+              maxlength="11"
+              @input="handlePhoneInput"
+            />
+          </div>
+
+          <!-- 调试：显示实时值 -->
+          <div class="form-group" style="background: #f0f8ff; padding: 10px;">
+            <label>调试信息</label>
+            <div style="font-size: 12px; color: #666;">
+              身份证值: {{ form.id_card }}<br>
+              手机号值: {{ form.phone }}
+            </div>
+          </div>
+
           <div class="form-group">
             <label>学习项目 *</label>
             <select v-model="form.learning_item" required>
@@ -133,6 +163,8 @@ const loading = ref(false)
 const form = reactive({
   name: '',
   nickname: '',
+  id_card: '',
+  phone: '',
   learning_item: '',
   package_type: '',
   total_lessons: '',
@@ -146,31 +178,49 @@ const goBack = () => {
 }
 
 const handleSubmit = async () => {
+  // 调试日志：打印所有字段
+  console.log('DEBUG: form对象内容:', form)
+  console.log('DEBUG: id_card值:', form.id_card)
+  console.log('DEBUG: phone值:', form.phone)
+
   // 验证表单
-  if (!form.name || !form.learning_item || !form.package_type || 
+  if (!form.name || !form.learning_item || !form.package_type ||
       !form.total_lessons || !form.price || !form.venue_share) {
     toast.warning('请填写所有必填字段')
     return
   }
-  
+
   if (form.total_lessons <= 0 || form.price <= 0 || form.venue_share < 0) {
     toast.warning('请输入有效的数值')
     return
   }
-  
+
   loading.value = true
-  
+
+  // 显式构建要发送的数据
+  const studentData = {
+    name: form.name,
+    nickname: form.nickname || undefined,
+    learning_item: form.learning_item,
+    package_type: form.package_type,
+    total_lessons: parseInt(form.total_lessons),
+    price: parseInt(form.price),
+    venue_share: parseInt(form.venue_share),
+    note: form.note || undefined
+  }
+
+  // 显式添加身份证和手机号字段（如果存在）
+  if (form.id_card && form.id_card.trim()) {
+    studentData.id_card = form.id_card.trim()
+  }
+  if (form.phone && form.phone.trim()) {
+    studentData.phone = form.phone.trim()
+  }
+
+  console.log('DEBUG: 即将发送的数据:', studentData)
+
   try {
-    await studentStore.createStudent({
-      name: form.name,
-      nickname: form.nickname || undefined,
-      learning_item: form.learning_item,
-      package_type: form.package_type,
-      total_lessons: parseInt(form.total_lessons),
-      price: parseInt(form.price),
-      venue_share: parseInt(form.venue_share),
-      note: form.note || undefined
-    })
+    await studentStore.createStudent(studentData)
     
     toast.success('学生创建成功')
     router.push('/students')

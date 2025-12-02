@@ -15,6 +15,8 @@ class StudentModel(BaseModel):
     price: int = Field(..., gt=0, description="售价(元)")
     venue_share: int = Field(..., ge=0, description="游泳馆分成(元)")
     profit: int = Field(..., description="利润(元)")
+    id_card: Optional[str] = Field(None, max_length=18, description="身份证号码")
+    phone: Optional[str] = Field(None, max_length=11, description="手机号码")
     note: Optional[str] = Field(None, max_length=500, description="备注")
     create_time: datetime = Field(default_factory=datetime.utcnow)
     update_time: datetime = Field(default_factory=datetime.utcnow)
@@ -29,12 +31,16 @@ class StudentCreate(BaseModel):
     total_lessons: int = Field(..., gt=0)
     price: int = Field(..., gt=0)
     venue_share: int = Field(..., ge=0)
+    id_card: Optional[str] = Field(None, max_length=18)
+    phone: Optional[str] = Field(None, max_length=11)
     note: Optional[str] = Field(None, max_length=500)
 
 class StudentUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=50)
     nickname: Optional[str] = Field(None, max_length=50)
     learning_item: Optional[str] = Field(None)
+    id_card: Optional[str] = Field(None, max_length=18)
+    phone: Optional[str] = Field(None, max_length=11)
     note: Optional[str] = Field(None, max_length=500)
 
 class AppointmentModel(BaseModel):
