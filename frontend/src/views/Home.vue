@@ -14,6 +14,9 @@
       </div>
       
       <div v-else-if="dailyData" class="appointments">
+        <div class="date-header">
+          <span class="date-weekday">{{ dailyData.date }} {{ dailyData.weekday }}</span>
+        </div>
         <div v-for="slot in dailyData.slots" :key="slot.time" class="time-slot">
           <div class="time-header">
             <span class="time">{{ slot.time }}</span>
@@ -29,7 +32,7 @@
                 <div class="name-row">
                   <span class="name">{{ student.name }}</span>
                   <span class="type">{{ student.package_type }}</span>
-                  <span v-if="dailyData.isPast" class="status" :class="getStatusClass(student.status)">
+                  <span v-if="dailyData.isPast || student.status !== 'scheduled'" class="status" :class="getStatusClass(student.status)">
                     {{ getStatusText(student.status) }}
                   </span>
                 </div>
@@ -198,6 +201,21 @@ const handleAbsent = async (student) => {
 
 .appointments {
   margin-bottom: 20px;
+}
+
+.date-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.date-header .date-weekday {
+  color: #1976d2;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .time-slot {

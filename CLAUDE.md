@@ -135,3 +135,10 @@ mongod
 - API documentation available at `http://localhost:8002/docs` (when backend is running)
 - FastAPI provides automatic OpenAPI schema generation
 - Frontend error handling through Axios interceptors with user-friendly messages
+
+## 其它注意事项
+改动代码后，测试用例需要同步修改
+文档也需要同步更新
+不要使用emoji，因为可能造成乱码
+项目不需要国际化，界面和代码注释使用中文即可
+问题修改现在本地，测试没问题后部署服务器
