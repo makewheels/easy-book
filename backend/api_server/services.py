@@ -140,20 +140,20 @@ class AppointmentService:
                 slots[time_slot] = []
             
             # 获取学员信息
-            student = await db.get_student(apt.get("student_id"))
-            if student:
-                attended_lessons = student["total_lessons"] - student["remaining_lessons"]
-                slots[time_slot].append({
-                    "id": apt.get("_id", ""),
-                    "name": student["name"],
-                    "package_type": student["package_type"],
-                    "learning_item": student["learning_item"],
-                    "attended_lessons": attended_lessons,
-                    "total_lessons": student["total_lessons"],
-                    "appointment_id": apt.get("_id", ""),
-                    "student_id": student.get("_id", ""),
-                    "status": apt.get("status", "scheduled")
-                })
+                student = await db.get_student(apt.get("student_id"))
+                if student:
+                    attended_lessons = student["total_lessons"] - student["remaining_lessons"]
+                    slots[time_slot].append({
+                        "id": apt.get("_id", ""),
+                        "name": student["name"],
+                        "package_type": student["package_type"],
+                        "learning_item": student["learning_item"],
+                        "attended_lessons": attended_lessons,
+                        "total_lessons": student["total_lessons"],
+                        "appointment_id": apt.get("_id", ""),
+                        "student_id": student.get("_id", ""),
+                        "status": apt.get("status", "scheduled")
+                    })
         
         # 转换为列表格式
         slot_list = []

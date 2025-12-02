@@ -37,5 +37,5 @@ EXPOSE 8002
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8002/health || exit 1
 
-# 启动命令
-CMD ["uvicorn", "api_server.main:app", "--host", "0.0.0.0", "--port", "8002"]
+# 启动命令（生产环境）
+CMD ["uvicorn", "api_server.main:app", "--host", "0.0.0.0", "--port", "8002", "--workers", "4"]

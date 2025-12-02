@@ -204,16 +204,21 @@ class MongoDatabase:
         """更新预约"""
         from bson import ObjectId
         update_data["update_time"] = datetime.utcnow()
-        try:
-            result = await self.db.appointments.update_one(
-                {"_id": ObjectId(appointment_id)}, 
-                {"$set": update_data}
-            )
-        except:
-            result = await self.db.appointments.update_one(
-                {"_id": appointment_id}, 
-                {"$set": update_data}
-            )
+        # 首先尝试字符串查找，与get_appointment保持一致
+        result = await self.db.appointments.update_one(
+            {"_id": appointment_id}, 
+            {"$set": update_data}
+        )
+        
+        # 如果字符串查找没有更新任何记录，尝试ObjectId查找
+        if result.modified_count == 0:
+            try:
+                result = await self.db.appointments.update_one(
+                    {"_id": ObjectId(appointment_id)}, 
+                    {"$set": update_data}
+                )
+            except:
+                pass
         return result.modified_count > 0
     
     async def delete_appointment(self, appointment_id: str) -> bool:
