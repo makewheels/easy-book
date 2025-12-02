@@ -14,43 +14,39 @@
       </div>
       
       <div v-else-if="dailyData" class="appointments">
-        <div class="date-group">
-          <div class="date-header">{{ dailyData.date }} {{ dailyData.weekday }}</div>
-          
-          <div v-for="slot in dailyData.slots" :key="slot.time" class="time-slot">
-            <div class="time-header">
-              <span class="time">{{ slot.time }}</span>
-            </div>
-            
-            <div class="students">
-              <div 
-                v-for="student in slot.students" 
-                :key="student.id"
-                class="student-item"
-              >
-                <div class="student-info">
-                  <div class="name-row">
-                    <span class="name">{{ student.name }}</span>
-                    <span class="type">{{ student.package_type }}</span>
-                    <span v-if="dailyData.isPast" class="status" :class="getStatusClass(student.status)">
-                      {{ getStatusText(student.status) }}
-                    </span>
-                  </div>
-                  
-                  <div class="details">
-                    <span class="lessons">次数[{{ student.attended_lessons }}/{{ student.total_lessons }}]</span>
-                    <span class="project">{{ student.learning_item }}</span>
-                  </div>
+        <div v-for="slot in dailyData.slots" :key="slot.time" class="time-slot">
+          <div class="time-header">
+            <span class="time">{{ slot.time }}</span>
+          </div>
+
+          <div class="students">
+            <div
+              v-for="student in slot.students"
+              :key="student.id"
+              class="student-item"
+            >
+              <div class="student-info">
+                <div class="name-row">
+                  <span class="name">{{ student.name }}</span>
+                  <span class="type">{{ student.package_type }}</span>
+                  <span v-if="dailyData.isPast" class="status" :class="getStatusClass(student.status)">
+                    {{ getStatusText(student.status) }}
+                  </span>
                 </div>
-                
-                <div v-if="!dailyData.isPast && !student.status" class="actions">
-                  <button class="btn-checkin" @click="handleCheckIn(student)">
-                    签到
-                  </button>
-                  <button class="btn-absent" @click="handleAbsent(student)">
-                    缺席
-                  </button>
+
+                <div class="details">
+                  <span class="lessons">次数[{{ student.attended_lessons }}/{{ student.total_lessons }}]</span>
+                  <span class="project">{{ student.learning_item }}</span>
                 </div>
+              </div>
+
+              <div v-if="!dailyData.isPast && student.status === 'scheduled'" class="actions">
+                <button class="btn-checkin" @click="handleCheckIn(student)">
+                  签到
+                </button>
+                <button class="btn-absent" @click="handleAbsent(student)">
+                  缺席
+                </button>
               </div>
             </div>
           </div>
@@ -204,24 +200,10 @@ const handleAbsent = async (student) => {
   margin-bottom: 20px;
 }
 
-.date-group {
-  margin-bottom: 20px;
-}
-
-.date-header {
-  background: #f8f9fa;
-  padding: 12px;
-  font-weight: bold;
-  color: #1989fa;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 18px;
-}
-
 .time-slot {
   background: #fff;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

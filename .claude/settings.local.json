@@ -8,7 +8,17 @@
       "mcp__chrome-devtools__hover",
       "mcp__chrome-devtools__evaluate_script",
       "mcp__chrome-devtools__navigate_page",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__chrome-devtools__list_pages",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(netstat:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(python -m api_server.main:*)",
+      "Bash(npm run dev)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__press_key",
+      "mcp__chrome-devtools__wait_for"
     ],
     "deny": [],
     "ask": []
