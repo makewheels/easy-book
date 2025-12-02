@@ -37,11 +37,13 @@ class MongoDatabase:
                 await self.db.students.create_index("name", unique=True)
             except:
                 pass  # 索引可能已存在
-            
+
+            # 移除phone索引，改用可选字段
             try:
-                await self.db.students.create_index("phone", unique=True)
+                await self.db.students.drop_index("phone")
+                print("Phone index removed")
             except:
-                pass  # 索引可能已存在
+                pass  # 索引不存在
             
             # 预约索引
             try:
