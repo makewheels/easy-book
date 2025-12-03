@@ -77,7 +77,8 @@
       "Bash(git rm:*)",
       "Bash(npm install date-fns)",
       "mcp__chrome-devtools__get_console_message",
-      "Bash(../.venv/Scripts/python.exe:*)"
+      "Bash(../.venv/Scripts/python.exe:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
