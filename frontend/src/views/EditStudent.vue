@@ -90,24 +90,25 @@
           </div>
           
           <div class="form-group">
-            <label>总课程数 *</label>
-            <input 
-              type="number" 
-              v-model="form.total_lessons" 
+            <label>总共 *</label>
+            <input
+              type="number"
+              v-model="form.total_lessons"
               required
               min="1"
-              placeholder="请输入总课程数"
+              placeholder="请输入总共次数"
             />
           </div>
-          
+
           <div class="form-group">
-            <label>剩余课程数 *</label>
-            <input 
-              type="number" 
-              v-model="form.remaining_lessons" 
-              required
-              min="0"
-              placeholder="请输入剩余课程数"
+            <label>剩余</label>
+            <input
+              type="number"
+              v-model="form.remaining_lessons"
+              readonly
+              disabled
+              class="readonly-input"
+              placeholder="剩余次数（由系统自动管理）"
             />
           </div>
           
@@ -134,7 +135,7 @@
           </div>
           
           <div class="form-group" v-if="form.price && form.venue_share">
-            <label>预计利润</label>
+            <label>利润</label>
             <div class="profit-display">
               {{ form.price - form.venue_share }} 元
             </div>
@@ -399,5 +400,17 @@ const handleSubmit = async () => {
 .btn-save:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+.readonly-input {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.readonly-input:focus {
+  outline: none;
+  border-color: #ddd;
 }
 </style>

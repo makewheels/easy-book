@@ -48,12 +48,16 @@
             <span>{{ student.package_type || '-' }}</span>
           </div>
           <div class="info-item">
-            <label>剩余次数:</label>
+            <label>剩余:</label>
             <span class="remaining-lessons">{{ student.remaining_lessons || 0 }} 次</span>
           </div>
           <div class="info-item">
-            <label>总次数:</label>
+            <label>总共:</label>
             <span>{{ student.total_lessons || 0 }} 次</span>
+          </div>
+          <div class="info-item">
+            <label>已上课:</label>
+            <span class="completed-lessons">{{ (student.total_lessons || 0) - (student.remaining_lessons || 0) }} 次</span>
           </div>
           <div class="info-item">
             <label>售价:</label>
@@ -356,6 +360,11 @@ const formatDate = (dateString) => {
 
 .remaining-lessons {
   color: #1989fa;
+  font-weight: bold;
+}
+
+.completed-lessons {
+  color: #52c41a;
   font-weight: bold;
 }
 
