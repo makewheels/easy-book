@@ -69,7 +69,10 @@
       "Bash(Scripts\\activate:*)",
       "Bash(testsinstall:*)",
       "Bash(.venv/Scripts/pip.exe install:*)",
-      "Bash(.venv/Scripts/python.exe:*)"
+      "Bash(.venv/Scripts/python.exe:*)",
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
