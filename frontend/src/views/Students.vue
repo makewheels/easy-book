@@ -9,17 +9,22 @@
       <div v-if="loading" class="loading">
         加载中...
       </div>
-      
+
       <div v-else-if="students.length === 0" class="empty-state">
         <div class="empty-message">暂无学生</div>
         <button class="add-first-btn" @click="goToAddStudent">
           添加学生
         </button>
       </div>
-      
+
       <div v-else>
-        <div 
-          v-for="student in students" 
+        <!-- 新增学生按钮 - 移到顶部 -->
+        <div class="add-student-btn" @click="goToAddStudent">
+          + 新增学生
+        </div>
+
+        <div
+          v-for="student in students"
           :key="student.id"
           class="student-card"
           @click="goToDetail(student._id)"
@@ -33,7 +38,7 @@
               预约
             </button>
           </div>
-          
+
           <div class="card-body">
             <div class="info-row">
               <span class="label">次数:</span>
@@ -49,10 +54,6 @@
               <span class="value">{{ student.remaining_lessons }} 次</span>
             </div>
           </div>
-        </div>
-        
-        <div class="add-student-btn" @click="goToAddStudent">
-          + 新增学生
         </div>
       </div>
     </div>
@@ -340,7 +341,7 @@ const handleAppointmentSubmit = async () => {
   border-radius: 8px;
   padding: 15px;
   text-align: center;
-  margin: 20px 0;
+  margin: 10px 0 20px 0;  /* 顶部按钮：上边距10px，下边距20px */
   cursor: pointer;
   font-size: 16px;
 }
