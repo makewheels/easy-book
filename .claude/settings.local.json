@@ -72,7 +72,9 @@
       "Bash(.venv/Scripts/python.exe:*)",
       "mcp__chrome-devtools__list_console_messages",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(dir:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
