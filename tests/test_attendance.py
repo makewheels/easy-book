@@ -34,8 +34,8 @@ class TestAttendance(TestBase):
 
         # 执行签到
         checkin_data = {
-            "appointment_id": appointment["id"],
-            "student_id": student["id"]
+            "appointment_id": appointment.get("_id") or appointment.get("id"),
+            "student_id": student.get("_id") or student.get("id")
         }
 
         response = requests.post(f"{self.api_url}/api/attendance/checkin", json=checkin_data)

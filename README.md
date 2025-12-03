@@ -2,6 +2,11 @@
 
 一个轻量级的泳课学员管理系统，专为个人使用设计。
 
+## 📖 文档导航
+
+- **[AGENTS.md](./AGENTS.md)** - AI助手开发指南（推荐）- 包含完整的开发规范、API说明和测试指南
+- **[CLAUDE.md](./CLAUDE.md)** - Claude Code专用指导（英文版）
+
 ## 功能特点
 
 - 📱 移动端友好设计
@@ -173,40 +178,104 @@ easy-book/
 
 ## 测试
 
-### 自动化测试
-项目包含完整的自动化测试套件，用于验证系统功能：
+### 模块化自动化测试
+项目包含完整的模块化自动化测试套件，覆盖所有核心功能：
 
 ```bash
-# 运行自动化测试
+# 安装测试依赖
 cd tests
-python test_automation.py
+pip install -r requirements.txt
+
+# 运行完整测试套件
+python test_all.py
+
+# 运行特定模块测试
+python test_students.py      # 学员管理测试
+python test_appointments.py  # 预约管理测试
+python test_attendance.py    # 考勤管理测试
+python test_ui_integration.py # UI和集成测试
 ```
 
-**测试内容**：
+### 测试覆盖范围
+
+**学员管理模块** (test_students.py)：
+- ✅ API创建学员
+- ✅ API获取学员列表
+- ✅ API获取单个学员
+- ✅ API更新学员信息
+- ✅ API删除学员
+- ✅ UI创建学员
+- ✅ UI学员列表显示
+
+**预约管理模块** (test_appointments.py)：
+- ✅ API创建预约
+- ✅ API获取学员预约记录
+- ✅ API获取每日预约
+- ✅ API更新预约
+- ✅ API删除预约
+- ✅ 1v1预约冲突检测
+- ✅ 1v1与1v多预约规则
+- ✅ 同一学员重复预约检测
+
+**考勤管理模块** (test_attendance.py)：
+- ✅ API签到功能
+- ✅ API标记缺席
+- ✅ API获取学员考勤记录
+- ✅ 重复签到保护
+- ✅ 重复标记缺席保护
+- ✅ 课程扣费逻辑验证
+- ✅ 课程不足时处理
+
+**UI和集成测试** (test_ui_integration.py)：
 - ✅ API健康检查
 - ✅ 页面加载测试
-- ✅ UI创建学生
-- ✅ 创建预约
-- ✅ 签到功能
-- ✅ 页面UI更新
-- ✅ 重复操作保护
-- ✅ 预约冲突检查
+- ✅ 导航流程测试
+- ✅ 完整学生工作流程
+- ✅ UI学生管理功能
+- ✅ UI日历视图功能
+- ✅ 数据一致性验证
+- ✅ API错误处理
+- ✅ 基础性能测试
 
-**测试要求**：
-- 确保后端服务运行在 http://localhost:8002
-- 确保前端服务运行在 http://localhost:5173
-- 确保MongoDB服务正常运行
-- 安装必要的测试依赖：`pip install selenium pymongo requests`
+### 测试要求
+- **后端服务**: 运行在 http://localhost:8004
+- **前端服务**: 运行在 http://localhost:5174
+- **数据库**: MongoDB服务正常运行
+- **Python依赖**: `pip install selenium pymongo requests python-dotenv`
 
-**测试结果**：
-- 成功率：75% (6/8 测试通过)
-- 包含UI测试和API测试
-- 自动生成测试报告
+### 测试文件结构
+```
+tests/
+├── conftest.py              # 测试基础设施和基础类
+├── test_all.py              # 主测试运行器
+├── test_students.py         # 学员管理模块测试
+├── test_appointments.py     # 预约管理模块测试
+├── test_attendance.py       # 考勤管理模块测试
+├── test_ui_integration.py   # UI和集成测试
+├── test_automation.py       # 原始测试脚本（已弃用）
+└── requirements.txt         # 测试依赖包
+```
 
-### 测试文件位置
-- **自动化测试脚本**: `tests/test_automation.py`
-- **测试报告**: `tests/test_reports/`
-- **测试文档**: `doc/04-测试文档/`
+### 测试报告
+- 自动生成详细的综合测试报告
+- 包含成功率统计和性能指标
+- 显示失败模块的详细错误信息
+- 支持并发执行所有测试模块
+
+### 当前测试状态
+- **学员管理**: 100% 通过率 (7/7 测试) ✅
+- **预约管理**: 正在完善中 (API响应格式需调整)
+- **考勤管理**: 正在完善中 (API响应格式需调整)
+- **UI集成**: 正在完善中 (需要浏览器环境配置)
+- **整体架构**: 测试框架已搭建完成，支持快速扩展
+
+### 测试价值
+这套模块化测试为项目提供了重要的质量保障：
+- 🛡️ **回归测试**: 防止代码修改破坏现有功能
+- 📊 **功能验证**: 确保所有API端点正常工作
+- 🔍 **问题发现**: 早期发现配置和兼容性问题
+- 📈 **开发效率**: 自动化测试减少手动测试时间
+- 🚀 **部署信心**: 测试通过后可安全部署
 
 ## 开发说明
 
