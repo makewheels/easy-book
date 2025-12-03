@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: enhance student detail display with default values and add creation/update timestamps">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: update student forms and details display with improved labels and readonly fields">
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -506,7 +503,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764760610194</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="feat: update student forms and details display with improved labels and readonly fields">
+      <option name="closed" value="true" />
+      <created>1764761475093</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1764761475093</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -521,7 +526,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: 更新Dockerfile，切换到USTC镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到官方镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到阿里云镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到网易云镜像的Python、Node.js和nginx" />
@@ -546,7 +550,8 @@
     <MESSAGE value="fix: enhance student update logic to handle string and ObjectId, improve UI layout and add date header" />
     <MESSAGE value="feat: add id card and phone number fields to student forms, enhance student detail display" />
     <MESSAGE value="feat: enhance student detail display with default values and add creation/update timestamps" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance student detail display with default values and add creation/update timestamps" />
+    <MESSAGE value="feat: update student forms and details display with improved labels and readonly fields" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: update student forms and details display with improved labels and readonly fields" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
