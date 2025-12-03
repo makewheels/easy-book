@@ -109,6 +109,11 @@ class TestBase:
         if substring not in text:
             raise AssertionError(f"{message} - '{substring}' not found in '{text}'")
 
+    def assert_less(self, actual, expected, message=""):
+        """断言小于"""
+        if not (actual < expected):
+            raise AssertionError(f"{message} - Expected: < {expected}, Actual: {actual}")
+
     def wait_for_element(self, by, value, timeout=10):
         """等待元素出现"""
         return WebDriverWait(self.driver, timeout).until(

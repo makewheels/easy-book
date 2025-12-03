@@ -26,7 +26,7 @@ def run_single_test_module(test_module_name):
         result = subprocess.run([
             sys.executable,
             f"{test_module_name}.py"
-        ], capture_output=True, text=True, encoding='utf-8')
+        ], capture_output=True, text=True, encoding='utf-8', errors='ignore')
 
         execution_time = time.time() - start_time
 
@@ -78,6 +78,7 @@ def main():
 
     # 定义所有测试模块
     test_modules = [
+        'test_health',          # 健康检查和系统状态测试
         'test_students',        # 学生管理模块测试
         'test_appointments',    # 预约管理模块测试
         'test_attendance',      # 考勤管理模块测试
