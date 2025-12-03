@@ -141,17 +141,21 @@ class MongoDatabase:
     async def delete_student(self, student_id: str) -> bool:
         """删除学生"""
         from bson import ObjectId
-        try:
-            # 删除学生
-            result = await self.db.students.delete_one({"_id": ObjectId(student_id)})
-        except:
-            result = await self.db.students.delete_one({"_id": student_id})
-        
+        # 首先尝试字符串查找，与get_student保持一致
+        result = await self.db.students.delete_one({"_id": student_id})
+
+        # 如果字符串查找失败，尝试ObjectId查找
+        if result.deleted_count == 0:
+            try:
+                result = await self.db.students.delete_one({"_id": ObjectId(student_id)})
+            except:
+                pass
+
         # 删除相关预约和考勤
         if result.deleted_count > 0:
             await self.db.appointments.delete_many({"student_id": student_id})
             await self.db.attendances.delete_many({"student_id": student_id})
-        
+
         return result.deleted_count > 0
     
     # 预约相关操作

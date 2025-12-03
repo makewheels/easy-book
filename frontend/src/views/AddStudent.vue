@@ -48,17 +48,7 @@
               v-model="form.phone"
               placeholder="请输入手机号码（可选）"
               maxlength="11"
-              @input="handlePhoneInput"
             />
-          </div>
-
-          <!-- 调试：显示实时值 -->
-          <div class="form-group" style="background: #f0f8ff; padding: 10px;">
-            <label>调试信息</label>
-            <div style="font-size: 12px; color: #666;">
-              身份证值: {{ form.id_card }}<br>
-              手机号值: {{ form.phone }}
-            </div>
           </div>
 
           <div class="form-group">
@@ -96,13 +86,13 @@
           </div>
           
           <div class="form-group">
-            <label>总课程数 *</label>
-            <input 
-              type="number" 
-              v-model="form.total_lessons" 
+            <label>总共 *</label>
+            <input
+              type="number"
+              v-model="form.total_lessons"
               required
               min="1"
-              placeholder="请输入总课程数"
+              placeholder="请输入总共次数"
             />
           </div>
           
@@ -129,7 +119,7 @@
           </div>
           
           <div class="form-group" v-if="form.price && form.venue_share">
-            <label>预计利润</label>
+            <label>利润</label>
             <div class="profit-display">
               {{ form.price - form.venue_share }} 元
             </div>
@@ -178,11 +168,6 @@ const goBack = () => {
 }
 
 const handleSubmit = async () => {
-  // 调试日志：打印所有字段
-  console.log('DEBUG: form对象内容:', form)
-  console.log('DEBUG: id_card值:', form.id_card)
-  console.log('DEBUG: phone值:', form.phone)
-
   // 验证表单
   if (!form.name || !form.learning_item || !form.package_type ||
       !form.total_lessons || !form.price || !form.venue_share) {
@@ -216,8 +201,6 @@ const handleSubmit = async () => {
   if (form.phone && form.phone.trim()) {
     studentData.phone = form.phone.trim()
   }
-
-  console.log('DEBUG: 即将发送的数据:', studentData)
 
   try {
     await studentStore.createStudent(studentData)

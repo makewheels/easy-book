@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="fix: enhance student update logic to handle string and ObjectId, improve UI layout and add date header">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: enhance student detail display with default values and add creation/update timestamps">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/api/students.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/students.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -492,7 +490,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764693475099</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="feat: add id card and phone number fields to student forms, enhance student detail display">
+      <option name="closed" value="true" />
+      <created>1764760358239</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1764760358239</updated>
+    </task>
+    <task id="LOCAL-00038" summary="feat: enhance student detail display with default values and add creation/update timestamps">
+      <option name="closed" value="true" />
+      <created>1764760610194</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1764760610194</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -507,8 +521,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录" />
-    <MESSAGE value="build: 更新Dockerfile，切换到官方库的Python、Node.js和nginx镜像" />
     <MESSAGE value="build: 更新Dockerfile，切换到USTC镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到官方镜像的Python、Node.js和nginx" />
     <MESSAGE value="build: 更新Dockerfile，切换到阿里云镜像的Python、Node.js和nginx" />
@@ -532,7 +544,9 @@
     <MESSAGE value="fix: improve appointment update logic and enhance student check-in conditions" />
     <MESSAGE value="build: enhance deployment script and update MongoDB index management" />
     <MESSAGE value="fix: enhance student update logic to handle string and ObjectId, improve UI layout and add date header" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: enhance student update logic to handle string and ObjectId, improve UI layout and add date header" />
+    <MESSAGE value="feat: add id card and phone number fields to student forms, enhance student detail display" />
+    <MESSAGE value="feat: enhance student detail display with default values and add creation/update timestamps" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance student detail display with default values and add creation/update timestamps" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
