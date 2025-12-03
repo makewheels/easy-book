@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>课程日历 - 简化版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            color: #333;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #fff;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: #1989fa;
+            color: #fff;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 15px;
+            font-size: 20px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .today-btn {
+            position: absolute;
+            right: 15px;
+            font-size: 14px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* 日期控制区域 */
+        .date-control {
+            background: #fff;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #1989fa;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #f0f9ff;
+        }
+
+        .date-range {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-btn {
+            background: #f5f5f5;
+            border: none;
+            color: #1989fa;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: #e8f4ff;
+        }
+
+        /* 状态图例 */
+        .status-legend {
+            background: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .legend-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            margin-right: 6px;
+            border: 1px solid #d9d9d9;
+        }
+
+        .legend-color.upcoming {
+            background: #1890ff;
+            border-color: #1890ff;
+        }
+
+        .legend-color.during {
+            background: #fa8c16;
+            border-color: #fa8c16;
+        }
+
+        .legend-color.checked {
+            background: #52c41a;
+            border-color: #52c41a;
+        }
+
+        .legend-color.absent {
+            background: #8c8c8c;
+            border-color: #8c8c8c;
+        }
+
+        /* 日历表格 */
+        .calendar-container {
+            background: #fff;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .calendar-table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .calendar-table th,
+        .calendar-table td {
+            border: 1px solid #e8e8e8;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .calendar-table th {
+            background: #f5f5f5;
+            height: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .time-column {
+            background: #fafafa;
+            width: 70px;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            border-right: 2px solid #e8e8e8;
+        }
+
+        /* 简化的预约状态样式 */
+        .time-slot {
+            position: relative;
+            border: 1px solid #e8e8e8;
+            padding: 10px 6px;
+            min-height: 75px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            background: #f5f5f5;
+            color: #999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .time-slot:hover {
+            filter: brightness(0.95);
+        }
+
+        .time-slot.today {
+            border-color: #bae7ff;
+            border-width: 2px;
+        }
+
+        /* 1. 未到上课时间 - 蓝色背景 */
+        .status-upcoming {
+            background: #1890ff;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* 2. 已签到 - 绿色背景 */
+        .status-checked {
+            background: #52c41a;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* 3. 到了上课时间未处理 - 橙色背景 */
+        .status-during {
+            background: #fa8c16;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* 4. 已缺席 - 灰色背景 */
+        .status-absent {
+            background: #8c8c8c;
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* 直接显示学生信息，无边框卡片 */
+        .time-slot .student-name {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .time-slot .student-name:hover {
+            transform: scale(1.05);
+        }
+
+        /* 简化的状态显示 - 只显示状态文字 */
+        .status-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 空状态 */
+        .empty-cell {
+            color: #999;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 3px;
+            border: 1px dashed #d9d9d9;
+            transition: all 0.2s;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .empty-cell:hover {
+            color: #1890ff;
+            background: rgba(24, 144, 255, 0.1);
+            border-color: #1890ff;
+            transform: scale(1.05);
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            height: 60px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: #1989fa;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="header">
+            <a href="#" class="back-btn">←</a>
+            <h1>课程日历</h1>
+            <button class="today-btn">今天</button>
+        </header>
+
+        <!-- 日期控制区域 -->
+        <div class="date-control">
+            <button class="nav-btn" onclick="previousWeek()">上周</button>
+            <div class="date-range">12月2日 - 12月4日</div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="goToThisWeek()">本周</button>
+                <button class="quick-btn" onclick="goToNextWeek()">下周</button>
+            </div>
+            <button class="nav-btn" onclick="nextWeek()">下周</button>
+        </div>
+
+        <!-- 状态图例 -->
+        <div class="status-legend">
+            <div class="legend-title">状态说明：</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color upcoming"></div>
+                    <span>未到上课时间</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color during"></div>
+                    <span>到了上课时间</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color checked"></div>
+                    <span>已签到</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color absent"></div>
+                    <span>已缺席</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日历表格 -->
+        <div class="calendar-container">
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th class="time-column">时间</th>
+                        <th>周一<br>12/2</th>
+                        <th>周二<br>12/3</th>
+                        <th>周三<br>12/4</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-column">08:00</td>
+                        <!-- 已签到 - 绿色背景 -->
+                        <td class="time-slot status-checked today">
+                            <div class="student-name" onclick="goToStudent('张三')">
+                                张三                            </div>
+                        </td>
+                        <td class="time-slot status-during">
+                            <div class="student-name" onclick="goToStudent('王五')">
+                                王五                            </div>
+                            <div class="student-name" onclick="goToStudent('小明')">
+                                小明                            </div>
+                        </td>
+                        <!-- 未到上课时间 - 蓝色背景 -->
+                        <td class="time-slot status-upcoming">
+                            <div class="student-name" onclick="goToStudent('李四')">
+                                李四                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">09:00</td>
+                        <td class="time-slot today">
+                            <span class="empty-cell" onclick="showQuickMenu('2024-12-02', '09:00')">+ 添加预约</span>
+                        </td>
+                        <!-- 到了上课时间 - 橙色背景 -->
+                        <td class="time-slot status-during">
+                            <div class="student-name" onclick="goToStudent('赵六')">
+                                赵六                            </div>
+                        </td>
+                        <!-- 已签到 - 绿色背景 -->
+                        <td class="time-slot status-checked">
+                            <div class="student-name" onclick="goToStudent('张三')">
+                                张三                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">10:00</td>
+                        <td class="time-slot today">
+                            <div class="student-name" onclick="goToStudent('小美')">
+                                小美                            </div>
+                            <div class="student-name" onclick="goToStudent('小强')">
+                                小强                            </div>
+                        </td>
+                        <td class="time-slot status-checked">
+                            <div class="student-name" onclick="goToStudent('小花')">
+                                小花                            </div>
+                        </td>
+                        <td class="time-slot status-during">
+                            <div class="student-name" onclick="goToStudent('小丽')">
+                                小丽                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">14:00</td>
+                        <td class="time-slot today">
+                            <span class="empty-cell" onclick="showQuickMenu('2024-12-02', '14:00')">+ 添加预约</span>
+                        </td>
+                        <td class="time-slot status-absent">
+                            <div class="student-name" onclick="goToStudent('小豆')">
+                                小豆                            </div>
+                            <div class="student-name" onclick="goToStudent('小杰')">
+                                小杰                            </div>
+                        </td>
+                        <td class="time-slot status-checked">
+                            <div class="student-name" onclick="goToStudent('小米')">
+                                小米                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">15:00</td>
+                        <td class="time-slot today status-checked">
+                            <div class="student-name" onclick="goToStudent('小风')">
+                                小风                            </div>
+                        </td>
+                        <td class="time-slot status-during">
+                            <div class="student-name" onclick="goToStudent('小东')">
+                                小东                            </div>
+                            <div class="student-name" onclick="goToStudent('小西')">
+                                小西                            </div>
+                        </td>
+                        <td class="time-slot status-upcoming">
+                            <div class="student-name" onclick="goToStudent('小雨')">
+                                小雨                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="time-column">16:00</td>
+                        <td class="time-slot today status-upcoming">
+                            <div class="student-name" onclick="goToStudent('大海')">
+                                大海                            </div>
+                            <div class="student-name" onclick="goToStudent('蓝天')">
+                                蓝天                            </div>
+                        </td>
+                        <td class="time-slot status-during">
+                            <div class="student-name" onclick="goToStudent('小电')">
+                                小电                            </div>
+                            <div class="student-name" onclick="goToStudent('小光')">
+                                小光                            </div>
+                            <div class="student-name" onclick="goToStudent('小影')">
+                                小影                            </div>
+                        </td>
+                        <td class="time-slot status-absent">
+                            <div class="student-name" onclick="goToStudent('小火')">
+                                小火                            </div>
+                            <div class="student-name" onclick="goToStudent('小山')">
+                                小山                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 底部导航 -->
+        <nav class="bottom-nav">
+            <div class="nav-item" onclick="navigateTo('home')">
+                <div class="nav-icon">🏠</div>
+                <span>预约管理</span>
+            </div>
+            <div class="nav-item active" onclick="navigateTo('calendar')">
+                <div class="nav-icon">📅</div>
+                <span>课程日历</span>
+            </div>
+            <div class="nav-item" onclick="navigateTo('students')">
+                <div class="nav-icon">👥</div>
+                <span>学生管理</span>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // 上一周
+        function previousWeek() {
+            console.log('上一周');
+        }
+
+        // 下一周
+        function nextWeek() {
+            console.log('下一周');
+        }
+
+        // 跳转到本周
+        function goToThisWeek() {
+            console.log('本周');
+        }
+
+        // 跳转到下周
+        function goToNextWeek() {
+            console.log('下周');
+        }
+
+        // 跳转到今天
+        function goToToday() {
+            console.log('今天');
+        }
+
+        // 跳转到学生详情
+        function goToStudent(studentName) {
+            console.log(`跳转到学生 ${studentName} 的详情页面`);
+        }
+
+        // 显示快捷菜单
+        function showQuickMenu(date, time) {
+            console.log(`显示快捷菜单：${time} - ${date}`);
+        }
+
+        // 导航功能
+        function navigateTo(page) {
+            switch(page) {
+                case 'home':
+                    console.log('跳转到预约管理页面');
+                    break;
+                case 'calendar':
+                    // 当前页面
+                    break;
+                case 'students':
+                    console.log('跳转到学生管理页面');
+                    break;
+            }
+        }
+
+        // 返回功能
+        document.querySelector('.back-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('返回上一页');
+        });
+
+        // 今天按钮
+        document.querySelector('.today-btn').addEventListener('click', function() {
+            goToToday();
+        });
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('课程日历页面加载完成');
+        });
+    </script>
+</body>
+</html>
