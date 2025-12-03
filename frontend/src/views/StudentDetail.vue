@@ -17,27 +17,27 @@
           <h3>基本信息</h3>
           <div class="info-item">
             <label>姓名:</label>
-            <span>{{ student.name }}</span>
+            <span>{{ student.name || '-' }}</span>
           </div>
-          <div class="info-item" v-if="student.nickname">
+          <div class="info-item">
             <label>别称:</label>
-            <span>{{ student.nickname }}</span>
+            <span>{{ student.nickname || '' }}</span>
           </div>
-          <div class="info-item" v-if="student.id_card">
+          <div class="info-item">
             <label>身份证号码:</label>
-            <span>{{ student.id_card }}</span>
+            <span>{{ student.id_card || '' }}</span>
           </div>
-          <div class="info-item" v-if="student.phone">
+          <div class="info-item">
             <label>手机号码:</label>
-            <span>{{ student.phone }}</span>
+            <span>{{ student.phone || '' }}</span>
           </div>
           <div class="info-item">
             <label>学习项目:</label>
-            <span>{{ student.learning_item }}</span>
+            <span>{{ student.learning_item || '-' }}</span>
           </div>
-          <div class="info-item" v-if="student.note">
+          <div class="info-item">
             <label>备注:</label>
-            <span>{{ student.note }}</span>
+            <span>{{ student.note || '' }}</span>
           </div>
         </div>
         
@@ -45,27 +45,27 @@
           <h3>套餐信息</h3>
           <div class="info-item">
             <label>套餐类型:</label>
-            <span>{{ student.package_type }}</span>
+            <span>{{ student.package_type || '-' }}</span>
           </div>
           <div class="info-item">
-            <label>总课程:</label>
-            <span>{{ student.total_lessons }} 次</span>
+            <label>剩余次数:</label>
+            <span class="remaining-lessons">{{ student.remaining_lessons || 0 }} 次</span>
           </div>
           <div class="info-item">
-            <label>剩余课程:</label>
-            <span class="remaining-lessons">{{ student.remaining_lessons }} 次</span>
+            <label>总次数:</label>
+            <span>{{ student.total_lessons || 0 }} 次</span>
           </div>
           <div class="info-item">
             <label>售价:</label>
-            <span>{{ student.price }} 元</span>
+            <span>{{ student.price || 0 }} 元</span>
           </div>
           <div class="info-item">
             <label>游泳馆分成:</label>
-            <span>{{ student.venue_share }} 元</span>
+            <span>{{ student.venue_share || 0 }} 元</span>
           </div>
           <div class="info-item">
             <label>利润:</label>
-            <span>{{ student.profit }} 元</span>
+            <span>{{ student.profit || 0 }} 元</span>
           </div>
         </div>
         
@@ -95,7 +95,19 @@
             </div>
           </div>
         </div>
-        
+
+        <div class="info-section">
+          <h3>其他信息</h3>
+          <div class="info-item">
+            <label>创建时间:</label>
+            <span>{{ formatDate(student.create_time) }}</span>
+          </div>
+          <div class="info-item">
+            <label>最后更新:</label>
+            <span>{{ formatDate(student.update_time) }}</span>
+          </div>
+        </div>
+
         <div class="actions">
           <button class="btn-appointment" @click="showAppointmentDialog = true">
             新增预约
@@ -250,6 +262,23 @@ const getStatusText = (status) => {
     'absent': '已缺席'
   }
   return statusMap[status] || status
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '未知时间'
+
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } catch (error) {
+    return '时间格式错误'
+  }
 }
 </script>
 
