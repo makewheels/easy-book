@@ -256,14 +256,14 @@ const handleAppointmentSubmit = async () => {
 const getStatusClass = (status) => {
   return {
     'status-checked': status === 'checked',
-    'status-absent': status === 'absent'
+    'status-cancel': status === 'cancel'
   }
 }
 
 const getStatusText = (status) => {
   const statusMap = {
     'checked': '已签到',
-    'absent': '已缺席'
+    'cancel': '已取消'
   }
   return statusMap[status] || status
 }
@@ -411,7 +411,7 @@ const formatDate = (dateString) => {
   color: #52c41a;
 }
 
-.status-absent {
+.status-cancel {
   background: #fff2e8;
   color: #fa8c16;
 }

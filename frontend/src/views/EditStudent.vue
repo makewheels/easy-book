@@ -57,14 +57,25 @@
 
           <div class="form-group">
             <label>学习项目 *</label>
-            <select v-model="form.learning_item" required>
-              <option value="">请选择学习项目</option>
-              <option value="蛙泳">蛙泳</option>
-              <option value="自由泳">自由泳</option>
-              <option value="仰泳">仰泳</option>
-              <option value="蝶泳">蝶泳</option>
-              <option value="踩水">踩水</option>
-            </select>
+            <input
+              type="text"
+              v-model="form.learning_item"
+              required
+              placeholder="请输入学习项目（如：自由泳、蛙泳、仰泳、蝶泳、踩水、考证等）"
+            />
+            <div class="learning-item-suggestions">
+              <div class="suggestion-label">常用项目：</div>
+              <div class="suggestion-chips">
+                <span
+                  v-for="item in learningItemSuggestions"
+                  :key="item"
+                  class="suggestion-chip"
+                  @click="selectLearningItem(item)"
+                >
+                  {{ item }}
+                </span>
+              </div>
+            </div>
           </div>
           
           <div class="form-group">
@@ -182,6 +193,21 @@ const form = reactive({
   note: ''
 })
 
+// 学习项目建议列表
+const learningItemSuggestions = [
+  '蛙泳',
+  '自由泳',
+  '仰泳',
+  '蝶泳',
+  '踩水',
+  '考证',
+  '基础训练',
+  '技术改进',
+  '长距离游泳',
+  '儿童游泳',
+  '成人游泳'
+]
+
 onMounted(async () => {
   const studentId = route.params.id
   await fetchStudentData(studentId)
@@ -214,6 +240,10 @@ const fetchStudentData = async (studentId) => {
 
 const goBack = () => {
   router.push(`/student/${route.params.id}`)
+}
+
+const selectLearningItem = (item) => {
+  form.learning_item = item
 }
 
 const handleSubmit = async () => {
@@ -412,5 +442,40 @@ const handleSubmit = async () => {
 .readonly-input:focus {
   outline: none;
   border-color: #ddd;
+}
+
+.learning-item-suggestions {
+  margin-top: 8px;
+}
+
+.suggestion-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.suggestion-chip {
+  padding: 4px 8px;
+  background: #f0f9ff;
+  border: 1px solid #b3d8ff;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #1989fa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.suggestion-chip:hover {
+  background: #1989fa;
+  color: #fff;
+  border-color: #1989fa;
+  transform: scale(1.05);
 }
 </style>

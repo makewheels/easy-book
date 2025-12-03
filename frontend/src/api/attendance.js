@@ -9,9 +9,9 @@ export const attendanceApi = {
     })
   },
   
-  // 标记缺席
-  markAbsent(appointmentId, studentId) {
-    return request.post('/attendance/absent', {
+  // 标记取消
+  markCancel(appointmentId, studentId) {
+    return request.post('/attendance/cancel', {
       appointment_id: appointmentId,
       student_id: studentId
     })

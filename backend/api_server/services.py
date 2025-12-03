@@ -267,7 +267,7 @@ class AttendanceService:
         return AttendanceModel(**attendance_data)
     
     @staticmethod
-    async def mark_absent(appointment_id: str, student_id: str) -> AttendanceModel:
+    async def mark_cancel(appointment_id: str, student_id: str) -> AttendanceModel:
         db = get_database()
 
         # 获取预约信息
@@ -292,13 +292,13 @@ class AttendanceService:
             "appointment_id": appointment_id,
             "attendance_date": appointment.get("appointment_date"),
             "time_slot": appointment.get("time_slot"),
-            "status": "absent",
+            "status": "cancel",
             "lessons_before": student["remaining_lessons"],
             "lessons_after": student["remaining_lessons"],
         }
         
         # 更新预约状态
-        await db.update_appointment(appointment_id, {"status": "absent"})
+        await db.update_appointment(appointment_id, {"status": "cancel"})
         
         # 插入考勤记录
         await db.create_attendance(attendance_data)

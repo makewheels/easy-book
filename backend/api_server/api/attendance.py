@@ -30,30 +30,30 @@ async def checkin(attendance: AttendanceCreate):
         print(f"签到系统错误: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/absent")
-async def mark_absent(attendance: AttendanceCreate):
+@router.post("/cancel")
+async def mark_cancel(attendance: AttendanceCreate):
     try:
-        print(f"收到缺席请求: appointment_id={attendance.appointment_id}, student_id={attendance.student_id}")
-        attendance_record = await AttendanceService.mark_absent(
+        print(f"收到取消请求: appointment_id={attendance.appointment_id}, student_id={attendance.student_id}")
+        attendance_record = await AttendanceService.mark_cancel(
             attendance.appointment_id,
             attendance.student_id
         )
         return {
             "code": 200,
-            "message": "标记缺席成功",
+            "message": "标记取消成功",
             "data": {
                 "attendance_id": str(attendance_record.id),
                 "student_id": str(attendance_record.student_id),
                 "lessons_before": attendance_record.lessons_before,
                 "lessons_after": attendance_record.lessons_after,
-                "message": "已标记为缺席"
+                "message": "已标记为取消"
             }
         }
     except ValueError as e:
-        print(f"缺席验证错误: {str(e)}")
+        print(f"取消验证错误: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        print(f"缺席系统错误: {str(e)}")
+        print(f"取消系统错误: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/student/{student_id}")

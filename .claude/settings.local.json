@@ -74,7 +74,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(dir:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npm install date-fns)",
+      "mcp__chrome-devtools__get_console_message"
     ],
     "deny": [],
     "ask": []
