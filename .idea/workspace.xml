@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: add health check tests and enhance assertion methods">
       <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_attendance.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -575,7 +575,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764775700316</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="feat: add health check tests and enhance assertion methods">
+      <option name="closed" value="true" />
+      <created>1764776099054</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1764776099054</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -602,7 +610,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.10" />
     <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12" />
     <MESSAGE value="build: 更新Dockerfile，切换到163镜像的Python 3.10" />
     <MESSAGE value="build: update vite.config.js to specify output directory and assets directory" />
@@ -627,7 +634,8 @@
     <MESSAGE value="feat: add student status update functionality and enhance testing documentation" />
     <MESSAGE value="feat: add automation testing dependencies and enhance documentation for deployment and API" />
     <MESSAGE value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
+    <MESSAGE value="feat: add health check tests and enhance assertion methods" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add health check tests and enhance assertion methods" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

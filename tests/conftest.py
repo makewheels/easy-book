@@ -148,9 +148,9 @@ class TestBase:
         response = requests.post(f"{self.api_url}/api/students/", json=student_data)
         self.assert_equal(response.status_code, 200, "Create student status code")
 
-        student = response.json().get("data", {})
+        student = response.json()  # API returns data directly, not wrapped
         self.test_data["student"] = student
-        self.test_data["student_id"] = student.get("id")
+        self.test_data["student_id"] = student.get("_id")  # Use _id instead of id
 
         return student
 
@@ -172,9 +172,10 @@ class TestBase:
         response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
         self.assert_equal(response.status_code, 200, "Create appointment status code")
 
+        # Appointment API returns data wrapped in {"data": {...}}
         appointment = response.json().get("data", {})
         self.test_data["appointment"] = appointment
-        self.test_data["appointment_id"] = appointment.get("id")
+        self.test_data["appointment_id"] = appointment.get("id")  # Appointment uses id, not _id
 
         return appointment
 
