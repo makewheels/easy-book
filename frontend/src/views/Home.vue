@@ -9,51 +9,61 @@
         加载中...
       </div>
       
-      <div v-else-if="dailyData && dailyData.slots.length === 0" class="empty-state">
-        <div class="empty-message">暂无预约</div>
-      </div>
-      
-      <div v-else-if="dailyData" class="appointments">
-        <div class="date-header">
-          <span class="date-weekday">{{ dailyData.date }} {{ dailyData.weekday }}</span>
-        </div>
-        <div v-for="slot in dailyData.slots" :key="slot.time" class="time-slot">
-          <div class="time-header">
-            <span class="time">{{ slot.time }}</span>
+    
+      <div v-else-if="dailyData && dailyData.length > 0" class="appointments">
+        <div v-for="dayData in dailyData" :key="dayData.date" class="day-section">
+          <div class="date-header">
+            <span class="date-weekday">{{ dayData.date }} {{ dayData.weekday }}</span>
           </div>
 
-          <div class="students">
-            <div
-              v-for="student in slot.students"
-              :key="student.id"
-              class="student-item"
-            >
-              <div class="student-info">
-                <div class="name-row">
-                  <span class="name">{{ student.name }}</span>
-                  <span class="type">{{ student.package_type }}</span>
-                  <span v-if="dailyData.isPast || student.status !== 'scheduled'" class="status" :class="getStatusClass(student.status)">
-                    {{ getStatusText(student.status) }}
-                  </span>
-                </div>
+          <div v-if="dayData.slots.length === 0" class="no-appointments">
+            <span class="no-appointments-text">当天无预约</span>
+          </div>
 
-                <div class="details">
-                  <span class="lessons">次数[{{ student.attended_lessons }}/{{ student.total_lessons }}]</span>
-                  <span class="project">{{ student.learning_item }}</span>
-                </div>
+          <div v-else>
+            <div v-for="slot in dayData.slots" :key="`${dayData.date}-${slot.time}`" class="time-slot">
+              <div class="time-header">
+                <span class="time">{{ slot.time }}</span>
               </div>
 
-              <div v-if="!dailyData.isPast && student.status === 'scheduled'" class="actions">
-                <button class="btn-checkin" @click="handleCheckIn(student)">
-                  签到
-                </button>
-                <button class="btn-absent" @click="handleAbsent(student)">
-                  取消
-                </button>
+              <div class="students">
+                <div
+                  v-for="student in slot.students"
+                  :key="student.id"
+                  class="student-item"
+                >
+                  <div class="student-info">
+                    <div class="name-row">
+                      <span class="name">{{ student.name }}</span>
+                      <span class="type">{{ student.package_type }}</span>
+                      <span v-if="dayData.isPast || student.status !== 'scheduled'" class="status" :class="getStatusClass(student.status)">
+                        {{ getStatusText(student.status) }}
+                      </span>
+                    </div>
+
+                    <div class="details">
+                      <span class="lessons">次数[{{ student.attended_lessons }}/{{ student.total_lessons }}]</span>
+                      <span class="project">{{ student.learning_item }}</span>
+                    </div>
+                  </div>
+
+                  <div v-if="!dayData.isPast && student.status === 'scheduled'" class="actions">
+                    <button class="btn-checkin" @click="handleCheckIn(student)">
+                      签到
+                    </button>
+                    <button class="btn-absent" @click="handleAbsent(student)">
+                      取消
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div v-else class="empty-state">
+        <div class="empty-message">暂无预约</div>
       </div>
     </div>
     
@@ -88,11 +98,21 @@ const appointmentStore = useAppointmentStore()
 const loading = computed(() => appointmentStore.loading)
 const dailyData = computed(() => {
   const appointmentsByDate = appointmentStore.appointmentsByDate
-  return appointmentsByDate && appointmentsByDate.length > 0 ? appointmentsByDate[0] : null
+  console.log('Home.vue - appointmentsByDate:', appointmentsByDate)
+  console.log('Home.vue - appointmentsByDate length:', appointmentsByDate?.length)
+  const result = appointmentsByDate && appointmentsByDate.length > 0 ? appointmentsByDate : null
+  console.log('Home.vue - dailyData result:', result)
+  return result
 })
 
-onMounted(() => {
-  appointmentStore.fetchDailyAppointments(getToday())
+onMounted(async () => {
+  console.log('Home.vue - onMounted: 开始加载预约数据')
+  try {
+    await appointmentStore.fetchUpcomingAppointments(30) // 获取未来30天的预约
+    console.log('Home.vue - onMounted: 预约数据加载完成')
+  } catch (error) {
+    console.error('Home.vue - onMounted: 加载预约数据失败:', error)
+  }
 })
 
 const navigateTo = (page) => {
@@ -128,14 +148,14 @@ const handleCheckIn = async (student) => {
   try {
     // 添加调试日志
     console.log('签到学生数据:', student)
-    
+
     // 检查必要字段
     if (!student.appointment_id || !student.student_id) {
       throw new Error('缺少必要的预约ID或学生ID')
     }
-    
+
     await attendanceApi.checkin(student.appointment_id, student.student_id)
-    await appointmentStore.fetchDailyAppointments(getToday())
+    await appointmentStore.fetchUpcomingAppointments(30) // 刷新未来预约数据
     toast.success('签到成功')
   } catch (error) {
     console.error('签到错误:', error)
@@ -154,7 +174,7 @@ const handleAbsent = async (student) => {
     }
 
     await attendanceApi.markCancel(student.appointment_id, student.student_id)
-    await appointmentStore.fetchDailyAppointments(getToday())
+    await appointmentStore.fetchUpcomingAppointments(30) // 刷新未来预约数据
     toast.success('标记取消成功')
   } catch (error) {
     console.error('标记取消错误:', error)
@@ -205,8 +225,25 @@ const handleAbsent = async (student) => {
   font-size: 16px;
 }
 
+.no-appointments {
+  padding: 20px;
+  text-align: center;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.no-appointments-text {
+  color: #999;
+  font-size: 14px;
+}
+
 .appointments {
   margin-bottom: 20px;
+}
+
+.day-section {
+  margin-bottom: 25px;
 }
 
 .date-header {

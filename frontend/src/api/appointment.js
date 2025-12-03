@@ -15,6 +15,11 @@ export const appointmentApi = {
   getDaily(date) {
     return request.get(`/appointments/daily/${date}`)
   },
+
+  // 获取从今天到未来的所有预约
+  getUpcoming(days = 30) {
+    return request.get(`/appointments/upcoming?days=${days}`)
+  },
   
   // 更新预约
   update(id, data) {

@@ -60,6 +60,20 @@ async def get_daily_appointments(target_date: date):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/upcoming")
+async def get_upcoming_appointments(
+    days: int = Query(30, description="获取未来多少天的预约，默认30天")
+):
+    try:
+        upcoming_data = await AppointmentService.get_upcoming(days)
+        return {
+            "code": 200,
+            "message": "获取成功",
+            "data": upcoming_data
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.put("/{appointment_id}", response_model=AppointmentModel)
 async def update_appointment(appointment_id: str, appointment_update: AppointmentUpdate):
     try:
