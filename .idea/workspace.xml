@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: update deployment documentation and add server upload script for improved deployment process">
-      <change beforePath="$PROJECT_DIR$/tests/automation.py" beforeDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: add student status update functionality and enhance testing documentation">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEPLOYMENT.md" beforeDir="false" afterPath="$PROJECT_DIR$/DEPLOYMENT.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/前端设计.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/02-设计文档/前端设计.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/03-技术文档/API接口文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/03-技术文档/API接口文档.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_automation.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_automation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -550,7 +555,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764773248172</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="feat: add student status update functionality and enhance testing documentation">
+      <option name="closed" value="true" />
+      <created>1764774209086</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1764774209086</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -577,7 +590,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: 更新Dockerfile，切换到华为云镜像的Python 3.11" />
     <MESSAGE value="build: 更新Dockerfile，切换到USTC镜像的Python 3.10" />
     <MESSAGE value="build: 更新Dockerfile，切换到阿里云镜像的Python 3.10" />
     <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.10" />
@@ -602,7 +614,8 @@
     <MESSAGE value="feat: refactor attendance management with cancellation feature and improve UI components" />
     <MESSAGE value="feat: add git push command to local settings for enhanced workflow" />
     <MESSAGE value="feat: update deployment documentation and add server upload script for improved deployment process" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: update deployment documentation and add server upload script for improved deployment process" />
+    <MESSAGE value="feat: add student status update functionality and enhance testing documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add student status update functionality and enhance testing documentation" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

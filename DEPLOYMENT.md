@@ -16,6 +16,54 @@
 - **数据库**: MongoDB (10.0.20.14:27017)
 - **反向代理**: nginx (配置文件: `/etc/nginx/sites-enabled/easy-book.conf`)
 
+## 开发和修改流程
+
+### 重要原则：本地优先原则
+**所有代码和数据修改都必须遵循以下流程**：
+
+1. **本地修改** - 在本地开发环境中进行所有修改
+2. **本地验证** - 在本地环境充分测试，确保功能正常
+3. **本地测试** - 运行完整的功能测试，验证修改没有破坏现有功能
+4. **打包部署** - 将验证通过的代码打包部署到服务器
+5. **服务器验证** - 在服务器环境进行最终验证
+
+### 禁止操作
+**严禁直接在服务器上进行以下操作**：
+- ❌ 直接编辑服务器上的代码文件
+- ❌ 直接在服务器数据库上执行修改命令
+- ❌ 在服务器上调试或开发新功能
+- ❌ 跳过本地验证直接修改服务器
+
+### 正确的修改流程示例
+```bash
+# 1. 本地修改代码
+# 2. 本地测试验证
+cd backend && python -m api_server.main 8002
+curl -s http://localhost:8002/health
+cd frontend && npm run dev
+
+# 3. 验证功能正常后，打包部署
+tar -czf backend-fix.tar.gz -C backend api_server
+scp -i C:/mysofts/keys/qcloud_lighthouse_beijing backend-fix.tar.gz ubuntu@49.233.60.29:/home/ubuntu/
+
+# 4. 服务器部署（仅替换文件，不修改）
+ssh -i C:/mysofts/keys/qcloud_lighthouse_beijing ubuntu@49.233.60.29
+cd /home/ubuntu && tar -xzf backend-fix.tar.gz
+cp -r api_server backend/
+pkill -f "python3 run.py"
+cd backend && nohup python3 run.py 8002 > /tmp/backend.log 2>&1 &
+
+# 5. 服务器验证
+curl -s http://localhost:8002/health
+```
+
+### 数据库修改原则
+数据库相关修改也必须遵循本地优先原则：
+- 在本地数据库测试所有数据修改脚本
+- 验证数据修改的正确性和安全性
+- 通过API接口进行数据操作，避免直接操作生产数据库
+- 如必须直接操作数据库，先在测试环境验证
+
 ## 版本管理
 
 ### 版本号规则

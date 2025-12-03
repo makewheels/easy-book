@@ -6,10 +6,11 @@
 
 ### 1.1 基础信息
 
-- **Base URL**: `http://localhost:8000/api`
+- **Base URL**: `http://localhost:8002/api`
 - **API版本**: v1
 - **数据格式**: JSON
 - **字符编码**: UTF-8
+- **实际运行端口**: 8002 (重要：不是8000)
 
 ### 1.2 通用响应格式
 
