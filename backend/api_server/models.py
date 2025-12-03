@@ -1,9 +1,103 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime, date
+from api_server.base_model import BaseModel as MongoDBBaseModel
+from pymongo import ASCENDING, DESCENDING
 
 
+# MongoDB模型类 - 用于索引管理和数据库操作
+class MongoDBStudentModel(MongoDBBaseModel):
+    """学生MongoDB模型"""
 
+    # 索引配置 - 仅用于查询优化，不使用唯一约束
+    indexes = [
+        {
+            'fields': [('name', ASCENDING)],
+            'name': 'idx_name',
+            'background': True,
+        },
+        {
+            'fields': [('create_time', DESCENDING)],
+            'name': 'idx_create_time_desc',
+            'background': True,
+        },
+        {
+            'fields': [('phone', ASCENDING)],
+            'name': 'idx_phone',
+            'background': True,
+        },
+    ]
+
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "students"
+
+
+class MongoDBAppointmentModel(MongoDBBaseModel):
+    """预约MongoDB模型"""
+
+    # 索引配置 - 仅用于查询优化，不使用唯一约束
+    indexes = [
+        {
+            'fields': [('student_id', ASCENDING)],
+            'name': 'idx_student_id',
+            'background': True,
+        },
+        {
+            'fields': [('appointment_date', ASCENDING)],
+            'name': 'idx_appointment_date',
+            'background': True,
+        },
+        {
+            'fields': [('appointment_date', ASCENDING), ('time_slot', ASCENDING)],
+            'name': 'idx_date_time',
+            'background': True,
+        },
+        {
+            'fields': [('status', ASCENDING)],
+            'name': 'idx_status',
+            'background': True,
+        },
+    ]
+
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "appointments"
+
+
+class MongoDBAttendanceModel(MongoDBBaseModel):
+    """考勤MongoDB模型"""
+
+    # 索引配置 - 仅用于查询优化，不使用唯一约束
+    indexes = [
+        {
+            'fields': [('student_id', ASCENDING)],
+            'name': 'idx_student_id',
+            'background': True,
+        },
+        {
+            'fields': [('attendance_date', DESCENDING)],
+            'name': 'idx_attendance_date_desc',
+            'background': True,
+        },
+        {
+            'fields': [('appointment_id', ASCENDING)],
+            'name': 'idx_appointment_id',
+            'background': True,
+        },
+        {
+            'fields': [('status', ASCENDING)],
+            'name': 'idx_status',
+            'background': True,
+        },
+    ]
+
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "attendances"
+
+
+# Pydantic模型类 - 用于API数据验证和序列化
 class StudentModel(BaseModel):
     id: Optional[str] = Field(alias="_id", default=None)
     name: str = Field(..., min_length=1, max_length=50, description="姓名")

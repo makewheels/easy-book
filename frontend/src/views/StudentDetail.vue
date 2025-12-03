@@ -412,8 +412,8 @@ const formatDate = (dateString) => {
 }
 
 .status-cancel {
-  background: #fff2e8;
-  color: #fa8c16;
+  background: #f5f5f5;
+  color: #999;
 }
 
 .lessons-info {

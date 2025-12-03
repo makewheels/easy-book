@@ -3,7 +3,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING
 from typing import List, Dict, Optional
 from datetime import datetime, date
-from api_server.models import StudentModel, AppointmentModel, AttendanceModel
+from api_server.models import MongoDBStudentModel, MongoDBAppointmentModel, MongoDBAttendanceModel
+from api_server.base_model import IndexManager
 
 class MongoDatabase:
     def __init__(self):
@@ -30,46 +31,26 @@ class MongoDatabase:
             print("Disconnected from MongoDB")
     
     async def create_indexes(self):
-        """创建索引"""
+        """使用模型系统创建索引"""
         try:
-            # 学生索引
-            try:
-                await self.db.students.create_index("name", unique=True)
-            except:
-                pass  # 索引可能已存在
+            # 创建索引管理器
+            index_manager = IndexManager(self.db)
 
-            # 移除phone索引，改用可选字段
-            try:
-                await self.db.students.drop_index("phone")
-                print("Phone index removed")
-            except:
-                pass  # 索引不存在
-            
-            # 预约索引
-            try:
-                await self.db.appointments.create_index([("student_id", ASCENDING), ("appointment_date", ASCENDING), ("time_slot", ASCENDING)], unique=True)
-            except:
-                pass  # 索引可能已存在
-            
-            try:
-                await self.db.appointments.create_index("appointment_date")
-            except:
-                pass  # 索引可能已存在
-            
-            # 考勤索引
-            try:
-                await self.db.attendances.create_index([("student_id", ASCENDING), ("appointment_id", ASCENDING)], unique=True)
-            except:
-                pass  # 索引可能已存在
-            
-            try:
-                await self.db.attendances.create_index("attendance_date")
-            except:
-                pass  # 索引可能已存在
-            
-            print("MongoDB indexes checked/created successfully")
+            # 注册所有模型
+            index_manager.register_model(MongoDBStudentModel)
+            index_manager.register_model(MongoDBAppointmentModel)
+            index_manager.register_model(MongoDBAttendanceModel)
+
+            # 创建所有索引
+            success = index_manager.create_all_indexes()
+
+            if success:
+                print("✅ 所有模型索引创建完成 (遵循项目规范：不使用唯一约束)")
+            else:
+                print("⚠️  部分索引创建失败，请检查日志")
+
         except Exception as e:
-            print(f"Failed to create indexes: {e}")
+            print(f"❌ 索引创建过程中发生错误: {e}")
     
     def _generate_id(self):
         """生成ObjectId字符串"""
