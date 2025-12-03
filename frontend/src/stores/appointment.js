@@ -8,6 +8,7 @@ export const useAppointmentStore = defineStore('appointment', {
     appointments: [],
     todayAppointments: [],
     dailyAppointmentsData: null,
+    upcomingAppointmentsData: [], // 存储从今天到未来的所有预约
     selectedDate: getToday(),
     loading: false,
     error: null,
@@ -18,16 +19,21 @@ export const useAppointmentStore = defineStore('appointment', {
   
   getters: {
     appointmentsByDate: (state) => {
-      // 直接返回后端数据，包装成数组格式以兼容现有逻辑
+      // 首先尝试返回未来预约数据，如果没有则返回当日数据
+      if (state.upcomingAppointmentsData && state.upcomingAppointmentsData.length > 0) {
+        return state.upcomingAppointmentsData
+      }
+
+      // 如果没有未来预约数据，回退到当日数据
       if (!state.dailyAppointmentsData) {
         return []
       }
-      
+
       // 确保slots存在
       if (!state.dailyAppointmentsData.slots) {
         return []
       }
-      
+
       return [state.dailyAppointmentsData]
     }
   },
@@ -123,6 +129,37 @@ export const useAppointmentStore = defineStore('appointment', {
     
     clearError() {
       this.error = null
+    },
+
+    // 获取从今天到未来的所有预约
+    async fetchUpcomingAppointments(days = 30) {
+      this.loading = true
+      this.error = null
+
+      try {
+        console.log(`获取未来${days}天的预约数据`)
+        const response = await appointmentApi.getUpcoming(days)
+        console.log('未来预约API响应:', response)
+
+        // 存储返回的多日数据
+        if (response && response.data && Array.isArray(response.data)) {
+          this.upcomingAppointmentsData = response.data
+          console.log('存储的未来预约数据:', this.upcomingAppointmentsData)
+        } else {
+          console.warn('未来预约API响应数据结构不正确:', response)
+          this.upcomingAppointmentsData = []
+        }
+
+        return this.upcomingAppointmentsData
+
+      } catch (error) {
+        console.error('获取未来预约数据失败:', error)
+        this.error = error.message
+        this.upcomingAppointmentsData = []
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
 
     // 获取一周的数据

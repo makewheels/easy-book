@@ -189,6 +189,83 @@ class AppointmentService:
             "is_past": target_date < date.today(),
             "slots": slot_list
         }
+
+    @staticmethod
+    async def get_upcoming(days: int = 30) -> List[dict]:
+        from datetime import timedelta
+        db = get_database()
+
+        # 获取从今天开始的未来日期范围
+        today = date.today()
+        end_date = today + timedelta(days=days)
+
+        # 查询所有预约
+        appointments = await db.get_appointments()
+
+        # 筛选未来预约
+        upcoming_appointments = []
+        for apt in appointments:
+            apt_date = date.fromisoformat(apt.get("appointment_date"))
+            if today <= apt_date <= end_date:
+                upcoming_appointments.append(apt)
+
+        # 按日期分组
+        daily_groups = {}
+        for apt in upcoming_appointments:
+            apt_date = apt.get("appointment_date")
+            if apt_date not in daily_groups:
+                daily_groups[apt_date] = []
+            daily_groups[apt_date].append(apt)
+
+        # 为每一天生成数据
+        result = []
+        for day_date in sorted(daily_groups.keys()):
+            day_appointments = daily_groups[day_date]
+            date_obj = date.fromisoformat(day_date)
+
+            # 按时间段分组
+            slots = {}
+            for apt in day_appointments:
+                time_slot = apt["time_slot"]
+                if time_slot not in slots:
+                    slots[time_slot] = []
+
+                # 获取学员信息
+                student = await db.get_student(apt.get("student_id"))
+                if student:
+                    attended_lessons = student["total_lessons"] - student["remaining_lessons"]
+                    slots[time_slot].append({
+                        "id": apt.get("_id", ""),
+                        "name": student["name"],
+                        "package_type": student["package_type"],
+                        "learning_item": student["learning_item"],
+                        "attended_lessons": attended_lessons,
+                        "total_lessons": student["total_lessons"],
+                        "appointment_id": apt.get("_id", ""),
+                        "student_id": student.get("_id", ""),
+                        "status": apt.get("status", "scheduled")
+                    })
+
+            # 转换为列表格式
+            slot_list = []
+            for time_slot in sorted(slots.keys()):
+                slot_list.append({
+                    "time": time_slot,
+                    "students": slots[time_slot]
+                })
+
+            # 获取星期
+            weekdays = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+            weekday = weekdays[date_obj.weekday()]
+
+            result.append({
+                "date": date_obj.strftime("%m-%d"),
+                "weekday": weekday,
+                "is_past": date_obj < today,
+                "slots": slot_list
+            })
+
+        return result
     
     @staticmethod
     async def update(appointment_id: str, update_data: dict) -> Optional[AppointmentModel]:

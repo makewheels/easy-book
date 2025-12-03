@@ -22,8 +22,8 @@ class EasyBookAutomationTest:
     """Easy Book Automation Test Class"""
 
     def __init__(self):
-        self.api_url = "http://localhost:8002"
-        self.frontend_url = "http://localhost:5173"
+        self.api_url = "http://localhost:8003"
+        self.frontend_url = "http://localhost:5174"
         self.mongo_uri = "mongodb://localhost:27017"
         self.db_name = "easy_book"
 
@@ -168,22 +168,35 @@ class EasyBookAutomationTest:
         # Navigate to student management page
         self.driver.get(self.frontend_url)
 
-        # Click student management
-        nav_items = self.driver.find_elements(By.CSS_SELECTOR, ".nav-item")
-        nav_items[1].click()
-        time.sleep(1)
+        # Navigate directly to students page instead of clicking navigation
+        self.driver.get(f"{self.frontend_url}/students")
+        time.sleep(2)  # Give more time for page to load
 
         # Check if we need to add student (empty state) or if there are existing students
+        current_url = self.driver.current_url
+        page_title = self.driver.title
+        print(f"DEBUG: Current URL after navigation: {current_url}")
+        print(f"DEBUG: Page title after navigation: {page_title}")
+
         page_source = self.driver.page_source
 
         if "暂无学生" in page_source:
             # Empty state - look for "添加学生" button
             add_button = None
-            buttons = self.driver.find_elements(By.CSS_SELECTOR, "button")
-            for btn in buttons:
-                if "添加学生" in btn.text:
-                    add_button = btn
-                    break
+
+            # Try .add-first-btn class first
+            try:
+                add_button = self.driver.find_element(By.CSS_SELECTOR, ".add-first-btn")
+            except:
+                pass
+
+            # If not found, look for button with text "添加学生"
+            if not add_button:
+                buttons = self.driver.find_elements(By.CSS_SELECTOR, "button")
+                for btn in buttons:
+                    if "添加学生" in btn.text:
+                        add_button = btn
+                        break
 
             self.assert_true(add_button is not None, f"Found add student button in empty state. Available buttons: {[btn.text for btn in buttons]}")
             add_button.click()
@@ -211,6 +224,32 @@ class EasyBookAutomationTest:
                     if "新增学生" in div.text:
                         add_button = div
                         break
+
+            # Debug: print all buttons and divs to see what's on the page
+            all_buttons = self.driver.find_elements(By.CSS_SELECTOR, "button")
+            all_divs = self.driver.find_elements(By.CSS_SELECTOR, "div")
+            button_texts = []
+            for btn in all_buttons:
+                try:
+                    text = btn.text.strip()
+                    if text:
+                        button_texts.append(text.encode('ascii', 'ignore').decode('ascii'))
+                except:
+                    button_texts.append("[encoding_error]")
+
+            div_texts = []
+            for div in all_divs:
+                try:
+                    text = div.text.strip()
+                    if text and len(text) < 50:
+                        div_texts.append(text.encode('ascii', 'ignore').decode('ascii'))
+                except:
+                    pass
+
+            print(f"DEBUG: Found {len(all_buttons)} buttons with texts: {button_texts}")
+            print(f"DEBUG: Page source contains '暂无学生': {'暂无学生' in self.driver.page_source}")
+            print(f"DEBUG: Page source contains '新增学生': {'新增学生' in self.driver.page_source}")
+            print(f"DEBUG: Page source contains '+ 新增学生': {'+ 新增学生' in self.driver.page_source}")
 
             self.assert_true(add_button is not None, f"Found add student button: {add_button.text if add_button else 'None'}")
 
@@ -249,17 +288,20 @@ class EasyBookAutomationTest:
         nickname_input.clear()
         nickname_input.send_keys(student_data["nickname"])
 
-        # Select learning item
+        # Select learning item (text input, not select)
         try:
-            learning_select = Select(self.driver.find_element(By.CSS_SELECTOR, "select"))
-            learning_select.select_by_visible_text(student_data["learning_item"])
+            learning_input = self.driver.find_element(By.CSS_SELECTOR, "input[placeholder*='学习项目']")
+            learning_input.clear()
+            learning_input.send_keys(student_data["learning_item"])
+            print(f"PASS: Learning item entered: {student_data['learning_item']}")
         except Exception as e:
             print(f"WARN: Learning item selection failed: {e}")
 
-        # Select package type
+        # Select package type (dropdown)
         try:
-            package_select = Select(self.driver.find_elements(By.CSS_SELECTOR, "select")[1])
+            package_select = Select(self.driver.find_element(By.CSS_SELECTOR, "select"))
             package_select.select_by_visible_text(student_data["package_type"])
+            print(f"PASS: Package type selected: {student_data['package_type']}")
         except Exception as e:
             print(f"WARN: Package type selection failed: {e}")
 
