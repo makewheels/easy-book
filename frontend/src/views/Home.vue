@@ -48,7 +48,7 @@
                   签到
                 </button>
                 <button class="btn-absent" @click="handleAbsent(student)">
-                  缺席
+                  取消
                 </button>
               </div>
             </div>
@@ -58,17 +58,17 @@
     </div>
     
     <div class="bottom-nav">
-      <div 
-        class="nav-item active" 
-        @click="goToHome"
-      >
-        预约管理
+      <div class="nav-item active" @click="navigateTo('home')">
+        <div class="nav-icon">🏠</div>
+        <span>预约管理</span>
       </div>
-      <div 
-        class="nav-item" 
-        @click="goToStudents"
-      >
-        学生管理
+      <div class="nav-item" @click="navigateTo('calendar')">
+        <div class="nav-icon">📅</div>
+        <span>课程日历</span>
+      </div>
+      <div class="nav-item" @click="navigateTo('students')">
+        <div class="nav-icon">👥</div>
+        <span>学生管理</span>
       </div>
     </div>
   </div>
@@ -95,25 +95,31 @@ onMounted(() => {
   appointmentStore.fetchDailyAppointments(getToday())
 })
 
-const goToHome = () => {
-  router.push('/')
-}
-
-const goToStudents = () => {
-  router.push('/students')
+const navigateTo = (page) => {
+  switch(page) {
+    case 'home':
+      router.push('/')
+      break
+    case 'calendar':
+      router.push('/calendar')
+      break
+    case 'students':
+      router.push('/students')
+      break
+  }
 }
 
 const getStatusClass = (status) => {
   return {
     'status-checked': status === 'checked',
-    'status-absent': status === 'absent'
+    'status-cancel': status === 'cancel'
   }
 }
 
 const getStatusText = (status) => {
   const statusMap = {
     'checked': '已签到',
-    'absent': '已缺席'
+    'cancel': '已取消'
   }
   return statusMap[status] || ''
 }
@@ -140,19 +146,19 @@ const handleCheckIn = async (student) => {
 const handleAbsent = async (student) => {
   try {
     // 添加调试日志
-    console.log('标记缺席学生数据:', student)
-    
+    console.log('标记取消学生数据:', student)
+
     // 检查必要字段
     if (!student.appointment_id || !student.student_id) {
       throw new Error('缺少必要的预约ID或学生ID')
     }
-    
-    await attendanceApi.markAbsent(student.appointment_id, student.student_id)
+
+    await attendanceApi.markCancel(student.appointment_id, student.student_id)
     await appointmentStore.fetchDailyAppointments(getToday())
-    toast.success('标记缺席成功')
+    toast.success('标记取消成功')
   } catch (error) {
-    console.error('标记缺席错误:', error)
-    toast.error(error.message || '标记缺席失败')
+    console.error('标记取消错误:', error)
+    toast.error(error.message || '标记取消失败')
   }
 }
 </script>
@@ -288,7 +294,7 @@ const handleAbsent = async (student) => {
   color: #52c41a;
 }
 
-.status-absent {
+.status-cancel {
   background: #fff2e8;
   color: #fa8c16;
 }
@@ -356,5 +362,10 @@ const handleAbsent = async (student) => {
 
 .nav-item.active {
   color: #1989fa;
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
 }
 </style>

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { appointmentApi } from '@/api/appointment'
 import { getToday } from '@/utils/date'
+import { format, addDays, startOfWeek, endOfWeek } from 'date-fns'
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
@@ -9,7 +10,10 @@ export const useAppointmentStore = defineStore('appointment', {
     dailyAppointmentsData: null,
     selectedDate: getToday(),
     loading: false,
-    error: null
+    error: null,
+    // 周数据缓存
+    weekCache: new Map(), // key: startDate, value: { weekData, timestamp }
+    weekLoading: false
   }),
   
   getters: {
@@ -48,7 +52,9 @@ export const useAppointmentStore = defineStore('appointment', {
         }
         
         this.selectedDate = date
-        
+
+        return this.dailyAppointmentsData
+
       } catch (error) {
         console.error('获取每日预约数据失败:', error)
         this.error = error.message
@@ -117,6 +123,74 @@ export const useAppointmentStore = defineStore('appointment', {
     
     clearError() {
       this.error = null
+    },
+
+    // 获取一周的数据
+    async fetchWeekAppointments(weekStartDate = startOfWeek(new Date(), { weekStartsOn: 1 })) {
+      this.weekLoading = true
+      this.error = null
+
+      const cacheKey = format(weekStartDate, 'yyyy-MM-dd')
+
+      // 检查缓存（缓存有效期5分钟）
+      const cached = this.weekCache.get(cacheKey)
+      if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
+        this.weekLoading = false
+        return cached.weekData
+      }
+
+      try {
+        console.log('获取周数据，开始日期:', cacheKey)
+
+        // 生成7天的日期
+        const dates = []
+        for (let i = 0; i < 7; i++) {
+          const date = addDays(weekStartDate, i)
+          dates.push(format(date, 'yyyy-MM-dd'))
+        }
+
+        // 并发获取一周的数据
+        const promises = dates.map(date =>
+          appointmentApi.getDaily(date)
+            .catch(error => {
+              console.error(`获取${date}数据失败:`, error)
+              return null
+            })
+        )
+
+        const results = await Promise.allSettled(promises)
+
+        // 转换为周视图数据格式
+        const weekData = {}
+        results.forEach((result, index) => {
+          const date = dates[index]
+          if (result.status === 'fulfilled' && result.value?.data) {
+            weekData[date] = result.value.data
+          } else {
+            weekData[date] = { slots: [] }
+          }
+        })
+
+        // 缓存数据
+        this.weekCache.set(cacheKey, {
+          weekData,
+          timestamp: Date.now()
+        })
+
+        this.weekLoading = false
+        return weekData
+
+      } catch (error) {
+        console.error('获取周数据失败:', error)
+        this.error = error.message
+        this.weekLoading = false
+        throw error
+      }
+    },
+
+    // 清除周缓存
+    clearWeekCache() {
+      this.weekCache.clear()
     }
   }
 })

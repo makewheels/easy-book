@@ -48,7 +48,7 @@ class AppointmentModel(BaseModel):
     student_id: str = Field(..., description="学员ID")
     appointment_date: date = Field(..., description="预约日期")
     time_slot: str = Field(..., pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$", description="时间段")
-    status: str = Field(default="scheduled", pattern="^(scheduled|checked|absent)$", description="预约状态")
+    status: str = Field(default="scheduled", pattern="^(scheduled|checked|cancel)$", description="预约状态")
     create_time: datetime = Field(default_factory=datetime.utcnow)
     update_time: datetime = Field(default_factory=datetime.utcnow)
 
@@ -69,7 +69,7 @@ class AttendanceModel(BaseModel):
     appointment_id: str = Field(..., description="预约ID")
     attendance_date: date = Field(..., description="上课日期")
     time_slot: str = Field(..., description="时间段")
-    status: str = Field(..., pattern="^(checked|absent)$", description="出勤状态")
+    status: str = Field(..., pattern="^(checked|cancel)$", description="出勤状态")
     lessons_before: int = Field(..., ge=0, description="上课前剩余课程数")
     lessons_after: int = Field(..., ge=0, description="上课后剩余课程数")
     create_time: datetime = Field(default_factory=datetime.utcnow)

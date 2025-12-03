@@ -118,20 +118,39 @@
 - **1v1**：蓝色背景 #1989fa，白色文字
 - **1v多**：绿色背景 #07c160，白色文字
 
-#### 多个学生显示
+#### 多个学生显示 - 垂直堆叠设计
 ```vue
 <div class="multiple-students">
-  <div class="student-item">张三(1v1)</div>
-  <div class="student-item">李四(1v多)</div>
+  <div class="student-card" :class="getStatusClass(student.status)" @click="goToStudent(student.id)">
+    <div class="student-name">{{ student.name }}</div>
+  </div>
+  <div class="student-card status-checked" @click="goToStudent(student2.id)">
+    <div class="student-name">{{ student2.name }}</div>
+  </div>
 </div>
 ```
 
+#### 垂直堆叠设计规范
+- **布局**：学生卡片垂直排列，每个占据一行
+- **间距**：卡片之间2px间距
+- **点击区域**：每个学生卡片独立可点击，最小44px高度
+- **状态显示**：每个学生卡片显示独立的背景色状态
+- **文字居中**：学生姓名在卡片中垂直水平居中
+
 ### 2. 状态标识组件
 
-#### 签到状态
-- **已签到**：绿色对勾 ✓
-- **已缺席**：红色叉号 ✗
-- **未开始**：灰色圆点 ○
+#### 学生状态颜色系统
+基于高对比度设计，每个学生卡片显示独立的背景色状态：
+
+- **未到上课时间 (scheduled)**：蓝色背景 #1890ff，黑色文字
+- **已签到 (checked)**：绿色背景 #52c41a，黑色文字
+- **已缺席 (absent)**：灰色背景 #8c8c8c，黑色文字
+
+#### 状态显示规则
+- **无状态文字**：不显示"已签到"、"已缺席"等文字标签
+- **背景色区分**：通过背景色和文字颜色区分状态
+- **字体加粗**：文字加粗（font-weight: 600）提高可读性
+- **触摸优化**：最小44px点击区域，符合iOS设计规范
 
 #### 冲突提醒
 - **1v1冲突**：红色感叹号 ⚠️

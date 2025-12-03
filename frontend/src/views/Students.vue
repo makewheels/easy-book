@@ -59,17 +59,17 @@
     </div>
     
     <div class="bottom-nav">
-      <div 
-        class="nav-item" 
-        @click="goToHome"
-      >
-        预约管理
+      <div class="nav-item" @click="navigateTo('home')">
+        <div class="nav-icon">🏠</div>
+        <span>预约管理</span>
       </div>
-      <div 
-        class="nav-item active" 
-        @click="goToStudents"
-      >
-        学生管理
+      <div class="nav-item" @click="navigateTo('calendar')">
+        <div class="nav-icon">📅</div>
+        <span>课程日历</span>
+      </div>
+      <div class="nav-item active" @click="navigateTo('students')">
+        <div class="nav-icon">👥</div>
+        <span>学生管理</span>
       </div>
     </div>
     
@@ -149,12 +149,18 @@ onMounted(() => {
   studentStore.fetchStudents()
 })
 
-const goToHome = () => {
-  router.push('/')
-}
-
-const goToStudents = () => {
-  router.push('/students')
+const navigateTo = (page) => {
+  switch(page) {
+    case 'home':
+      router.push('/')
+      break
+    case 'calendar':
+      router.push('/calendar')
+      break
+    case 'students':
+      router.push('/students')
+      break
+  }
 }
 
 const goToDetail = (studentId) => {
@@ -374,6 +380,11 @@ const handleAppointmentSubmit = async () => {
 
 .nav-item.active {
   color: #1989fa;
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 2px;
 }
 
 .appointment-dialog {
