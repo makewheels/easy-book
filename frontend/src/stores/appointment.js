@@ -228,6 +228,55 @@ export const useAppointmentStore = defineStore('appointment', {
     // 清除周缓存
     clearWeekCache() {
       this.weekCache.clear()
+    },
+
+    // 更新学生状态
+    updateStudentStatus(appointmentId, studentId, status, attendedLessons = null) {
+      console.log('更新学生状态:', { appointmentId, studentId, status, attendedLessons })
+
+      // 更新预约状态
+      const appointmentIndex = this.appointments.findIndex(a => a.id === appointmentId)
+      if (appointmentIndex !== -1) {
+        this.appointments[appointmentIndex].status = status
+      }
+
+      // 更新每日预约数据中的状态
+      if (this.dailyAppointmentsData && this.dailyAppointmentsData.slots) {
+        // 遍历所有时间段
+        for (const timeSlot in this.dailyAppointmentsData.slots) {
+          const slotAppointments = this.dailyAppointmentsData.slots[timeSlot]
+          const appointment = slotAppointments.find(a => a.id === appointmentId)
+          if (appointment) {
+            appointment.status = status
+            // 如果提供了已上课次数，更新学生信息
+            if (attendedLessons !== null && appointment.student) {
+              appointment.student.attended_lessons = attendedLessons
+            }
+          }
+        }
+      }
+
+      // 更新未来预约数据中的状态
+      if (this.upcomingAppointmentsData && this.upcomingAppointmentsData.length > 0) {
+        this.upcomingAppointmentsData.forEach(dayData => {
+          if (dayData.slots) {
+            for (const timeSlot in dayData.slots) {
+              const slotAppointments = dayData.slots[timeSlot]
+              const appointment = slotAppointments.find(a => a.id === appointmentId)
+              if (appointment) {
+                appointment.status = status
+                // 如果提供了已上课次数，更新学生信息
+                if (attendedLessons !== null && appointment.student) {
+                  appointment.student.attended_lessons = attendedLessons
+                }
+              }
+            }
+          }
+        })
+      }
+
+      console.log('学生状态更新完成')
+      return true
     }
   }
 })
