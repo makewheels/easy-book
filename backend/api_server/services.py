@@ -73,23 +73,17 @@ class AppointmentService:
     @staticmethod
     async def create(appointment_data: dict) -> AppointmentModel:
         db = get_database()
-        
+
         # 处理日期格式（确保统一存储为字符串）
         appointment_date = appointment_data["appointment_date"]
         if isinstance(appointment_date, date):
             appointment_data["appointment_date"] = appointment_date.isoformat()
-        
-        # 检查时间冲突
-        await AppointmentService.check_conflict(
-            appointment_data["student_id"],
-            appointment_data["appointment_date"],
-            appointment_data["time_slot"]
-        )
-        
+
+        # 直接创建预约，不检查时间冲突
         appointment_id = await db.create_appointment(appointment_data)
         appointment_data["_id"] = appointment_id
         appointment_data["id"] = appointment_id
-        
+
         return AppointmentModel(**appointment_data)
     
     @staticmethod
@@ -156,20 +150,24 @@ class AppointmentService:
                 slots[time_slot] = []
             
             # 获取学员信息
-                student = await db.get_student(apt.get("student_id"))
-                if student:
-                    attended_lessons = student["total_lessons"] - student["remaining_lessons"]
-                    slots[time_slot].append({
-                        "id": apt.get("_id", ""),
-                        "name": student["name"],
-                        "package_type": student["package_type"],
-                        "learning_item": student["learning_item"],
-                        "attended_lessons": attended_lessons,
-                        "total_lessons": student["total_lessons"],
-                        "appointment_id": apt.get("_id", ""),
-                        "student_id": student.get("_id", ""),
-                        "status": apt.get("status", "scheduled")
-                    })
+            student = await db.get_student(apt.get("student_id"))
+            if student:
+                # 处理可能缺失的字段，设置默认值
+                total_lessons = student.get("total_lessons", 0)
+                remaining_lessons = student.get("remaining_lessons", total_lessons)  # 如果缺失，假设都是剩余课程
+                attended_lessons = total_lessons - remaining_lessons
+
+                slots[time_slot].append({
+                    "id": apt.get("_id", ""),
+                    "name": student.get("name", "未知学员"),
+                    "package_type": student.get("package_type", "1v1"),
+                    "learning_item": student.get("learning_item", "游泳"),
+                    "attended_lessons": attended_lessons,
+                    "total_lessons": total_lessons,
+                    "appointment_id": apt.get("_id", ""),
+                    "student_id": student.get("_id", ""),
+                    "status": apt.get("status", "scheduled")
+                })
         
         # 转换为列表格式
         slot_list = []
@@ -233,14 +231,18 @@ class AppointmentService:
                 # 获取学员信息
                 student = await db.get_student(apt.get("student_id"))
                 if student:
-                    attended_lessons = student["total_lessons"] - student["remaining_lessons"]
+                    # 处理可能缺失的字段，设置默认值
+                    total_lessons = student.get("total_lessons", 0)
+                    remaining_lessons = student.get("remaining_lessons", total_lessons)  # 如果缺失，假设都是剩余课程
+                    attended_lessons = total_lessons - remaining_lessons
+
                     slots[time_slot].append({
                         "id": apt.get("_id", ""),
-                        "name": student["name"],
-                        "package_type": student["package_type"],
-                        "learning_item": student["learning_item"],
+                        "name": student.get("name", "未知学员"),
+                        "package_type": student.get("package_type", "1v1"),
+                        "learning_item": student.get("learning_item", "游泳"),
                         "attended_lessons": attended_lessons,
-                        "total_lessons": student["total_lessons"],
+                        "total_lessons": total_lessons,
                         "appointment_id": apt.get("_id", ""),
                         "student_id": student.get("_id", ""),
                         "status": apt.get("status", "scheduled")
@@ -270,20 +272,8 @@ class AppointmentService:
     @staticmethod
     async def update(appointment_id: str, update_data: dict) -> Optional[AppointmentModel]:
         db = get_database()
-        
-        # 如果更新时间，需要检查冲突
-        if "appointment_date" in update_data or "time_slot" in update_data:
-            appointment = await db.get_appointment(appointment_id)
-            if appointment:
-                new_date = update_data.get("appointment_date", appointment["appointment_date"])
-                new_time = update_data.get("time_slot", appointment["time_slot"])
-                
-                await AppointmentService.check_conflict(
-                    appointment.get("student_id"),
-                    date.fromisoformat(new_date) if isinstance(new_date, str) else new_date,
-                    new_time
-                )
-        
+
+        # 直接更新预约，不检查时间冲突
         success = await db.update_appointment(appointment_id, update_data)
         if success:
             updated = await db.get_appointment(appointment_id)
@@ -304,12 +294,15 @@ class AttendanceService:
         # 获取学员和预约信息
         student = await db.get_student(student_id)
         appointment = await db.get_appointment(appointment_id)
-        
+
         if not student:
             raise ValueError("学员不存在")
         if not appointment:
             raise ValueError("预约不存在")
-        if student["remaining_lessons"] <= 0:
+
+        # 处理可能缺失的字段
+        remaining_lessons = student.get("remaining_lessons", student.get("total_lessons", 0))
+        if remaining_lessons <= 0:
             raise ValueError("剩余课程不足")
         if appointment.get("status") != "scheduled":
             raise ValueError("预约状态无效")
@@ -327,8 +320,8 @@ class AttendanceService:
             "attendance_date": appointment.get("appointment_date"),
             "time_slot": appointment.get("time_slot"),
             "status": "checked",
-            "lessons_before": student["remaining_lessons"],
-            "lessons_after": student["remaining_lessons"] - 1,
+            "lessons_before": remaining_lessons,
+            "lessons_after": remaining_lessons - 1,
         }
         
         # 插入上课记录
@@ -357,12 +350,15 @@ class AttendanceService:
         if not student:
             raise ValueError("学员不存在")
 
+        # 处理可能缺失的字段
+        remaining_lessons = student.get("remaining_lessons", student.get("total_lessons", 0))
+
         # 检查是否已经有考勤记录
         attendances = await db.get_attendances()
         for att in attendances:
             if att.get("appointment_id") == appointment_id and att.get("student_id") == student_id:
                 raise ValueError("已经标记过考勤了")
-        
+
         # 创建上课记录
         attendance_data = {
             "student_id": student_id,
@@ -370,8 +366,8 @@ class AttendanceService:
             "attendance_date": appointment.get("appointment_date"),
             "time_slot": appointment.get("time_slot"),
             "status": "cancel",
-            "lessons_before": student["remaining_lessons"],
-            "lessons_after": student["remaining_lessons"],
+            "lessons_before": remaining_lessons,
+            "lessons_after": remaining_lessons,
         }
         
         # 更新预约状态

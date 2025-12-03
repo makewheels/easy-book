@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <div class="header">
-      <h1>泳课预约系统</h1>
+      <h1></h1>
     </div>
     
     <div class="content">
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div v-else class="empty-state">
+        <div v-else class="empty-state">
         <div class="empty-message">暂无预约</div>
       </div>
     </div>
@@ -154,9 +154,30 @@ const handleCheckIn = async (student) => {
       throw new Error('缺少必要的预约ID或学生ID')
     }
 
-    await attendanceApi.checkin(student.appointment_id, student.student_id)
-    await appointmentStore.fetchUpcomingAppointments(30) // 刷新未来预约数据
-    toast.success('签到成功')
+    // 调用签到API
+    const response = await attendanceApi.checkin(student.appointment_id, student.student_id)
+
+    // 局部更新学生状态
+    if (response && response.data) {
+      const newAttendedLessons = response.data.lessons_before + 1 // 签到后已上课次数+1
+      const updated = appointmentStore.updateStudentStatus(
+        student.appointment_id,
+        student.student_id,
+        'checked',
+        newAttendedLessons
+      )
+
+      if (updated) {
+        toast.success('签到成功')
+      } else {
+        // 如果局部更新失败，回退到完整刷新
+        console.warn('局部更新失败，回退到完整刷新')
+        await appointmentStore.fetchUpcomingAppointments(30)
+        toast.success('签到成功')
+      }
+    } else {
+      throw new Error('签到API返回数据异常')
+    }
   } catch (error) {
     console.error('签到错误:', error)
     toast.error(error.message || '签到失败')
@@ -173,14 +194,35 @@ const handleAbsent = async (student) => {
       throw new Error('缺少必要的预约ID或学生ID')
     }
 
-    await attendanceApi.markCancel(student.appointment_id, student.student_id)
-    await appointmentStore.fetchUpcomingAppointments(30) // 刷新未来预约数据
-    toast.success('标记取消成功')
+    // 调用取消API
+    const response = await attendanceApi.markCancel(student.appointment_id, student.student_id)
+
+    // 局部更新学生状态（取消不改变已上课次数）
+    if (response && response.data) {
+      const updated = appointmentStore.updateStudentStatus(
+        student.appointment_id,
+        student.student_id,
+        'cancel',
+        null // 取消时不改变已上课次数
+      )
+
+      if (updated) {
+        toast.success('标记取消成功')
+      } else {
+        // 如果局部更新失败，回退到完整刷新
+        console.warn('局部更新失败，回退到完整刷新')
+        await appointmentStore.fetchUpcomingAppointments(30)
+        toast.success('标记取消成功')
+      }
+    } else {
+      throw new Error('取消API返回数据异常')
+    }
   } catch (error) {
     console.error('标记取消错误:', error)
     toast.error(error.message || '标记取消失败')
   }
 }
+
 </script>
 
 <style scoped>
@@ -332,8 +374,8 @@ const handleAbsent = async (student) => {
 }
 
 .status-cancel {
-  background: #fff2e8;
-  color: #fa8c16;
+  background: #f5f5f5;
+  color: #999;
 }
 
 .details {
@@ -367,7 +409,7 @@ const handleAbsent = async (student) => {
 }
 
 .btn-absent {
-  background: #fa8c16;
+  background: #999;
   color: #fff;
 }
 
