@@ -20,18 +20,34 @@ class StudentService:
         return StudentModel(**student_data)
     
     @staticmethod
+    def _prepare_student_data(student_data: dict) -> dict:
+        """为学生数据提供默认值"""
+        if student_data.get('remaining_lessons') is None:
+            student_data['remaining_lessons'] = student_data.get('total_lessons', 0)
+
+        if student_data.get('profit') is None:
+            student_data['profit'] = student_data.get('price', 0) - student_data.get('venue_share', 0)
+
+        return student_data
+
+    @staticmethod
     async def get_all(skip: int = 0, limit: int = 20) -> List[StudentModel]:
         db = get_database()
         students = await db.get_students()
         # 简单分页
         students = students[skip:skip+limit]
-        return [StudentModel(**student) for student in students]
+        processed_students = []
+        for student in students:
+            student = StudentService._prepare_student_data(student.copy())
+            processed_students.append(StudentModel(**student))
+        return processed_students
     
     @staticmethod
     async def get_by_id(student_id: str) -> Optional[StudentModel]:
         db = get_database()
         student = await db.get_student(student_id)
         if student:
+            student = StudentService._prepare_student_data(student)
             return StudentModel(**student)
         return None
     
