@@ -190,7 +190,8 @@ const quickAppointment = (student) => {
   selectedStudent.value = student
   appointmentForm.value = {
     date: '',
-    time: ''
+    time: '',
+    duration: 60  // 默认1小时
   }
   showAppointmentDialog.value = true
 }
