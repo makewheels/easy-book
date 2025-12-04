@@ -45,21 +45,21 @@ class MongoDatabase:
             success = index_manager.create_all_indexes()
 
             if success:
-                print("✅ 所有模型索引创建完成 (遵循项目规范：不使用唯一约束)")
+                print("所有模型索引创建完成 (遵循项目规范：不使用唯一约束)")
             else:
-                print("⚠️  部分索引创建失败，请检查日志")
+                print("部分索引创建失败，请检查日志")
 
         except Exception as e:
-            print(f"❌ 索引创建过程中发生错误: {e}")
+            print(f"索引创建过程中发生错误: {e}")
     
     def _generate_id(self):
         """生成ObjectId字符串"""
         from bson import ObjectId
         return str(ObjectId())
     
-    # 学生相关操作
+    # 学员相关操作
     async def create_student(self, student_data: dict) -> str:
-        """创建学生"""
+        """创建学员"""
         student_data["_id"] = self._generate_id()
         student_data["id"] = student_data["_id"]
         student_data["create_time"] = datetime.utcnow()
@@ -69,7 +69,7 @@ class MongoDatabase:
         return str(result.inserted_id)
     
     async def get_student(self, student_id: str) -> Optional[dict]:
-        """获取学生"""
+        """获取学员"""
         if self.db is None:
             await self.connect()
         from bson import ObjectId
@@ -89,7 +89,7 @@ class MongoDatabase:
         return student
     
     async def get_students(self) -> List[dict]:
-        """获取所有学生"""
+        """获取所有学员"""
         if self.db is None:
             await self.connect()
         students = []
@@ -100,7 +100,7 @@ class MongoDatabase:
         return students
     
     async def update_student(self, student_id: str, update_data: dict) -> bool:
-        """更新学生"""
+        """更新学员"""
         from bson import ObjectId
         update_data["update_time"] = datetime.utcnow()
         # 首先尝试字符串查找，因为我们的ID是字符串格式
@@ -120,7 +120,7 @@ class MongoDatabase:
         return result.modified_count > 0
     
     async def delete_student(self, student_id: str) -> bool:
-        """删除学生"""
+        """删除学员"""
         from bson import ObjectId
         # 首先尝试字符串查找，与get_student保持一致
         result = await self.db.students.delete_one({"_id": student_id})
@@ -183,7 +183,7 @@ class MongoDatabase:
         return appointments
     
     async def get_student_appointments(self, student_id: str) -> List[dict]:
-        """获取学生的预约"""
+        """获取学员的预约"""
         appointments = []
         async for appointment in self.db.appointments.find({"student_id": student_id}):
             appointment["_id"] = str(appointment["_id"])
@@ -257,7 +257,7 @@ class MongoDatabase:
         return attendances
     
     async def get_student_attendances(self, student_id: str) -> List[dict]:
-        """获取学生的考勤记录"""
+        """获取学员的考勤记录"""
         attendances = []
         async for attendance in self.db.attendances.find({"student_id": student_id}):
             attendance["_id"] = str(attendance["_id"])

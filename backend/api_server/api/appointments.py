@@ -74,21 +74,45 @@ async def get_upcoming_appointments(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.put("/{appointment_id}/cancel")
+async def cancel_appointment(appointment_id: str):
+    try:
+        success = await AppointmentService.cancel(appointment_id)
+        if success:
+            return {
+                "code": 200,
+                "message": "预约取消成功，课程次数已恢复",
+                "data": None
+            }
+        else:
+            return {
+                "code": 400,
+                "message": "预约取消失败",
+                "data": None
+            }
+    except ValueError as e:
+        return {
+            "code": 400,
+            "message": str(e),
+            "data": None
+        }
+    except Exception as e:
+        return {
+            "code": 500,
+            "message": str(e),
+            "data": None
+        }
+
 @router.put("/{appointment_id}", response_model=AppointmentModel)
 async def update_appointment(appointment_id: str, appointment_update: AppointmentUpdate):
     try:
         update_data = appointment_update.dict(exclude_unset=True)
-        if not update_data:
-            raise HTTPException(status_code=400, detail="没有提供更新数据")
-        
         updated_appointment = await AppointmentService.update(appointment_id, update_data)
-        if not updated_appointment:
-            raise HTTPException(status_code=404, detail="预约不存在")
-        return updated_appointment
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except HTTPException:
-        raise
+
+        if updated_appointment:
+            return updated_appointment
+        else:
+            raise HTTPException(status_code=404, detail="Appointment not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -96,10 +120,13 @@ async def update_appointment(appointment_id: str, appointment_update: Appointmen
 async def delete_appointment(appointment_id: str):
     try:
         success = await AppointmentService.delete(appointment_id)
-        if not success:
-            raise HTTPException(status_code=404, detail="预约不存在")
-        return {"message": "预约删除成功"}
-    except HTTPException:
-        raise
+        if success:
+            return {
+                "code": 200,
+                "message": "预约删除成功",
+                "data": None
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Appointment not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

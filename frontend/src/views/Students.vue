@@ -1,7 +1,7 @@
 <template>
   <div class="students-page">
     <div class="header">
-      <h1>学生管理</h1>
+      <h1>学员管理</h1>
       <div class="stats">共 {{ totalStudents }} 人，活跃 {{ activeStudents }} 人</div>
     </div>
     
@@ -11,16 +11,16 @@
       </div>
 
       <div v-else-if="students.length === 0" class="empty-state">
-        <div class="empty-message">暂无学生</div>
+        <div class="empty-message">暂无学员</div>
         <button class="add-first-btn" @click="goToAddStudent">
-          添加学生
+          添加学员
         </button>
       </div>
 
       <div v-else>
         <!-- 新增学生按钮 - 移到顶部 -->
         <div class="add-student-btn" @click="goToAddStudent">
-          + 新增学生
+          + 新增学员
         </div>
 
         <div
@@ -32,7 +32,6 @@
           <div class="card-header">
             <div class="student-info">
               <div class="name">{{ student.name }}</div>
-              <div class="nickname" v-if="student.nickname">{{ student.nickname }}</div>
             </div>
             <button class="btn-appointment" @click.stop="quickAppointment(student)">
               预约
@@ -69,7 +68,7 @@
       </div>
       <div class="nav-item active" @click="navigateTo('students')">
         <div class="nav-icon">👥</div>
-        <span>学生管理</span>
+        <span>学员管理</span>
       </div>
     </div>
     
@@ -84,10 +83,9 @@
         <div class="dialog-body">
           <div class="form-group">
             <label>选择日期</label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               v-model="appointmentForm.date"
-              :min="getToday()"
             />
           </div>
           
@@ -97,6 +95,15 @@
               <option value="">请选择时间</option>
               <option v-for="time in timeSlots" :key="time" :value="time">
                 {{ time }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>课程时长</label>
+            <select v-model="appointmentForm.duration">
+              <option v-for="option in durationOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
               </option>
             </select>
           </div>
@@ -121,7 +128,7 @@ import { useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { useAppointmentStore } from '@/stores/appointment'
 import { appointmentApi } from '@/api/appointment'
-import { getToday } from '@/utils/date'
+import { getToday, isMonday } from '@/utils/date'
 import { toast } from '@/utils/toast'
 
 const router = useRouter()
@@ -132,12 +139,20 @@ const showAppointmentDialog = ref(false)
 const selectedStudent = ref(null)
 const appointmentForm = ref({
   date: '',
-  time: ''
+  time: '',
+  duration: 60  // 默认1小时，单位分钟
 })
 
 const timeSlots = [
-  '08:00', '09:00', '10:00', '11:00',
-  '14:00', '15:00', '16:00', '17:00'
+  '07:00', '08:00', '09:00', '10:00', '11:00',
+  '12:00', '14:00', '15:00', '16:00', '17:00',
+  '18:00', '19:00'
+]
+
+const durationOptions = [
+  { value: 60, label: '1小时' },
+  { value: 90, label: '1.5小时' },
+  { value: 120, label: '2小时' }
 ]
 
 const loading = computed(() => studentStore.loading)
@@ -174,7 +189,7 @@ const goToAddStudent = () => {
 const quickAppointment = (student) => {
   selectedStudent.value = student
   appointmentForm.value = {
-    date: getToday(),
+    date: '',
     time: ''
   }
   showAppointmentDialog.value = true
@@ -183,7 +198,7 @@ const quickAppointment = (student) => {
 const closeAppointmentDialog = () => {
   showAppointmentDialog.value = false
   selectedStudent.value = null
-  appointmentForm.value = { date: '', time: '' }
+  appointmentForm.value = { date: '', time: '', duration: 60 }
 }
 
 const handleAppointmentSubmit = async () => {
@@ -191,14 +206,24 @@ const handleAppointmentSubmit = async () => {
     toast.warning('请选择日期和时间')
     return
   }
-  
+
+  // 检查是否为周一（游泳馆闭馆）
+  if (isMonday(appointmentForm.value.date)) {
+    toast.warning('游泳馆周一闭馆，不能预约')
+    return
+  }
+
   try {
+    // 构建新的时间格式数据
+    const startDateTime = new Date(`${appointmentForm.value.date}T${appointmentForm.value.time}:00`)
+    const endDateTime = new Date(startDateTime.getTime() + appointmentForm.value.duration * 60 * 1000) // 使用选择的时长
+
     await appointmentApi.create({
       student_id: selectedStudent.value._id,
-      appointment_date: appointmentForm.value.date,
-      time_slot: appointmentForm.value.time
+      start_time: startDateTime.toISOString(),
+      end_time: endDateTime.toISOString()
     })
-    
+
     toast.success('预约创建成功')
     closeAppointmentDialog()
   } catch (error) {
@@ -291,12 +316,6 @@ const handleAppointmentSubmit = async () => {
   font-size: 18px;
   font-weight: bold;
   color: #333;
-}
-
-.student-info .nickname {
-  font-size: 14px;
-  color: #666;
-  margin-top: 2px;
 }
 
 .btn-appointment {

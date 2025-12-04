@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
 """
-自动化测试配置文件
-提供测试基础类和工具函数
+测试基础类，提供通用功能
 """
 
 import os
 import time
 import datetime
-import requests
 import re
+import requests
 from pymongo import MongoClient
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from dotenv import load_dotenv
+from selenium.webdriver.chrome.options import Options
 
-# 加载环境变量
-load_dotenv()
 
 class TestBase:
     """测试基础类，提供通用功能"""
@@ -215,3 +211,7 @@ class TestBase:
                 print("INFO: All appointments cleaned up")
         except Exception as e:
             print(f"WARN: Failed to clean up appointments: {e}")
+
+
+# 为了兼容性，保留原来的别名
+TestCase = TestBase

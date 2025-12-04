@@ -169,12 +169,8 @@ export const useAppointmentStore = defineStore('appointment', {
 
       const cacheKey = format(weekStartDate, 'yyyy-MM-dd')
 
-      // 检查缓存（缓存有效期5分钟）
-      const cached = this.weekCache.get(cacheKey)
-      if (cached && Date.now() - cached.timestamp < 5 * 60 * 1000) {
-        this.weekLoading = false
-        return cached.weekData
-      }
+      // 强制清除缓存以确保获取最新数据
+      this.weekCache.delete(cacheKey)
 
       try {
         console.log('获取周数据，开始日期:', cacheKey)
@@ -202,7 +198,7 @@ export const useAppointmentStore = defineStore('appointment', {
         results.forEach((result, index) => {
           const date = dates[index]
           if (result.status === 'fulfilled' && result.value?.data) {
-            weekData[date] = result.value.data
+            weekData[date] = result.value.data  // response拦截器已经返回了完整的数据对象
           } else {
             weekData[date] = { slots: [] }
           }
@@ -230,9 +226,9 @@ export const useAppointmentStore = defineStore('appointment', {
       this.weekCache.clear()
     },
 
-    // 更新学生状态
+    // 更新学员状态
     updateStudentStatus(appointmentId, studentId, status, attendedLessons = null) {
-      console.log('更新学生状态:', { appointmentId, studentId, status, attendedLessons })
+      console.log('更新学员状态:', { appointmentId, studentId, status, attendedLessons })
 
       // 更新预约状态
       const appointmentIndex = this.appointments.findIndex(a => a.id === appointmentId)
@@ -248,7 +244,7 @@ export const useAppointmentStore = defineStore('appointment', {
           const appointment = slotAppointments.find(a => a.id === appointmentId)
           if (appointment) {
             appointment.status = status
-            // 如果提供了已上课次数，更新学生信息
+            // 如果提供了已上课次数，更新学员信息
             if (attendedLessons !== null && appointment.student) {
               appointment.student.attended_lessons = attendedLessons
             }
@@ -265,7 +261,7 @@ export const useAppointmentStore = defineStore('appointment', {
               const appointment = slotAppointments.find(a => a.id === appointmentId)
               if (appointment) {
                 appointment.status = status
-                // 如果提供了已上课次数，更新学生信息
+                // 如果提供了已上课次数，更新学员信息
                 if (attendedLessons !== null && appointment.student) {
                   appointment.student.attended_lessons = attendedLessons
                 }
@@ -275,7 +271,7 @@ export const useAppointmentStore = defineStore('appointment', {
         })
       }
 
-      console.log('学生状态更新完成')
+      console.log('学员状态更新完成')
       return true
     }
   }

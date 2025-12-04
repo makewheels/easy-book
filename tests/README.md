@@ -1,47 +1,124 @@
-# Easy Book 自动化测试
+# Easy Book 测试项目
 
-本目录包含 Easy Book 项目的专业自动化测试套件。
+> 🧪 **独立的测试项目，可脱离前后端单独运行**
 
-## 📁 文件结构
+## 🎯 项目特点
 
+这是一个**独立的测试项目**，具备以下特点：
+
+- ✅ **完全独立**：可以脱离前后端项目单独运行
+- ✅ **环境自包含**：包含独立的依赖管理和配置
+- ✅ **分层测试**：单元测试、集成测试、功能特性测试
+- ✅ **自动报告**：生成详细的测试报告
+- ✅ **跨平台**：支持 Windows、Linux、Mac
+
+## 📁 测试结构
+
+### 📂 核心文件
+- **[conftest.py](./conftest.py)** - 测试基础设施和配置
+- **[requirements.txt](./requirements.txt)** - 测试依赖包
+- **[test_all.py](./test_all.py)** - 主测试运行器
+
+### 📂 测试分层
+
+#### 🔧 utils/ - 测试工具包
+- **[__init__.py](./utils/__init__.py)** - 工具包初始化
+- **[test_base.py](./utils/test_base.py)** - 基础测试类，提供通用功能
+
+#### 🧪 unit/ - 单元测试
+测试单个功能模块的基本功能
+- **[test_students.py](./unit/test_students.py)** - 学员管理模块测试 (7个测试)
+- **[test_appointments.py](./unit/test_appointments.py)** - 预约管理模块测试 (14个测试)
+- **[test_attendance.py](./unit/test_attendance.py)** - 考勤管理模块测试
+- **[test_health.py](./unit/test_health.py)** - 健康检查和系统状态测试
+
+#### 🔗 integration/ - 集成测试
+测试模块间的集成和UI交互
+- **[test_ui_integration.py](./integration/test_ui_integration.py)** - UI和集成测试
+- **[test_api_integration.py](./integration/test_api_integration.py)** - API集成测试 (待添加)
+
+#### ⭐ features/ - 功能特性测试
+测试特定功能特性
+- **[test_monday_restriction.py](./features/test_monday_restriction.py)** - 周一预约限制功能测试
+
+#### 📊 reports/ - 测试报告
+- **功能测试报告/** - 各模块功能测试报告
+- **专项测试报告/** - 特定功能的专项测试报告
+- **历史报告/** - 存档的历史测试报告
+
+#### 📜 scripts/ - 测试脚本
+- **[install_deps.bat](./scripts/install_deps.bat)** - 安装测试依赖脚本
+- **[run_test.bat](./scripts/run_test.bat)** - 运行测试脚本
+
+## 🚀 快速开始
+
+### 运行所有测试
+```bash
+cd tests
+python test_all.py
 ```
-tests/
-├── README.md                    # 自动化测试说明文档
-├── test_requirements.txt       # Python依赖列表
-├── automation.py               # 专业自动化测试套件
-├── install_deps.bat             # Windows依赖安装脚本
-└── run_test.bat                # Windows测试运行脚本
+
+### 运行单个模块测试
+```bash
+cd tests
+python unit/test_students.py      # 学员管理测试
+python unit/test_appointments.py  # 预约管理测试
+python integration/test_ui_integration.py  # UI集成测试
+python features/test_monday_restriction.py  # 周一限制测试
 ```
 
-## 🧪 专业自动化测试 (`automation.py`)
+### 安装测试依赖
+```bash
+cd tests
+pip install -r requirements.txt
+# 或使用脚本
+scripts/install_deps.bat
+```
 
-这是一个完整的自动化测试套件，包含：
+## 📈 测试覆盖范围
 
-### ✅ 测试覆盖范围
+### ✅ 学员管理模块 (unit/test_students.py)
+- API创建学员
+- API获取学员列表
+- API获取单个学员
+- API更新学员信息
+- API删除学员
+- UI创建学员
+- UI学员列表显示
 
-1. **API健康检查** - 验证后端服务状态
-2. **页面加载测试** - 验证前端页面正常加载
-3. **UI创建学生** - 通过界面创建学生
-4. **创建预约** - 通过API创建预约
-5. **签到功能** - 测试签到逻辑和课程扣减
-6. **页面UI更新** - 验证状态正确显示
-7. **重复操作防护** - 验证重复签到/缺席的防护
+### ✅ 预约管理模块 (unit/test_appointments.py)
+- API创建预约
+- API获取学员预约记录
+- API获取每日预约
+- API更新预约
+- API删除预约
+- 1v1预约冲突检测
+- 1v1与1v多预约规则
+- 同一学员重复预约检测
+- API获取即将到来的预约
+- 前端统计准确性验证
+- **🆕 预约时自动扣减课程**
+- **🆕 取消预约时恢复课程**
+- **🆕 课程不足时阻止预约**
+- **🆕 多个预约扣减多个课程**
 
-### ✅ 测试技术栈
+### ✅ 功能特性测试 (features/test_monday_restriction.py)
+- 周一预约限制功能
+- 前端验证逻辑
+- 日历显示优化
 
-- **Selenium**: UI界面自动化测试
-- **Requests**: HTTP API接口测试
-- **PyMongo**: MongoDB数据库验证
-- **ChromeDriver**: 浏览器自动化
-- **专业断言**: 明确的成功/失败判断
+## 🎯 测试策略
 
-### ✅ 测试特点
+### 测试分层原则
+1. **单元测试** - 测试单个API和业务逻辑
+2. **集成测试** - 测试模块间交互和UI流程
+3. **功能测试** - 测试完整的业务功能特性
 
-- **完整断言**: `assert_true`, `assert_equal`, `assert_contains`
-- **自动清理**: 测试后自动删除测试数据
-- **环境管理**: 自动初始化和清理
-- **详细报告**: 测试通过/失败统计
-- **错误信息**: 具体的失败原因
+### 测试覆盖目标
+- **功能覆盖**: 所有业务功能都有对应测试
+- **场景覆盖**: 正常流程和边界条件
+- **接口覆盖**: 所有API端点都有测试验证
+- **UI覆盖**: 关键用户界面操作有测试验证
 
 ## 🚀 快速开始
 
