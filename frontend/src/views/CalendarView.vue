@@ -5,32 +5,10 @@
        @touchend="handleTouchEnd">
     <!-- 顶部导航栏 -->
     <header class="header">
-      <h1>{{ dateRangeText }}</h1>
+      <h1>课程日历</h1>
     </header>
 
-    <!-- 状态图例 -->
-    <div class="status-legend">
-      <div class="legend-title">状态说明：</div>
-      <div class="legend-items">
-        <div class="legend-item">
-          <div class="legend-color upcoming"></div>
-          <span>未到上课时间</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color during"></div>
-          <span>到了上课时间</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color checked"></div>
-          <span>已签到</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color cancel"></div>
-          <span>已取消</span>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- 日历表格 -->
     <div class="calendar-container" :class="{ transitioning: isTransitioning }">
       <div v-if="loading" class="loading">
@@ -61,16 +39,16 @@
                 class="empty-cell"
                 @click="showQuickMenu(day.date, timeSlot)"
               >
-                + 添加预约
+                + 预约
               </span>
 
-              <!-- 多学生垂直堆叠显示 -->
+              <!-- 多学员垂直堆叠显示 -->
               <div v-else class="students-container">
                 <div
                   v-for="student in getStudents(day.date, timeSlot)"
                   :key="student.id"
                   class="student-card"
-                  :class="getStatusClass(student.status)"
+                  :class="getStatusClass(student)"
                   @click="goToStudent(student.student_id)"
                 >
                   <div class="student-name">{{ student.name }}</div>
@@ -94,7 +72,7 @@
       </div>
       <div class="nav-item" @click="navigateTo('students')">
         <div class="nav-icon">👥</div>
-        <span>学生管理</span>
+        <span>学员管理</span>
       </div>
     </nav>
   </div>
@@ -105,6 +83,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
 import { format, addDays, startOfWeek, endOfWeek, isSameDay, parseISO } from 'date-fns'
+import { isMonday } from '@/utils/date'
+import { toast } from '@/utils/toast'
 import { zhCN } from 'date-fns/locale'
 
 const router = useRouter()
@@ -119,11 +99,11 @@ const touchEndX = ref(0)
 const minSwipeDistance = 50
 const isTransitioning = ref(false)
 
-// 时间段配置
+// 时间段配置 (早7点到晚7点，最后一节课19-20点)
 const timeSlots = [
-  '08:00', '09:00', '10:00', '11:00',
-  '14:00', '15:00', '16:00', '17:00',
-  '18:00', '19:00', '20:00'
+  '07:00', '08:00', '09:00', '10:00', '11:00',
+  '12:00', '14:00', '15:00', '16:00', '17:00',
+  '18:00', '19:00'
 ]
 
 // 计算属性
@@ -133,6 +113,10 @@ const weekDates = computed(() => {
 
   for (let i = 0; i < 7; i++) {
     const currentDate = addDays(startDate, i)
+
+    // 跳过周一（周一闭馆）
+    if (i === 0) continue
+
     dates.push({
       date: format(currentDate, 'yyyy-MM-dd'),
       displayDate: format(currentDate, 'MM/dd'),
@@ -148,7 +132,7 @@ const weekDates = computed(() => {
 const dateRangeText = computed(() => {
   if (weekDates.value.length === 0) return ''
   const start = weekDates.value[0]
-  const end = weekDates.value[6]
+  const end = weekDates.value[weekDates.value.length - 1]
   return `${start.displayDate} - ${end.displayDate}`
 })
 
@@ -159,7 +143,7 @@ const fetchWeekData = async () => {
   loading.value = true
   try {
     console.log('CalendarView: 开始获取周数据')
-    // 直接使用appointment store的fetchWeekAppointments方法
+    // 直接使用appointment store的fetchWeekAppointments方法（已在store中强制清除缓存）
     const weekDataMap = await appointmentStore.fetchWeekAppointments(currentWeekStart.value)
     weekData.value = weekDataMap
     console.log('CalendarView: 周数据获取成功', weekDataMap)
@@ -245,7 +229,7 @@ const getDayClass = (day) => {
   return {
     'today': day.isToday,
     'past': day.isPast,
-    'weekend': [5, 6].includes(weekDates.value.indexOf(day)) // 周六、周日
+    'weekend': [4, 5].includes(weekDates.value.indexOf(day)) // 周六、周日（索引调整后）
   }
 }
 
@@ -273,14 +257,17 @@ const getStudents = (date, timeSlot) => {
   return slot ? slot.students : []
 }
 
-const getStatusClass = (status) => {
-  const statusMap = {
-    'scheduled': 'status-upcoming',
-    'checked': 'status-checked',
-    'cancel': 'status-cancel',
-    'during': 'status-during'
+const getStatusClass = (student) => {
+  // 优先使用动态状态，如果没有则使用原始状态
+  const status = student.dynamic_status || student.status || 'scheduled'
+
+  // 简化为两种颜色：蓝色（未到时间）和灰色（已到时间或已过）
+  if (status === 'scheduled') {
+    return 'status-upcoming'   // 未到上课时间 - 蓝色
+  } else {
+    // active（进行中）, completed（已完成）, checked（已签到）, cancel（已取消）都显示为灰色
+    return 'status-during'     // 已到时间或已过时间 - 灰色
   }
-  return statusMap[status] || ''
 }
 
 const goToStudent = (studentId) => {
@@ -292,6 +279,13 @@ const goToStudent = (studentId) => {
 
 const showQuickMenu = (date, timeSlot) => {
   console.log(`显示快捷菜单：${timeSlot} - ${date}`)
+
+  // 检查是否为周一（游泳馆闭馆）
+  if (isMonday(date)) {
+    toast.warning('游泳馆周一闭馆，不能预约')
+    return
+  }
+
   // TODO: 实现快速创建预约功能
 }
 
@@ -344,9 +338,9 @@ onMounted(() => {
 }
 
 .header h1 {
-  font-size: 18px;
-  font-weight: 500;
-  transition: transform 0.3s ease;
+  font-size: 22px;
+  margin: 0;
+  text-align: center;
 }
 
 /* 主容器样式 - 移除会导致路由切换冲突的transition */
@@ -367,60 +361,6 @@ onMounted(() => {
   transition: opacity 0.3s ease;
 }
 
-/* 状态图例 */
-.status-legend {
-  background: #fff;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-}
-
-.legend-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.legend-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-  color: #666;
-}
-
-.legend-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 2px;
-  margin-right: 6px;
-  border: 1px solid #d9d9d9;
-}
-
-.legend-color.upcoming {
-  background: #1890ff;
-  border-color: #1890ff;
-}
-
-.legend-color.during {
-  background: #fa8c16;
-  border-color: #fa8c16;
-}
-
-.legend-color.checked {
-  background: #52c41a;
-  border-color: #52c41a;
-}
-
-.legend-color.cancel {
-  background: #8c8c8c;
-  border-color: #8c8c8c;
-}
 
 /* 日历表格 */
 .calendar-container {
@@ -451,18 +391,18 @@ onMounted(() => {
 
 .calendar-table th {
   background: #f5f5f5;
-  height: 40px;
-  font-size: 14px;
-  font-weight: 500;
+  height: 50px;
+  font-size: 18px;
+  font-weight: 600;
   color: #666;
 }
 
 .time-column {
   background: #fafafa;
-  width: 70px;
-  font-size: 14px;
+  width: 80px;
+  font-size: 16px;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
   border-right: 2px solid #e8e8e8;
 }
 
@@ -487,14 +427,14 @@ onMounted(() => {
   border-width: 2px;
 }
 
-/* 学生容器 */
+/* 学员容器 */
 .students-container {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-/* 学生卡片 */
+/* 学员卡片 */
 .student-card {
   background: inherit;
   color: #000;
@@ -523,7 +463,12 @@ onMounted(() => {
 
 /* 状态颜色 */
 .status-upcoming {
-  background: #1890ff;
+  background: #1989fa;
+  color: #000;
+}
+
+.status-active {
+  background: #fa8c16;
   color: #000;
 }
 
@@ -533,13 +478,13 @@ onMounted(() => {
 }
 
 .status-during {
-  background: #fa8c16;
-  color: #000;
+  background: #d9d9d9;
+  color: #666;
 }
 
 .status-cancel {
-  background: #8c8c8c;
-  color: #000;
+  background: #f5f5f5;
+  color: #999;
 }
 
 /* 空状态 */
@@ -610,13 +555,14 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .calendar-table {
-    font-size: 12px;
+  .calendar-table th {
+    font-size: 16px;
+    height: 45px;
   }
 
   .time-column {
-    width: 60px;
-    font-size: 12px;
+    width: 70px;
+    font-size: 14px;
   }
 
   .student-card {

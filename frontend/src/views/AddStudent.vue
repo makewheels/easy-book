@@ -4,7 +4,7 @@
       <button class="back-btn" @click="goBack">
         ← 返回
       </button>
-      <h1>新增学生</h1>
+      <h1>新增学员</h1>
     </div>
     
     <div class="content">
@@ -14,43 +14,15 @@
           
           <div class="form-group">
             <label>姓名 *</label>
-            <input 
-              type="text" 
-              v-model="form.name" 
+            <input
+              type="text"
+              v-model="form.name"
               required
-              placeholder="请输入学生姓名"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>别称</label>
-            <input
-              type="text"
-              v-model="form.nickname"
-              placeholder="请输入别称（可选）"
+              placeholder="请输入学员姓名"
             />
           </div>
 
-          <div class="form-group">
-            <label>身份证号码</label>
-            <input
-              type="text"
-              v-model="form.id_card"
-              placeholder="请输入身份证号码（可选）"
-              maxlength="18"
-            />
-          </div>
-
-          <div class="form-group">
-            <label>手机号码</label>
-            <input
-              type="tel"
-              v-model="form.phone"
-              placeholder="请输入手机号码（可选）"
-              maxlength="11"
-            />
-          </div>
-
+  
           <div class="form-group">
             <label>学习项目 *</label>
             <input
@@ -119,13 +91,13 @@
           </div>
           
           <div class="form-group">
-            <label>游泳馆分成（元）*</label>
-            <input 
-              type="number" 
-              v-model="form.venue_share" 
+            <label>上交俱乐部（元）*</label>
+            <input
+              type="number"
+              v-model="form.venue_share"
               required
               min="0"
-              placeholder="请输入游泳馆分成"
+              placeholder="请输入上交俱乐部"
             />
           </div>
           
@@ -163,9 +135,6 @@ const loading = ref(false)
 
 const form = reactive({
   name: '',
-  nickname: '',
-  id_card: '',
-  phone: '',
   learning_item: '',
   package_type: '',
   total_lessons: '',
@@ -182,11 +151,8 @@ const learningItemSuggestions = [
   '蝶泳',
   '踩水',
   '考证',
-  '基础训练',
   '技术改进',
-  '长距离游泳',
-  '儿童游泳',
-  '成人游泳'
+  '防溺水'
 ]
 
 const goBack = () => {
@@ -215,7 +181,6 @@ const handleSubmit = async () => {
   // 显式构建要发送的数据
   const studentData = {
     name: form.name,
-    nickname: form.nickname || undefined,
     learning_item: form.learning_item,
     package_type: form.package_type,
     total_lessons: parseInt(form.total_lessons),
@@ -235,7 +200,7 @@ const handleSubmit = async () => {
   try {
     await studentStore.createStudent(studentData)
     
-    toast.success('学生创建成功')
+    toast.success('学员创建成功')
     router.push('/students')
   } catch (error) {
     toast.error(error.message || '创建失败')

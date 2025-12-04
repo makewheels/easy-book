@@ -26,6 +26,11 @@ export const appointmentApi = {
     return request.put(`/appointments/${id}`, data)
   },
   
+  // 取消预约
+  cancel(id) {
+    return request.put(`/appointments/${id}/cancel`)
+  },
+
   // 删除预约
   delete(id) {
     return request.delete(`/appointments/${id}`)

@@ -1,9 +1,10 @@
 <template>
   <div class="home-page">
     <div class="header">
-      <h1></h1>
+      <h1>预约管理</h1>
+      <div class="stats">今日 {{ todayAppointments }} 个，明日 {{ tomorrowAppointments }} 个</div>
     </div>
-    
+
     <div class="content">
       <div v-if="loading" class="loading">
         加载中...
@@ -48,10 +49,7 @@
                   </div>
 
                   <div v-if="!dayData.isPast && student.status === 'scheduled'" class="actions">
-                    <button class="btn-checkin" @click="handleCheckIn(student)">
-                      签到
-                    </button>
-                    <button class="btn-absent" @click="handleAbsent(student)">
+                    <button class="btn-cancel" @click="handleCancel(student)">
                       取消
                     </button>
                   </div>
@@ -78,7 +76,7 @@
       </div>
       <div class="nav-item" @click="navigateTo('students')">
         <div class="nav-icon">👥</div>
-        <span>学生管理</span>
+        <span>学员管理</span>
       </div>
     </div>
   </div>
@@ -88,7 +86,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
-import { attendanceApi } from '@/api/attendance'
+import { appointmentApi } from '@/api/appointment'
 import { getToday, getTomorrow } from '@/utils/date'
 import { toast } from '@/utils/toast'
 
@@ -103,6 +101,32 @@ const dailyData = computed(() => {
   const result = appointmentsByDate && appointmentsByDate.length > 0 ? appointmentsByDate : null
   console.log('Home.vue - dailyData result:', result)
   return result
+})
+
+// 计算今日预约数量
+const todayAppointments = computed(() => {
+  if (!dailyData.value || dailyData.value.length === 0) return 0
+
+  const today = getToday()
+  // 转换为 MM-DD 格式以匹配后端数据格式
+  const todayFormatted = today.substring(5) // 去掉前缀 "YYYY-"
+  const todayData = dailyData.value.find(day => day.date === todayFormatted)
+  if (!todayData || !todayData.slots) return 0
+
+  return todayData.slots.reduce((total, slot) => total + (slot.students ? slot.students.length : 0), 0)
+})
+
+// 计算明日预约数量
+const tomorrowAppointments = computed(() => {
+  if (!dailyData.value || dailyData.value.length === 0) return 0
+
+  const tomorrow = getTomorrow()
+  // 转换为 MM-DD 格式以匹配后端数据格式
+  const tomorrowFormatted = tomorrow.substring(5) // 去掉前缀 "YYYY-"
+  const tomorrowData = dailyData.value.find(day => day.date === tomorrowFormatted)
+  if (!tomorrowData || !tomorrowData.slots) return 0
+
+  return tomorrowData.slots.reduce((total, slot) => total + (slot.students ? slot.students.length : 0), 0)
 })
 
 onMounted(async () => {
@@ -131,97 +155,39 @@ const navigateTo = (page) => {
 
 const getStatusClass = (status) => {
   return {
-    'status-checked': status === 'checked',
     'status-cancel': status === 'cancel'
   }
 }
 
 const getStatusText = (status) => {
   const statusMap = {
-    'checked': '已签到',
     'cancel': '已取消'
   }
   return statusMap[status] || ''
 }
 
-const handleCheckIn = async (student) => {
+const handleCancel = async (student) => {
   try {
-    // 添加调试日志
-    console.log('签到学生数据:', student)
+    console.log('取消预约学员数据:', student)
 
-    // 检查必要字段
     if (!student.appointment_id || !student.student_id) {
-      throw new Error('缺少必要的预约ID或学生ID')
+      throw new Error('缺少必要的预约ID或学员ID')
     }
 
-    // 调用签到API
-    const response = await attendanceApi.checkin(student.appointment_id, student.student_id)
+    const response = await appointmentApi.cancel(student.appointment_id)
 
-    // 局部更新学生状态
     if (response && response.data) {
-      const newAttendedLessons = response.data.lessons_before + 1 // 签到后已上课次数+1
-      const updated = appointmentStore.updateStudentStatus(
-        student.appointment_id,
-        student.student_id,
-        'checked',
-        newAttendedLessons
-      )
-
-      if (updated) {
-        toast.success('签到成功')
-      } else {
-        // 如果局部更新失败，回退到完整刷新
-        console.warn('局部更新失败，回退到完整刷新')
-        await appointmentStore.fetchUpcomingAppointments(30)
-        toast.success('签到成功')
-      }
+      await appointmentStore.fetchUpcomingAppointments(30)
+      toast.success('预约取消成功，课程次数已恢复')
     } else {
-      throw new Error('签到API返回数据异常')
+      throw new Error('取消预约API返回数据异常')
     }
   } catch (error) {
-    console.error('签到错误:', error)
-    toast.error(error.message || '签到失败')
+    console.error('取消预约错误:', error)
+    toast.error(error.message || '取消预约失败')
   }
 }
 
-const handleAbsent = async (student) => {
-  try {
-    // 添加调试日志
-    console.log('标记取消学生数据:', student)
-
-    // 检查必要字段
-    if (!student.appointment_id || !student.student_id) {
-      throw new Error('缺少必要的预约ID或学生ID')
-    }
-
-    // 调用取消API
-    const response = await attendanceApi.markCancel(student.appointment_id, student.student_id)
-
-    // 局部更新学生状态（取消不改变已上课次数）
-    if (response && response.data) {
-      const updated = appointmentStore.updateStudentStatus(
-        student.appointment_id,
-        student.student_id,
-        'cancel',
-        null // 取消时不改变已上课次数
-      )
-
-      if (updated) {
-        toast.success('标记取消成功')
-      } else {
-        // 如果局部更新失败，回退到完整刷新
-        console.warn('局部更新失败，回退到完整刷新')
-        await appointmentStore.fetchUpcomingAppointments(30)
-        toast.success('标记取消成功')
-      }
-    } else {
-      throw new Error('取消API返回数据异常')
-    }
-  } catch (error) {
-    console.error('标记取消错误:', error)
-    toast.error(error.message || '标记取消失败')
-  }
-}
 
 </script>
 
@@ -245,6 +211,13 @@ const handleAbsent = async (student) => {
   font-size: 22px;
   margin: 0;
   text-align: center;
+}
+
+.header .stats {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
 .content {
@@ -394,21 +367,13 @@ const handleAbsent = async (student) => {
   gap: 10px;
 }
 
-.btn-checkin, .btn-absent {
+.btn-cancel {
   flex: 1;
   padding: 8px;
   border: none;
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
-}
-
-.btn-checkin {
-  background: #52c41a;
-  color: #fff;
-}
-
-.btn-absent {
   background: #999;
   color: #fff;
 }

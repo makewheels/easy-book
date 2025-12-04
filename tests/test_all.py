@@ -78,11 +78,12 @@ def main():
 
     # 定义所有测试模块
     test_modules = [
-        'test_health',          # 健康检查和系统状态测试
-        'test_students',        # 学生管理模块测试
-        'test_appointments',    # 预约管理模块测试
-        'test_attendance',      # 考勤管理模块测试
-        'test_ui_integration',  # UI和集成测试
+        'test_health',              # 健康检查和系统状态测试
+        'test_students',            # 学生管理模块测试
+        'test_appointments',        # 预约管理模块测试（已包含扣费逻辑）
+        'test_attendance',          # 考勤管理模块测试
+        'test_ui_integration',      # UI和集成测试
+        'test_monday_restriction',  # 周一预约限制功能测试
     ]
 
     # 运行所有测试模块

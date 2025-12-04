@@ -79,7 +79,12 @@
       "mcp__chrome-devtools__get_console_message",
       "Bash(../.venv/Scripts/python.exe:*)",
       "Bash(git push:*)",
-      "Bash(ssh-copy-id:*)"
+      "Bash(ssh-copy-id:*)",
+      "Bash(find:*)",
+      "Bash(powershell:*)",
+      "Bash(set PYTHONUTF8=1)",
+      "Bash(tree:*)",
+      "mcp__chrome-devtools__take_screenshot"
     ],
     "deny": [],
     "ask": []

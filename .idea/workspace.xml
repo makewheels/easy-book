@@ -4,9 +4,64 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: add health check tests and enhance assertion methods">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: update student and appointment API integration to use correct ID fields">
+      <change afterPath="$PROJECT_DIR$/constitution.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" afterPath="$PROJECT_DIR$/AGENTS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CLAUDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DEPLOYMENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cloud_index_check.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/01-需求分析/表格日历功能需求.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/01-需求分析/需求.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/UI设计.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/前端设计.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/后端设计.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/数据库设计.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/数据库设计规范.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-设计文档/表格日历UI设计.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/03-技术文档/API接口文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/03-技术文档/MongoDB数据库迁移指南.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/03-技术文档/技术选型文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/04-测试文档/测试方案.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/06-测试报告/01-首页undefined问题测试报告.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/06-测试报告/02-签到功能修复测试报告.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/06-测试报告/03-功能测试报告.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/实际功能清单.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/部署文档/云效流水线部署指南.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/部署文档/安装指南.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/部署文档/服务器部署指南.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/部署文档/部署指南.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/date.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/date.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongodb/init/init.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/tests/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_attendance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/install_deps.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/run_test.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_appointments.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_attendance.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_automation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_health.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_students.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_ui_integration.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/upload_to_server.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -583,7 +638,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764776099054</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="feat: update student and appointment API integration to use correct ID fields">
+      <option name="closed" value="true" />
+      <created>1764776418120</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1764776418120</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -610,7 +673,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12" />
     <MESSAGE value="build: 更新Dockerfile，切换到163镜像的Python 3.10" />
     <MESSAGE value="build: update vite.config.js to specify output directory and assets directory" />
     <MESSAGE value="build: switch to official Python 3.10 slim image in Dockerfile" />
@@ -635,7 +697,8 @@
     <MESSAGE value="feat: add automation testing dependencies and enhance documentation for deployment and API" />
     <MESSAGE value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
     <MESSAGE value="feat: add health check tests and enhance assertion methods" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: add health check tests and enhance assertion methods" />
+    <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: update student and appointment API integration to use correct ID fields" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

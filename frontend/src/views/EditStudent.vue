@@ -4,7 +4,7 @@
       <button class="back-btn" @click="goBack">
         ← 返回
       </button>
-      <h1>编辑学生</h1>
+      <h1>编辑学员</h1>
     </div>
     
     <div class="content">
@@ -18,43 +18,15 @@
           
           <div class="form-group">
             <label>姓名 *</label>
-            <input 
-              type="text" 
-              v-model="form.name" 
+            <input
+              type="text"
+              v-model="form.name"
               required
-              placeholder="请输入学生姓名"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>别称</label>
-            <input
-              type="text"
-              v-model="form.nickname"
-              placeholder="请输入别称（可选）"
+              placeholder="请输入学员姓名"
             />
           </div>
 
-          <div class="form-group">
-            <label>身份证号码</label>
-            <input
-              type="text"
-              v-model="form.id_card"
-              placeholder="请输入身份证号码（可选）"
-              maxlength="18"
-            />
-          </div>
-
-          <div class="form-group">
-            <label>手机号码</label>
-            <input
-              type="tel"
-              v-model="form.phone"
-              placeholder="请输入手机号码（可选）"
-              maxlength="11"
-            />
-          </div>
-
+  
           <div class="form-group">
             <label>学习项目 *</label>
             <input
@@ -64,7 +36,6 @@
               placeholder="请输入学习项目（如：自由泳、蛙泳、仰泳、蝶泳、踩水、考证等）"
             />
             <div class="learning-item-suggestions">
-              <div class="suggestion-label">常用项目：</div>
               <div class="suggestion-chips">
                 <span
                   v-for="item in learningItemSuggestions"
@@ -135,14 +106,26 @@
           </div>
           
           <div class="form-group">
-            <label>游泳馆分成（元）*</label>
-            <input 
-              type="number" 
-              v-model="form.venue_share" 
+            <label>上交俱乐部（元）*</label>
+            <input
+              type="number"
+              v-model="form.venue_share"
               required
               min="0"
-              placeholder="请输入游泳馆分成"
+              placeholder="请输入上交俱乐部"
             />
+            <div class="venue-share-suggestions">
+              <div class="suggestion-chips">
+                <span
+                  v-for="amount in venueShareSuggestions"
+                  :key="amount"
+                  class="suggestion-chip"
+                  @click="selectVenueShare(amount)"
+                >
+                  {{ amount }} 元
+                </span>
+              </div>
+            </div>
           </div>
           
           <div class="form-group" v-if="form.price && form.venue_share">
@@ -181,9 +164,6 @@ const initialLoading = ref(true)
 
 const form = reactive({
   name: '',
-  nickname: '',
-  id_card: '',
-  phone: '',
   learning_item: '',
   package_type: '',
   total_lessons: '',
@@ -201,11 +181,13 @@ const learningItemSuggestions = [
   '蝶泳',
   '踩水',
   '考证',
-  '基础训练',
   '技术改进',
-  '长距离游泳',
-  '儿童游泳',
-  '成人游泳'
+  '防溺水'
+]
+
+// 上交俱乐部金额建议列表
+const venueShareSuggestions = [
+  600
 ]
 
 onMounted(async () => {
@@ -221,9 +203,6 @@ const fetchStudentData = async (studentId) => {
     
     if (student) {
       form.name = student.name || ''
-      form.nickname = student.nickname || ''
-      form.id_card = student.id_card || ''
-      form.phone = student.phone || ''
       form.learning_item = student.learning_item || ''
       form.package_type = student.package_type || ''
       form.total_lessons = student.total_lessons || ''
@@ -233,7 +212,7 @@ const fetchStudentData = async (studentId) => {
       form.note = student.note || ''
     }
   } catch (error) {
-    toast.error('获取学生信息失败')
+    toast.error('获取学员信息失败')
     router.push('/students')
   }
 }
@@ -244,6 +223,10 @@ const goBack = () => {
 
 const selectLearningItem = (item) => {
   form.learning_item = item
+}
+
+const selectVenueShare = (amount) => {
+  form.venue_share = amount
 }
 
 const handleSubmit = async () => {
@@ -269,9 +252,6 @@ const handleSubmit = async () => {
   try {
     await studentStore.updateStudent(route.params.id, {
       name: form.name,
-      nickname: form.nickname || undefined,
-      id_card: form.id_card || undefined,
-      phone: form.phone || undefined,
       learning_item: form.learning_item,
       package_type: form.package_type,
       total_lessons: parseInt(form.total_lessons),
@@ -281,7 +261,7 @@ const handleSubmit = async () => {
       note: form.note || undefined
     })
     
-    toast.success('学生信息更新成功')
+    toast.success('学员信息更新成功')
     router.push(`/student/${route.params.id}`)
   } catch (error) {
     toast.error(error.message || '更新失败')
@@ -445,6 +425,10 @@ const handleSubmit = async () => {
 }
 
 .learning-item-suggestions {
+  margin-top: 8px;
+}
+
+.venue-share-suggestions {
   margin-top: 8px;
 }
 

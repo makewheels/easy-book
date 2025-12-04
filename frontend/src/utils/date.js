@@ -37,3 +37,7 @@ export function addDays(date, days) {
 export function getTomorrow() {
   return addDays(getToday(), 1)
 }
+
+export function isMonday(date) {
+  return new Date(date).getDay() === 1 // 周一返回1
+}
