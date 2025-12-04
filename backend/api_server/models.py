@@ -153,25 +153,11 @@ class AppointmentCreate(BaseModel):
     start_time: datetime = Field(..., description="课程开始时间")
     end_time: datetime = Field(..., description="课程结束时间")
 
-    # 兼容性支持 - 允许旧格式数据
+    # 兼容性支持 - 允许旧格式数据（完全可选）
     appointment_date: Optional[str] = Field(None, description="预约日期（兼容性）")
     time_slot: Optional[str] = Field(None, pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$", description="时间段（兼容性）")
 
-    @classmethod
-    def validate_time_structure(cls, values):
-        """验证时间结构 - 确保要么使用新格式，要么使用旧格式"""
-        has_new_format = values.get('start_time') and values.get('end_time')
-        has_old_format = values.get('appointment_date') and values.get('time_slot')
-
-        if not (has_new_format or has_old_format):
-            raise ValueError("必须提供 start_time/end_time 或 appointment_date/time_slot")
-
-        if has_new_format and has_old_format:
-            # 如果同时提供了新旧格式，优先使用新格式，忽略旧格式
-            values['appointment_date'] = None
-            values['time_slot'] = None
-
-        return values
+    model_config = {"populate_by_name": True}
 
 class AppointmentUpdate(BaseModel):
     appointment_date: Optional[date] = Field(None)

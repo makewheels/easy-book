@@ -20,6 +20,12 @@ def calculate_dynamic_status_new(start_time: datetime, end_time: datetime, db_st
         return db_status
 
     # 如果是scheduled状态，需要判断时间
+    # 确保使用naive datetime进行比较
+    if start_time.tzinfo is not None:
+        start_time = start_time.replace(tzinfo=None)
+    if end_time.tzinfo is not None:
+        end_time = end_time.replace(tzinfo=None)
+
     now = datetime.now()
 
     if now < start_time:
