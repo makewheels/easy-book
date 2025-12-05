@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
 import Students from '@/views/Students.vue'
 import StudentDetail from '@/views/StudentDetail.vue'
 import AddStudent from '@/views/AddStudent.vue'
@@ -10,7 +9,12 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: CalendarView
+  },
+  {
+    path: '/calendar',
+    name: 'Calendar',
+    component: CalendarView
   },
   {
     path: '/students',
@@ -31,11 +35,6 @@ const routes = [
     path: '/add-student',
     name: 'AddStudent',
     component: AddStudent
-  },
-  {
-    path: '/calendar',
-    name: 'Calendar',
-    component: CalendarView
   }
 ]
 

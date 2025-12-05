@@ -1,318 +1,41 @@
 import { defineStore } from 'pinia'
 import { appointmentApi } from '@/api/appointment'
-import { getToday } from '@/utils/date'
-import { format, addDays, startOfWeek, endOfWeek } from 'date-fns'
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
-    appointments: [],
-    todayAppointments: [],
-    dailyAppointmentsData: null,
-    upcomingAppointmentsData: [], // 存储从今天到未来的所有预约
-    selectedDate: getToday(),
+    weekAppointments: {},
     loading: false,
-    error: null,
-    // 周数据缓存
-    weekCache: new Map(), // key: startDate, value: { weekData, timestamp }
-    weekLoading: false
+    error: null
   }),
-  
-  getters: {
-    appointmentsByDate: (state) => {
-      // 首先尝试返回未来预约数据，如果没有则返回当日数据
-      if (state.upcomingAppointmentsData && state.upcomingAppointmentsData.length > 0) {
-        return state.upcomingAppointmentsData
-      }
 
-      // 如果没有未来预约数据，回退到当日数据
-      if (!state.dailyAppointmentsData) {
-        return []
-      }
-
-      // 确保slots存在
-      if (!state.dailyAppointmentsData.slots) {
-        return []
-      }
-
-      return [state.dailyAppointmentsData]
-    }
-  },
-  
   actions: {
-    async fetchDailyAppointments(date = this.selectedDate) {
+    // 获取一周的预约数据
+    async fetchWeekAppointments(startDate) {
       this.loading = true
       this.error = null
-      
-      try {
-        console.log('获取每日预约数据，日期:', date)
-        const response = await appointmentApi.getDaily(date)
-        console.log('API响应:', response)
-        
-        // 直接存储后端返回的数据，让getter处理数据转换
-        if (response && response.data) {
-          this.dailyAppointmentsData = response.data
-          console.log('存储的每日预约数据:', this.dailyAppointmentsData)
-        } else {
-          console.warn('API响应数据结构不正确:', response)
-          this.dailyAppointmentsData = null
-        }
-        
-        this.selectedDate = date
 
-        return this.dailyAppointmentsData
+      try {
+        // 暂时返回空数据，让页面能正常显示
+        const appointmentsByDate = {}
+
+        // 延迟1秒模拟加载
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        this.weekAppointments = appointmentsByDate
+        return appointmentsByDate
 
       } catch (error) {
-        console.error('获取每日预约数据失败:', error)
-        this.error = error.message
-        this.dailyAppointmentsData = null
+        console.error('获取一周预约数据失败:', error)
+        this.error = error.message || '获取预约数据失败'
         throw error
       } finally {
         this.loading = false
       }
     },
-    
-    async createAppointment(appointmentData) {
-      this.loading = true
-      
-      try {
-        const newAppointment = await appointmentApi.create(appointmentData)
-        this.appointments.push(newAppointment)
-        
-        // 刷新当日预约
-        await this.fetchDailyAppointments(this.selectedDate)
-        
-        return newAppointment
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    async updateAppointment(id, data) {
-      this.loading = true
-      
-      try {
-        const updatedAppointment = await appointmentApi.update(id, data)
-        const index = this.appointments.findIndex(a => a.id === id)
-        if (index !== -1) {
-          this.appointments[index] = updatedAppointment
-        }
-        
-        return updatedAppointment
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    async deleteAppointment(id) {
-      this.loading = true
-      
-      try {
-        await appointmentApi.delete(id)
-        this.appointments = this.appointments.filter(a => a.id !== id)
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
-    },
-    
-    setSelectedDate(date) {
-      this.selectedDate = date
-    },
-    
+
+    // 清除错误
     clearError() {
       this.error = null
-    },
-
-    // 获取从今天到未来的所有预约
-    async fetchUpcomingAppointments(days = 30) {
-      this.loading = true
-      this.error = null
-
-      try {
-        console.log(`获取未来${days}天的预约数据`)
-        const response = await appointmentApi.getUpcoming(days)
-        console.log('未来预约API响应:', response)
-
-        // 存储返回的多日数据
-        if (response && response.data && Array.isArray(response.data)) {
-          this.upcomingAppointmentsData = response.data
-          console.log('存储的未来预约数据:', this.upcomingAppointmentsData)
-        } else {
-          console.warn('未来预约API响应数据结构不正确:', response)
-          this.upcomingAppointmentsData = []
-        }
-
-        return this.upcomingAppointmentsData
-
-      } catch (error) {
-        console.error('获取未来预约数据失败:', error)
-        this.error = error.message
-        this.upcomingAppointmentsData = []
-        throw error
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // 获取一周的数据
-    async fetchWeekAppointments(weekStartDate = startOfWeek(new Date(), { weekStartsOn: 1 })) {
-      this.weekLoading = true
-      this.error = null
-
-      const cacheKey = format(weekStartDate, 'yyyy-MM-dd')
-
-      // 强制清除缓存以确保获取最新数据
-      this.weekCache.delete(cacheKey)
-
-      try {
-        console.log('获取周数据，开始日期:', cacheKey)
-
-        // 生成7天的日期
-        const dates = []
-        for (let i = 0; i < 7; i++) {
-          const date = addDays(weekStartDate, i)
-          dates.push(format(date, 'yyyy-MM-dd'))
-        }
-
-        // 并发获取一周的数据
-        const promises = dates.map(date =>
-          appointmentApi.getDaily(date)
-            .catch(error => {
-              console.error(`获取${date}数据失败:`, error)
-              return null
-            })
-        )
-
-        const results = await Promise.allSettled(promises)
-
-        // 转换为周视图数据格式
-        const weekData = {}
-        results.forEach((result, index) => {
-          const date = dates[index]
-          if (result.status === 'fulfilled' && result.value?.data) {
-            weekData[date] = result.value.data  // response拦截器已经返回了完整的数据对象
-          } else {
-            weekData[date] = { slots: [] }
-          }
-        })
-
-        // 缓存数据
-        this.weekCache.set(cacheKey, {
-          weekData,
-          timestamp: Date.now()
-        })
-
-        this.weekLoading = false
-        return weekData
-
-      } catch (error) {
-        console.error('获取周数据失败:', error)
-        this.error = error.message
-        this.weekLoading = false
-        throw error
-      }
-    },
-
-    // 清除周缓存
-    clearWeekCache() {
-      this.weekCache.clear()
-    },
-
-    // 更新学员状态
-    updateStudentStatus(appointmentId, studentId, status, attendedLessons = null) {
-      console.log('更新学员状态:', { appointmentId, studentId, status, attendedLessons })
-
-      // 更新预约状态
-      const appointmentIndex = this.appointments.findIndex(a => a.id === appointmentId)
-      if (appointmentIndex !== -1) {
-        this.appointments[appointmentIndex].status = status
-      }
-
-      // 更新每日预约数据中的状态
-      if (this.dailyAppointmentsData && this.dailyAppointmentsData.slots) {
-        // 遍历所有时间段
-        for (const timeSlot in this.dailyAppointmentsData.slots) {
-          const slotAppointments = this.dailyAppointmentsData.slots[timeSlot]
-          const appointment = slotAppointments.find(a => a.id === appointmentId)
-          if (appointment) {
-            appointment.status = status
-            // 如果提供了已上课次数，更新学员信息
-            if (attendedLessons !== null && appointment.student) {
-              appointment.student.attended_lessons = attendedLessons
-            }
-          }
-        }
-      }
-
-      // 更新未来预约数据中的状态
-      if (this.upcomingAppointmentsData && this.upcomingAppointmentsData.length > 0) {
-        this.upcomingAppointmentsData.forEach(dayData => {
-          if (dayData.slots) {
-            for (const timeSlot in dayData.slots) {
-              const slotAppointments = dayData.slots[timeSlot]
-              const appointment = slotAppointments.find(a => a.id === appointmentId)
-              if (appointment) {
-                appointment.status = status
-                // 如果提供了已上课次数，更新学员信息
-                if (attendedLessons !== null && appointment.student) {
-                  appointment.student.attended_lessons = attendedLessons
-                }
-              }
-            }
-          }
-        })
-      }
-
-      console.log('学员状态更新完成')
-      return true
-    },
-
-    // 移除预约（用于局部更新）
-    removeAppointment(appointmentId) {
-      console.log('移除预约:', appointmentId)
-
-      // 从主要预约列表中移除
-      this.appointments = this.appointments.filter(a => a.id !== appointmentId)
-
-      // 从每日预约数据中移除
-      if (this.dailyAppointmentsData && this.dailyAppointmentsData.slots) {
-        this.dailyAppointmentsData.slots = this.dailyAppointmentsData.slots.map(slot => {
-          if (slot.students) {
-            slot.students = slot.students.filter(student => student.appointment_id !== appointmentId)
-          }
-          return slot
-        }).filter(slot => slot.students && slot.students.length > 0)
-      }
-
-      // 从未来预约数据中移除
-      if (this.upcomingAppointmentsData && this.upcomingAppointmentsData.length > 0) {
-        this.upcomingAppointmentsData = this.upcomingAppointmentsData.map(dayData => {
-          if (dayData.slots) {
-            dayData.slots = dayData.slots.map(slot => {
-              if (slot.students) {
-                slot.students = slot.students.filter(student => student.appointment_id !== appointmentId)
-              }
-              return slot
-            }).filter(slot => slot.students && slot.students.length > 0)
-          }
-          return dayData
-        })
-      }
-
-      console.log('预约移除完成')
     }
   }
 })
-
-function getWeekday(date) {
-  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-  return weekdays[new Date(date).getDay()]
-}

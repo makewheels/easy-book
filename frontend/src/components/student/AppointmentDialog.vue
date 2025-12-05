@@ -257,7 +257,7 @@ const handleSubmit = () => {
 
   emit('submit', {
     start_time: startDateTime.toISOString(),
-    duration: form.duration
+    duration_in_minutes: form.duration
   })
 }
 </script>

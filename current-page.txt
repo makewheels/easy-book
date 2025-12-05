@@ -1,15 +1,5 @@
-uid=20_0 RootWebArea "泳课预约系统" url="http://localhost:5173/"
-  uid=20_1 heading "预约管理" level="1"
-  uid=20_2 StaticText "0"
-  uid=20_3 StaticText "今日预约"
-  uid=20_4 StaticText "0"
-  uid=20_5 StaticText "明日预约"
-  uid=20_6 StaticText "📋"
-  uid=20_7 StaticText "暂无预约"
-  uid=20_8 navigation
-    uid=20_9 StaticText "🏠"
-    uid=20_10 StaticText "预约管理"
-    uid=20_11 StaticText "📅"
-    uid=20_12 StaticText "课程日历"
-    uid=20_13 StaticText "👥"
-    uid=20_14 StaticText "学员管理"
+uid=2_0 RootWebArea "泳课预约系统" url="http://localhost:5173/"
+  uid=2_1 ignored
+    uid=2_2 ignored
+      uid=2_3 generic
+        uid=2_4 generic

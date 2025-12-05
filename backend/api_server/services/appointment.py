@@ -29,8 +29,8 @@ class AppointmentService:
         # 验证必需字段
         if "start_time" not in appointment_data:
             raise ValueError("缺少 start_time 字段")
-        if "duration" not in appointment_data:
-            raise ValueError("缺少 duration 字段")
+        if "duration_in_minutes" not in appointment_data:
+            raise ValueError("缺少 duration_in_minutes 字段")
 
         # 处理开始时间格式
         start_time = appointment_data["start_time"]
@@ -50,9 +50,9 @@ class AppointmentService:
                 appointment_data["start_time"] = start_time
 
         # 验证时长
-        duration = appointment_data["duration"]
+        duration = appointment_data["duration_in_minutes"]
         if not isinstance(duration, int) or duration <= 0:
-            raise ValueError("duration 必须是大于0的整数（分钟）")
+            raise ValueError("duration_in_minutes 必须是大于0的整数（分钟）")
 
         # 计算结束时间
         from datetime import timedelta

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <router-view />
-    <Toast ref="toastRef" />
+    <Toast ref="toastRef" message="" />
   </div>
 </template>
 
