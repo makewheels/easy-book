@@ -20,41 +20,16 @@
       <div v-else>
         <!-- 新增学生按钮 - 移到顶部 -->
         <div class="add-student-btn" @click="goToAddStudent">
-          + 新增学员
+          新增学员
         </div>
 
-        <div
-          v-for="student in students"
-          :key="student.id"
-          class="student-card"
-          @click="goToDetail(student._id)"
-        >
-          <div class="card-header">
-            <div class="student-info">
-              <div class="name">{{ student.name }}</div>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <!-- 学习项目和类型在左下角 -->
-            <div class="bottom-row">
-              <div class="left-info">
-                <span class="learning-value">{{ student.learning_item }}</span>
-                <span class="package-type">{{ student.package_type }}</span>
-              </div>
-              <div class="right-info">
-                <span class="lessons-text">{{ student.remaining_lessons }} / {{ student.total_lessons }} 节课</span>
-              </div>
-            </div>
-
-            <!-- 进度条 -->
-            <div class="progress-bar">
-              <div
-                class="progress-fill"
-                :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"
-              ></div>
-            </div>
-          </div>
+        <div class="students-grid">
+          <StudentOverviewCard
+            v-for="student in students"
+            :key="student.id"
+            :student="student"
+            @click="goToDetail(student._id)"
+          />
         </div>
       </div>
     </div>
@@ -68,6 +43,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import StudentOverviewCard from '@/components/student/StudentOverviewCard.vue'
 
 const router = useRouter()
 const studentStore = useStudentStore()
@@ -103,12 +79,6 @@ const goToAddStudent = () => {
   router.push('/add-student')
 }
 
-// 计算课程进度百分比
-const getProgressPercentage = (remaining, total) => {
-  if (!total || total === 0) return 0
-  // 假设remaining实际上是已完成课数
-  return (remaining / total) * 100
-}
 </script>
 
 <style scoped>
@@ -139,6 +109,7 @@ const getProgressPercentage = (remaining, total) => {
   margin: 0 0 10px 0;
   text-align: center;
   color: #1a1a1a;
+  border-radius: 12px;
 }
 
 .header .stats {
@@ -200,7 +171,7 @@ const getProgressPercentage = (remaining, total) => {
   background: #f0f0f0;
   color: #333;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 12px;
   padding: 16px 32px;
   font-size: 18px;
   font-weight: 600;
@@ -212,8 +183,7 @@ const getProgressPercentage = (remaining, total) => {
 .add-student-btn {
   background: #fff;
   color: #1989fa;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #e0e0e0;
   padding: 18px 10px;
   text-align: center;
   margin: 0 0 10px 0;
@@ -223,109 +193,22 @@ const getProgressPercentage = (remaining, total) => {
   transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
+  border-radius: 12px;
 }
 
-/* 学员卡片 */
-.student-card {
-  background: #fff;
-  border-radius: 4px;
-  margin: 0 0 10px 0;
-  padding: 20px 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.add-student-btn:hover {
+  background: #f0f9ff;
+  border-color: #1989fa;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
 
-.student-info .name {
-  font-size: 24px;
-  font-weight: 800;
-  color: #1a1a1a;
-  margin-bottom: 8px;
-  line-height: 1.2;
-}
 
-.package-type {
-  background: #f5f5f5;
-  color: #666;
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-block;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.card-body {
+/* 学员网格布局 */
+.students-grid {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
-
-.lessons-text {
-  font-size: 24px;
-  color: #0066cc;
-  font-weight: 700;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #1989fa;
-  border-radius: 4px;
-}
-
-/* 底部信息行 */
-.bottom-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-}
-
-.left-info {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.right-info {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-/* 学习项目 */
-.learning-item {
-  display: block;
-}
-
-.learning-label {
-  font-size: 16px;
-  color: #666;
-  margin-right: 8px;
-  font-weight: 500;
-}
-
-.learning-value {
-  font-size: 16px;
-  color: #1a1a1a;
-  font-weight: 400;
-}
-
 
 /* 响应式设计 */
 @media (max-width: 480px) {

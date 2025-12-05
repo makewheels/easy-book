@@ -2,7 +2,6 @@
   <div class="overview-card">
     <div class="student-header">
       <div class="student-name">{{ student.name }}</div>
-      <div class="package-badge">{{ student.package_type }}</div>
     </div>
 
     <div class="course-stats">
@@ -29,7 +28,6 @@
       <div class="progress-bar-container">
         <div class="progress-fill" :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"></div>
       </div>
-      <div class="progress-text">课程进度: {{ Math.round(getProgressPercentage(student.remaining_lessons, student.total_lessons)) }}%</div>
     </div>
   </div>
 </template>
@@ -61,16 +59,16 @@ const getProgressPercentage = (remaining, total) => {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 0;
+  border: 1px solid #e0e0e0;
 }
 
 .student-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
+  padding-left: 20px;
 }
 
 .student-name {
@@ -79,15 +77,6 @@ const getProgressPercentage = (remaining, total) => {
   color: #1a1a1a;
 }
 
-.package-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-}
 
 .course-stats {
   display: flex;
@@ -149,12 +138,12 @@ const getProgressPercentage = (remaining, total) => {
 }
 
 .progress-bar-container {
-  width: 100%;
-  height: 8px;
+  width: 90%;
+  height: 6px;
   background: #f0f0f0;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin: 0 auto;
 }
 
 .progress-fill {

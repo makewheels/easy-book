@@ -284,7 +284,7 @@ const handleSubmit = () => {
   max-width: 400px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid #e0e0e0;
 }
 
 .dialog-header {
@@ -372,7 +372,6 @@ const handleSubmit = () => {
   background: #1989fa;
   color: #fff;
   border-color: #1989fa;
-  box-shadow: 0 2px 8px rgba(25, 137, 250, 0.3);
 }
 
 .date-picker {
@@ -419,7 +418,6 @@ const handleSubmit = () => {
   background: #1989fa;
   color: #fff;
   border-color: #1989fa;
-  box-shadow: 0 2px 8px rgba(25, 137, 250, 0.3);
 }
 
 .duration-btn.disabled {
@@ -567,7 +565,6 @@ const handleSubmit = () => {
   background: #1989fa;
   color: #fff;
   border-color: #1989fa;
-  box-shadow: 0 2px 8px rgba(25, 137, 250, 0.3);
 }
 
 .end-time-display {

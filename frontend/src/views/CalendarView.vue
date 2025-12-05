@@ -11,7 +11,7 @@
           <div class="time-header-cell"></div>
 
           <!-- 日期列头 -->
-          <div v-for="day in weekDates" :key="day.date" class="date-header-cell" :class="{ 'today-column': day.date === todayDate }">
+          <div v-for="day in weekDates" :key="day.date" class="date-header-cell">
             {{ day.weekday }}<br>{{ day.displayDate }}
           </div>
 
@@ -27,8 +27,7 @@
               v-for="day in weekDates"
               :key="`${day.date}-${timeSlot}`"
               class="time-slot"
-              :class="{ 'today-slot': day.date === todayDate }"
-            >
+              >
               <span
                 v-if="!hasStudents(day.date, timeSlot)"
                 class="empty-cell"
@@ -67,7 +66,15 @@ const router = useRouter()
 const appointmentStore = useAppointmentStore()
 
 const loading = ref(false)
-const currentWeekStart = ref(new Date())
+// 计算本周的开始（周一）
+const getWeekStart = () => {
+  const today = new Date()
+  const day = today.getDay() || 7 // 将周日(0)转换为7
+  const diff = today.getDate() - day + 1 // 周一的日期
+  return new Date(today.setDate(diff))
+}
+
+const currentWeekStart = ref(getWeekStart())
 const weekData = ref({})
 
 const timeSlots = [
@@ -80,10 +87,13 @@ const weekDates = computed(() => {
   const dates = []
   const startDate = new Date(currentWeekStart.value)
 
-  // 从周二开始，只循环6次（周二到周日）
+  // 从周二开始，只循环6次（周二到周日），跳过周一
   for (let i = 1; i < 7; i++) {
     const currentDate = addDays(startDate, i)
     const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
+
+    // 如果是周一(dayOfWeek=1)，跳过不显示
+    if (dayOfWeek === 1) continue
 
     const dateStr = format(currentDate, 'yyyy-MM-dd')
     const isToday = isSameDay(currentDate, new Date())
@@ -262,34 +272,6 @@ onMounted(() => {
   border-right: 1px solid #e0e0e0;
 }
 
-/* 今天列头特殊样式 */
-.date-header-cell.today-column {
-  background: #fff3cd;
-  color: #d48806;
-  font-weight: 900;
-  border-bottom: 3px solid #faad14;
-  border-right: 2px solid #faad14;
-  position: relative;
-}
-
-/* 今天列头添加强调标记 */
-.date-header-cell.today-column::after {
-  content: '今天';
-  position: absolute;
-  top: -8px;
-  right: 4px;
-  background: #faad14;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-}
-
-/* 今天时间段背景色 */
-.time-slot.today-slot {
-  background: #fff9c4 !important;
-  border-right: 2px solid #faad14;
-}
 
 .time-cell {
   background: #f9f9f9;

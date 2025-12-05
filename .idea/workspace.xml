@@ -4,29 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果">
-      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="style(students): 重新设计学生页面UI布局和样式&#10;&#10;- 重新组织学生卡片内的信息布局，将学习项目和套餐类型移至左下角&#10;- 调整进度条样式并优化显示逻辑&#10;- 更新页面整体样式，去除毛玻璃效果，改用纯色背景&#10;- 修改加载状态和空状态的视觉设计&#10;- 调整底部导航栏样式和尺寸&#10;- 优化响应式布局，支持更宽的屏幕显示&#10;- 修正课程进度计算逻辑，假设remaining为已完成课数">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constitution.md" beforeDir="false" afterPath="$PROJECT_DIR$/constitution.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/current-page.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/02-业务模块/预约管理/设计文档.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/02-业务模块/预约管理/需求文档.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/05-技术文档/预约时间重构设计文档.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/AppointmentList.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/BottomNavigation.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/HomePageHeader.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/student/AppointmentDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/AppointmentDialog.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentOverviewCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentOverviewCard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_appointments.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,38 +197,6 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00004" summary="部署">
-      <option name="closed" value="true" />
-      <created>1764505488841</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1764505488841</updated>
-    </task>
-    <task id="LOCAL-00005" summary="部署">
-      <option name="closed" value="true" />
-      <created>1764507827674</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1764507827674</updated>
-    </task>
-    <task id="LOCAL-00006" summary="部署">
-      <option name="closed" value="true" />
-      <created>1764508927227</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1764508927227</updated>
-    </task>
-    <task id="LOCAL-00007" summary="部署">
-      <option name="closed" value="true" />
-      <created>1764509427812</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1764509427813</updated>
-    </task>
     <task id="LOCAL-00008" summary="build(flow): 优化构建流程配置&#10;&#10;- 移除重复的 Node.js 环境安装步骤&#10;- 移除重复的 Python 环境安装步骤&#10;- 在后端构建中升级 pip 和 setuptools&#10;- 更新工作区变更记录路径引用">
       <option name="closed" value="true" />
       <created>1764509767940</created>
@@ -610,7 +564,39 @@
       <option name="project" value="LOCAL" />
       <updated>1764948575874</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="feat: update appointment duration handling and API integration&#10;&#10;- Change duration field to duration_in_minutes for consistency&#10;- Update API endpoints to use the new duration format&#10;- Adjust frontend components to reflect the new duration structure&#10;- Ensure backward compatibility with existing duration field&#10;- Modify Vite configuration to point to the correct backend server">
+      <option name="closed" value="true" />
+      <created>1764950512245</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1764950512245</updated>
+    </task>
+    <task id="LOCAL-00054" summary="chore(clean): 移除临时测试文件和旧脚本&#10;&#10;- 删除清理旧数据的Python脚本clear_old_data.py&#10;- 移除当前页面快照文件current-homepage.txt&#10;- 删除测试结果快照test-result.txt&#10;- 移除预约API测试脚本test_appointment_api.py&#10;- 删除更新后的学员列表快照updated-students-list.txt&#10;- 清理临时生成的页面内容文件current-page.txt">
+      <option name="closed" value="true" />
+      <created>1764950580895</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1764950580895</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat: add new file for appointment management functionality">
+      <option name="closed" value="true" />
+      <created>1764950830377</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1764950830377</updated>
+    </task>
+    <task id="LOCAL-00056" summary="style(students): 重新设计学生页面UI布局和样式&#10;&#10;- 重新组织学生卡片内的信息布局，将学习项目和套餐类型移至左下角&#10;- 调整进度条样式并优化显示逻辑&#10;- 更新页面整体样式，去除毛玻璃效果，改用纯色背景&#10;- 修改加载状态和空状态的视觉设计&#10;- 调整底部导航栏样式和尺寸&#10;- 优化响应式布局，支持更宽的屏幕显示&#10;- 修正课程进度计算逻辑，假设remaining为已完成课数">
+      <option name="closed" value="true" />
+      <created>1764952378266</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1764952378266</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -638,10 +624,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="build: update Dockerfile to install all dependencies and configure nginx" />
-    <MESSAGE value="build: update Dockerfile to use Node.js 16-alpine as the builder image" />
-    <MESSAGE value="build: add CLAUDE.md for project guidance and update settings.local.json for permissions" />
-    <MESSAGE value="fix: update check-in condition to include scheduled status" />
     <MESSAGE value="fix: update appointment update logic to handle string and ObjectId" />
     <MESSAGE value="fix: update check-in condition to include scheduled status and refactor Home.vue layout" />
     <MESSAGE value="fix: improve appointment update logic and enhance student check-in conditions" />
@@ -663,7 +645,11 @@
     <MESSAGE value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
     <MESSAGE value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
     <MESSAGE value="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果" />
+    <MESSAGE value="feat: update appointment duration handling and API integration&#10;&#10;- Change duration field to duration_in_minutes for consistency&#10;- Update API endpoints to use the new duration format&#10;- Adjust frontend components to reflect the new duration structure&#10;- Ensure backward compatibility with existing duration field&#10;- Modify Vite configuration to point to the correct backend server" />
+    <MESSAGE value="chore(clean): 移除临时测试文件和旧脚本&#10;&#10;- 删除清理旧数据的Python脚本clear_old_data.py&#10;- 移除当前页面快照文件current-homepage.txt&#10;- 删除测试结果快照test-result.txt&#10;- 移除预约API测试脚本test_appointment_api.py&#10;- 删除更新后的学员列表快照updated-students-list.txt&#10;- 清理临时生成的页面内容文件current-page.txt" />
+    <MESSAGE value="feat: add new file for appointment management functionality" />
+    <MESSAGE value="style(students): 重新设计学生页面UI布局和样式&#10;&#10;- 重新组织学生卡片内的信息布局，将学习项目和套餐类型移至左下角&#10;- 调整进度条样式并优化显示逻辑&#10;- 更新页面整体样式，去除毛玻璃效果，改用纯色背景&#10;- 修改加载状态和空状态的视觉设计&#10;- 调整底部导航栏样式和尺寸&#10;- 优化响应式布局，支持更宽的屏幕显示&#10;- 修正课程进度计算逻辑，假设remaining为已完成课数" />
+    <option name="LAST_COMMIT_MESSAGE" value="style(students): 重新设计学生页面UI布局和样式&#10;&#10;- 重新组织学生卡片内的信息布局，将学习项目和套餐类型移至左下角&#10;- 调整进度条样式并优化显示逻辑&#10;- 更新页面整体样式，去除毛玻璃效果，改用纯色背景&#10;- 修改加载状态和空状态的视觉设计&#10;- 调整底部导航栏样式和尺寸&#10;- 优化响应式布局，支持更宽的屏幕显示&#10;- 修正课程进度计算逻辑，假设remaining为已完成课数" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

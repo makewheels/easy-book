@@ -4,7 +4,6 @@
       <button class="back-btn" @click="goBack">
         ← 返回
       </button>
-      <h1>学员详情</h1>
     </div>
 
     <div class="content">
@@ -171,6 +170,7 @@ const handleAppointmentSubmit = async (formData) => {
   min-height: 100vh;
   background: #f5f5f5;
   position: relative;
+  font-size: 20px; /* 整体页面字体放大 */
 }
 
 .header {
@@ -182,19 +182,24 @@ const handleAppointmentSubmit = async (formData) => {
   z-index: 100;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .back-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1989fa;
   border: none;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
   margin-right: 15px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 12px 16px;
+  border-radius: 8px;
   transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  background: #096dd9;
 }
 
 .header h1 {
@@ -204,9 +209,8 @@ const handleAppointmentSubmit = async (formData) => {
 }
 
 .content {
-  padding: 20px;
-  max-width: 500px;
-  margin: 0 auto;
+  padding: 20px 0;
+  margin: 0;
 }
 
 .loading {
