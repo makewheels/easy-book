@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from api_server.database import connect_to_mongo, close_mongo_connection
 from api_server.api import students, appointments, attendance
 from dotenv import load_dotenv
+import json
+import os
 
 # 加载环境变量
 load_dotenv()
@@ -20,6 +23,19 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+# 配置JSON响应器，直接返回中文字符而不使用Unicode转义
+class PrettyJSONResponse(JSONResponse):
+    def render(self, content) -> str:
+        return json.dumps(
+            content,
+            ensure_ascii=False,  # 不使用ASCII转义，直接返回中文字符
+            separators=(",", ":"),  # 紧凑格式，去除空格
+            default=str  # 处理不能直接序列化的对象
+        )
+
+# 设置默认响应器
+app.default_response_class = PrettyJSONResponse
 
 # CORS配置
 app.add_middleware(

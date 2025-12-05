@@ -25,7 +25,6 @@ class TestStudents(TestBase):
 
         student_data = {
             "name": f"Test Student - {datetime.datetime.now().strftime('%H%M%S')}",
-            "nickname": "Auto Test",
             "learning_item": "自由泳",
             "package_type": "1v1",
             "total_lessons": 10,
@@ -86,7 +85,7 @@ class TestStudents(TestBase):
 
         student_id = self.test_data["student_id"]
         update_data = {
-            "nickname": "Updated Nickname",
+            "name": "Updated Name",
             "learning_item": "蝶泳",
             "note": "自动化测试更新"
         }
@@ -95,11 +94,11 @@ class TestStudents(TestBase):
         self.assert_equal(response.status_code, 200, "Update student API status code")
 
         updated_student = response.json()
-        self.assert_equal(updated_student.get("nickname"), update_data["nickname"], "Nickname updated")
+        self.assert_equal(updated_student.get("name"), update_data["name"], "Name updated")
         self.assert_equal(updated_student.get("learning_item"), update_data["learning_item"], "Learning item updated")
         self.assert_equal(updated_student.get("note"), update_data["note"], "Note updated")
 
-        print(f"通过：测试4通过 - 更新学生信息成功 - {updated_student['nickname']}")
+        print(f"通过：测试4通过 - 更新学生信息成功 - {updated_student['name']}")
 
     def test_05_api_delete_student(self):
         """测试5：API删除学生"""

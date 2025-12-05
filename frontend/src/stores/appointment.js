@@ -273,6 +273,41 @@ export const useAppointmentStore = defineStore('appointment', {
 
       console.log('学员状态更新完成')
       return true
+    },
+
+    // 移除预约（用于局部更新）
+    removeAppointment(appointmentId) {
+      console.log('移除预约:', appointmentId)
+
+      // 从主要预约列表中移除
+      this.appointments = this.appointments.filter(a => a.id !== appointmentId)
+
+      // 从每日预约数据中移除
+      if (this.dailyAppointmentsData && this.dailyAppointmentsData.slots) {
+        this.dailyAppointmentsData.slots = this.dailyAppointmentsData.slots.map(slot => {
+          if (slot.students) {
+            slot.students = slot.students.filter(student => student.appointment_id !== appointmentId)
+          }
+          return slot
+        }).filter(slot => slot.students && slot.students.length > 0)
+      }
+
+      // 从未来预约数据中移除
+      if (this.upcomingAppointmentsData && this.upcomingAppointmentsData.length > 0) {
+        this.upcomingAppointmentsData = this.upcomingAppointmentsData.map(dayData => {
+          if (dayData.slots) {
+            dayData.slots = dayData.slots.map(slot => {
+              if (slot.students) {
+                slot.students = slot.students.filter(student => student.appointment_id !== appointmentId)
+              }
+              return slot
+            }).filter(slot => slot.students && slot.students.length > 0)
+          }
+          return dayData
+        })
+      }
+
+      console.log('预约移除完成')
     }
   }
 })

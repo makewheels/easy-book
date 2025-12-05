@@ -151,7 +151,6 @@ class TestBase:
         """创建测试学生"""
         student_data = {
             "name": f"{name_prefix} - {datetime.datetime.now().strftime('%H%M%S')}",
-            "nickname": "Auto Test",
             "learning_item": "自由泳",
             "package_type": "1v1",
             "total_lessons": 10,

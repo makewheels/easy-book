@@ -84,7 +84,11 @@
       "Bash(powershell:*)",
       "Bash(set PYTHONUTF8=1)",
       "Bash(tree:*)",
-      "mcp__chrome-devtools__take_screenshot"
+      "mcp__chrome-devtools__take_screenshot",
+      "Bash(cd:*)",
+      "Bash(start http://localhost:5177)",
+      "Bash(node:*)",
+      "Bash(start:*)"
     ],
     "deny": [],
     "ask": []

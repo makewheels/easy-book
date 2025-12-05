@@ -174,13 +174,57 @@ const handleCancel = async (student) => {
       throw new Error('缺少必要的预约ID或学员ID')
     }
 
+    // 保存当前滚动位置
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop
+
     const response = await appointmentApi.cancel(student.appointment_id)
 
-    if (response && response.data) {
-      await appointmentStore.fetchUpcomingAppointments(30)
-      toast.success('预约取消成功，课程次数已恢复')
+    // 检查后端返回的业务状态码
+    if (response.code === 200) {
+      // 成功 - 直接操作store数据进行局部更新，改变状态为已取消
+      const store = useAppointmentStore()
+
+      // 更新upcomingAppointmentsData中的学生状态
+      if (store.upcomingAppointmentsData) {
+        store.upcomingAppointmentsData.forEach(dayData => {
+          if (dayData.slots) {
+            dayData.slots.forEach(slot => {
+              if (slot.students) {
+                slot.students.forEach(s => {
+                  if (s.appointment_id === student.appointment_id) {
+                    s.status = 'cancel'
+                    s.dynamic_status = 'cancel'
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+
+      // 更新dailyAppointmentsData中的学生状态
+      if (store.dailyAppointmentsData && store.dailyAppointmentsData.slots) {
+        store.dailyAppointmentsData.slots.forEach(slot => {
+          if (slot.students) {
+            slot.students.forEach(s => {
+              if (s.appointment_id === student.appointment_id) {
+                s.status = 'cancel'
+                s.dynamic_status = 'cancel'
+              }
+            })
+          }
+        })
+      }
+
+      toast.success(response.message || '预约取消成功，课程次数已恢复')
+
+      // 恢复滚动位置
+      setTimeout(() => {
+        window.scrollTo(0, scrollPosition)
+      }, 50)
     } else {
-      throw new Error('取消预约API返回数据异常')
+      // 业务逻辑错误，直接显示后端返回的错误信息
+      throw new Error(response.message || '取消预约失败')
     }
   } catch (error) {
     console.error('取消预约错误:', error)

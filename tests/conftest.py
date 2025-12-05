@@ -155,7 +155,6 @@ class TestBase:
         """创建测试学生"""
         student_data = {
             "name": f"{name_prefix} - {datetime.datetime.now().strftime('%H%M%S')}",
-            "nickname": "Auto Test",
             "learning_item": "自由泳",
             "package_type": "1v1",
             "total_lessons": 10,
@@ -179,10 +178,19 @@ class TestBase:
         if not date:
             date = datetime.datetime.now().strftime("%Y-%m-%d")
         if not time_slot:
-            time_slot = "19:00"
+            # 使用辅助函数获取无冲突时间
+            time_slot = self.get_test_time_slot(1)  # 23:00
+
+        # 构造开始和结束时间
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)  # 默认1小时课程
 
         appointment_data = {
             "student_id": student_id,
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            # 兼容性字段
             "appointment_date": date,
             "time_slot": time_slot
         }
@@ -200,6 +208,14 @@ class TestBase:
     def get_today_date(self):
         """获取今天的日期"""
         return datetime.datetime.now().strftime("%Y-%m-%d")
+
+    def get_test_time_slot(self, hour_offset=0):
+        """获取测试用的时间槽，避免与现有预约冲突"""
+        # 使用较晚的时间（22:00之后）避免冲突
+        base_hour = 22 + hour_offset
+        if base_hour >= 24:
+            base_hour = base_hour - 24
+        return f"{base_hour:02d}:00"
 
     def get_tomorrow_date(self):
         """获取明天的日期"""
