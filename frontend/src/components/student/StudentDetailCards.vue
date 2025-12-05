@@ -26,16 +26,16 @@
       </div>
       <div class="card-content">
         <div class="detail-row">
-          <span class="detail-label">课程售价</span>
-          <span class="detail-value price">¥{{ student.price || 0 }}</span>
+          <span class="detail-label">售价</span>
+          <span class="detail-value price">{{ student.price || 0 }} 元</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">俱乐部分成</span>
-          <span class="detail-value">¥{{ student.venue_share || 0 }}</span>
+          <span class="detail-value venue-share">{{ student.venue_share || 0 }} 元</span>
         </div>
         <div class="detail-row highlight">
           <span class="detail-label">利润</span>
-          <span class="detail-value profit">¥{{ student.profit || 0 }}</span>
+          <span class="detail-value profit">{{ student.profit || 0 }} 元</span>
         </div>
       </div>
     </div>
@@ -202,8 +202,8 @@ const formatDateShort = (dateString) => {
 
 .detail-label {
   font-size: 16px;
-  color: #666;
-  font-weight: 500;
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 .detail-value {
@@ -212,14 +212,6 @@ const formatDateShort = (dateString) => {
   font-weight: 600;
 }
 
-.detail-value.price {
-  color: #52c41a;
-}
-
-.detail-value.profit {
-  color: #1989fa;
-  font-weight: 700;
-}
 
 /* 上课记录样式 */
 .empty-records {
