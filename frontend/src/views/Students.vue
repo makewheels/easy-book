@@ -109,7 +109,6 @@ const goToAddStudent = () => {
   margin: 0 0 10px 0;
   text-align: center;
   color: #1a1a1a;
-  border-radius: 12px;
 }
 
 .header .stats {
@@ -183,7 +182,7 @@ const goToAddStudent = () => {
 .add-student-btn {
   background: #fff;
   color: #1989fa;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #1989fa;
   padding: 18px 10px;
   text-align: center;
   margin: 0 0 10px 0;
@@ -198,7 +197,6 @@ const goToAddStudent = () => {
 
 .add-student-btn:hover {
   background: #f0f9ff;
-  border-color: #1989fa;
 }
 
 

@@ -14,7 +14,7 @@
       
       <form v-else @submit.prevent="handleSubmit" class="student-form">
         <div class="form-section">
-          <h3>基本信息</h3>
+          <h3><span class="title-icon">👤</span> 基本信息</h3>
           
           <div class="form-group">
             <label>姓名 *</label>
@@ -60,7 +60,7 @@
         </div>
         
         <div class="form-section">
-          <h3>套餐信息</h3>
+          <h3><span class="title-icon">💰</span> 套餐信息</h3>
           
           <div class="form-group">
             <label>套餐类型 *</label>
@@ -71,7 +71,6 @@
               placeholder="请输入套餐类型（如：1v1、1v多、小班课等）"
             />
             <div class="package-type-suggestions">
-              <div class="suggestion-label">常用类型：</div>
               <div class="suggestion-chips">
                 <span
                   v-for="type in packageTypeSuggestions"
@@ -86,7 +85,7 @@
           </div>
           
           <div class="form-group">
-            <label>总共 *</label>
+            <label>总共（次）</label>
             <input
               type="number"
               v-model="form.total_lessons"
@@ -97,14 +96,11 @@
           </div>
 
           <div class="form-group">
-            <label>剩余</label>
+            <label>剩余（次）</label>
             <input
               type="number"
               v-model="form.remaining_lessons"
-              readonly
-              disabled
-              class="readonly-input"
-              placeholder="剩余次数（由系统自动管理）"
+              placeholder="请输入剩余次数"
             />
           </div>
           
@@ -202,14 +198,7 @@ const learningItemSuggestions = [
 // 套餐类型建议列表
 const packageTypeSuggestions = [
   '1v1',
-  '1v多',
-  '小班课',
-  '大班课',
-  '私教课',
-  '团体课',
-  '入门班',
-  '提高班',
-  '训练班'
+  '1v多'
 ]
 
 // 上交俱乐部金额建议列表
@@ -306,41 +295,49 @@ const handleSubmit = async () => {
 .edit-student-page {
   min-height: 100vh;
   background: #f5f5f5;
-  overflow-y: auto;
+  position: relative;
+  font-size: 20px;
 }
 
 .header {
-  background: #1989fa;
-  color: #fff;
-  padding: 15px;
-  position: fixed;
+  background: #fff;
+  color: #1a1a1a;
+  padding: 16px 20px;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
-  height: 60px;
-  box-sizing: border-box;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .back-btn {
   background: none;
   border: none;
-  color: #fff;
-  font-size: 18px;
+  color: #666;
+  font-size: 16px;
   cursor: pointer;
   margin-right: 15px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
 }
 
 .header h1 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
+  font-weight: 600;
 }
 
 .content {
-  padding: 15px;
-  padding-top: 75px;
+  padding: 20px 0;
+  margin: 0;
   min-height: calc(100vh - 60px);
   box-sizing: border-box;
 }
@@ -352,45 +349,60 @@ const handleSubmit = async () => {
 }
 
 .student-form {
-  max-width: 400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .form-section {
   background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 10px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
 }
 
 .form-section h3 {
-  margin: 0 0 15px 0;
-  color: #1989fa;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  margin: -20px -20px 20px -20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
   box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.3s ease;
 }
 
 .form-group input:focus,
@@ -401,100 +413,114 @@ const handleSubmit = async () => {
 }
 
 .profit-display {
-  padding: 10px;
-  background: #f0f9ff;
-  border: 1px solid #b3d8ff;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #1989fa;
+  padding: 20px;
+  background: #f8f9fa;
+  border: 2px solid #f5222d;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f5222d;
   text-align: center;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
 }
 
 .form-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  gap: 15px;
+  margin: 0 10px 20px 10px;
 }
 
 .btn-cancel,
 .btn-save {
   flex: 1;
-  padding: 12px;
+  padding: 16px 20px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-cancel {
-  background: #f5f5f5;
+  background: #fff;
   color: #666;
+  border: 2px solid #e0e0e0;
+}
+
+.btn-cancel:hover {
+  background: #f8f8f8;
 }
 
 .btn-save {
   background: #1989fa;
   color: #fff;
+  border: 2px solid #1989fa;
+}
+
+.btn-save:hover {
+  background: #096dd9;
+  border-color: #096dd9;
 }
 
 .btn-save:disabled {
   background: #ccc;
+  border-color: #ccc;
   cursor: not-allowed;
 }
 
 .readonly-input {
-  background-color: #f5f5f5;
-  color: #666;
+  background: #f8f9fa;
+  color: #999;
   cursor: not-allowed;
-  border-color: #ddd;
+  border: 2px dashed #d0d0d0;
+  font-style: italic;
+  text-align: center;
+  font-weight: 500;
 }
 
 .readonly-input:focus {
   outline: none;
-  border-color: #ddd;
+  border: 2px dashed #d0d0d0;
 }
 
-.learning-item-suggestions {
-  margin-top: 8px;
-}
-
-.package-type-suggestions {
-  margin-top: 8px;
-}
-
+.learning-item-suggestions,
+.package-type-suggestions,
 .venue-share-suggestions {
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .suggestion-label {
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .suggestion-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .suggestion-chip {
-  padding: 4px 8px;
+  padding: 8px 12px;
   background: #f0f9ff;
-  border: 1px solid #b3d8ff;
-  border-radius: 4px;
-  font-size: 12px;
+  border: 1px solid #1989fa;
+  border-radius: 8px;
+  font-size: 14px;
   color: #1989fa;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .suggestion-chip:hover {
   background: #1989fa;
   color: #fff;
-  border-color: #1989fa;
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 </style>

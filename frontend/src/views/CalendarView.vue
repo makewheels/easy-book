@@ -247,7 +247,7 @@ onMounted(() => {
   justify-content: center;
   font-size: 18px;
   font-weight: 700;
-  color: #1989fa;
+  color: #0050b3;
   border-bottom: 2px solid #e3f2fd;
   grid-row: 1;
   position: sticky;
@@ -260,7 +260,7 @@ onMounted(() => {
   background: #f5f5f5;
   font-size: 16px;
   font-weight: 700;
-  color: #1989fa;
+  color: #0050b3;
   padding: 12px 8px;
   line-height: 1.3;
   text-align: center;
@@ -280,7 +280,7 @@ onMounted(() => {
   justify-content: center;
   font-size: 18px;
   font-weight: 700;
-  color: #1989fa;
+  color: #0050b3;
   width: 100px;
   border-bottom: 1px solid #e0e0e0;
   grid-column: 1;

@@ -73,8 +73,8 @@ onMounted(async () => {
       const referrer = new URL(document.referrer)
       const currentOrigin = window.location.origin
 
-      // 只记录同源的引用页面
-      if (referrer.origin === currentOrigin) {
+      // 只记录同源的引用页面，且排除编辑页面
+      if (referrer.origin === currentOrigin && !referrer.pathname.includes('/edit')) {
         referrerUrl.value = referrer.pathname
       }
     } catch (error) {
@@ -186,20 +186,21 @@ const handleAppointmentSubmit = async (formData) => {
 }
 
 .back-btn {
-  background: #1989fa;
+  background: none;
   border: none;
-  color: #fff;
+  color: #666;
   font-size: 16px;
   cursor: pointer;
   margin-right: 15px;
-  padding: 12px 16px;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
   transition: all 0.3s ease;
   font-weight: 500;
 }
 
 .back-btn:hover {
-  background: #096dd9;
+  background: #f0f0f0;
+  color: #1a1a1a;
 }
 
 .header h1 {
