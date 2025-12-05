@@ -34,7 +34,7 @@
           <span class="detail-value">¥{{ student.venue_share || 0 }}</span>
         </div>
         <div class="detail-row highlight">
-          <span class="detail-label">净利润</span>
+          <span class="detail-label">利润</span>
           <span class="detail-value profit">¥{{ student.profit || 0 }}</span>
         </div>
       </div>
@@ -157,8 +157,7 @@ const formatDateShort = (dateString) => {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e0e0e0;
 }
 
 .card-title {
@@ -168,13 +167,13 @@ const formatDateShort = (dateString) => {
   padding: 16px 20px;
   background: #f8f9fa;
   border-bottom: 1px solid #e8e8e8;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: #1a1a1a;
 }
 
 .title-icon {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .card-content {
@@ -202,13 +201,13 @@ const formatDateShort = (dateString) => {
 }
 
 .detail-label {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   font-weight: 500;
 }
 
 .detail-value {
-  font-size: 14px;
+  font-size: 16px;
   color: #1a1a1a;
   font-weight: 600;
 }
@@ -289,18 +288,18 @@ const formatDateShort = (dateString) => {
 }
 
 .timeline-date {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
 }
 
 .timeline-time {
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
 }
 
 .timeline-status {
-  font-size: 12px;
+  font-size: 14px;
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 500;
@@ -325,7 +324,7 @@ const formatDateShort = (dateString) => {
 }
 
 .timeline-detail {
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
 }
 </style>
