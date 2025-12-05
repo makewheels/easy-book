@@ -32,26 +32,27 @@
           <div class="card-header">
             <div class="student-info">
               <div class="name">{{ student.name }}</div>
-              <div class="package-type">{{ student.package_type }}</div>
             </div>
           </div>
 
           <div class="card-body">
-            <!-- 简化的课程信息 -->
-            <div class="lessons-info">
-              <span class="lessons-text">{{ student.remaining_lessons }}/{{ student.total_lessons }} 节课</span>
-              <div class="progress-bar">
-                <div
-                  class="progress-fill"
-                  :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"
-                ></div>
+            <!-- 学习项目和类型在左下角 -->
+            <div class="bottom-row">
+              <div class="left-info">
+                <span class="learning-value">{{ student.learning_item }}</span>
+                <span class="package-type">{{ student.package_type }}</span>
+              </div>
+              <div class="right-info">
+                <span class="lessons-text">{{ student.remaining_lessons }}/{{ student.total_lessons }} 节课</span>
               </div>
             </div>
 
-            <!-- 简化的学习项目 -->
-            <div class="learning-item">
-              <span class="learning-label">学习项目：</span>
-              <span class="learning-value">{{ student.learning_item }}</span>
+            <!-- 进度条 -->
+            <div class="progress-bar">
+              <div
+                class="progress-fill"
+                :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"
+              ></div>
             </div>
           </div>
         </div>
@@ -113,37 +114,37 @@ const goToAddStudent = () => {
 // 计算课程进度百分比
 const getProgressPercentage = (remaining, total) => {
   if (!total || total === 0) return 0
-  const completed = total - remaining
-  return (completed / total) * 100
+  // 假设remaining实际上是已完成课数
+  return (remaining / total) * 100
 }
 </script>
 
 <style scoped>
 .students-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
   background: #f5f5f5;
+  position: relative;
   padding-bottom: 80px;
+  width: 100%;
 }
 
 /* 头部样式 */
 .header {
   background: #fff;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .header-content {
-  max-width: 430px;
-  margin: 0 auto;
+  margin: 0 10px;
 }
 
 .header h1 {
   font-size: 32px;
   font-weight: 800;
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
   text-align: center;
   color: #1a1a1a;
 }
@@ -158,9 +159,8 @@ const getProgressPercentage = (remaining, total) => {
 
 /* 内容区域 */
 .content {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 20px 15px;
+  margin: 0;
+  padding: 20px 0;
 }
 
 .loading {
@@ -174,8 +174,8 @@ const getProgressPercentage = (remaining, total) => {
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #fff;
+  border: 4px solid #f0f0f0;
+  border-top: 4px solid #1989fa;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
@@ -187,7 +187,7 @@ const getProgressPercentage = (remaining, total) => {
 }
 
 .loading-text {
-  color: #fff;
+  color: #666;
   font-size: 18px;
   font-weight: 500;
 }
@@ -198,19 +198,17 @@ const getProgressPercentage = (remaining, total) => {
 }
 
 .empty-message {
-  color: #fff;
+  color: #666;
   font-size: 20px;
   font-weight: 600;
   margin-bottom: 20px;
-  opacity: 0.9;
 }
 
 .add-first-btn {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   padding: 16px 32px;
   font-size: 18px;
   font-weight: 600;
@@ -220,31 +218,28 @@ const getProgressPercentage = (remaining, total) => {
 
 /* 新增学员按钮 */
 .add-student-btn {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  background: #fff;
   color: #1989fa;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 20px;
-  padding: 18px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 18px 10px;
   text-align: center;
-  margin: 0 0 25px 0;
+  margin: 0 0 10px 0;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 学员卡片 */
 .student-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  margin-bottom: 20px;
-  padding: 25px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 4px;
+  margin: 0 0 10px 0;
+  padding: 20px 30px;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
@@ -263,11 +258,11 @@ const getProgressPercentage = (remaining, total) => {
   line-height: 1.2;
 }
 
-.student-info .package-type {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
+.package-type {
+  background: #f5f5f5;
+  color: #666;
   padding: 6px 16px;
-  border-radius: 16px;
+  border-radius: 4px;
   font-size: 14px;
   font-weight: 600;
   display: inline-block;
@@ -281,43 +276,53 @@ const getProgressPercentage = (remaining, total) => {
   gap: 15px;
 }
 
-/* 课程信息 */
-.lessons-info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .lessons-text {
-  font-size: 18px;
-  color: #1989fa;
+  font-size: 20px;
+  color: #0066cc;
   font-weight: 700;
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(25, 137, 250, 0.1);
+  background: #f0f0f0;
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #1989fa 0%, #096dd9 100%);
+  background: #1989fa;
   border-radius: 4px;
+}
+
+/* 底部信息行 */
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.left-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.right-info {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 /* 学习项目 */
 .learning-item {
-  padding: 16px 20px;
-  background: rgba(240, 249, 255, 0.8);
-  border-radius: 12px;
-  border-left: 4px solid #1989fa;
+  display: block;
 }
 
 .learning-label {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   margin-right: 8px;
   font-weight: 500;
@@ -326,7 +331,7 @@ const getProgressPercentage = (remaining, total) => {
 .learning-value {
   font-size: 16px;
   color: #1a1a1a;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* 底部导航 */
@@ -335,16 +340,20 @@ const getProgressPercentage = (remaining, total) => {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
+  width: calc(100% - 60px);
+  max-width: calc(100vw - 60px);
   height: 70px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  border-radius: 8px 8px 0 0;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  padding: 0 30px;
+  box-sizing: border-box;
 }
 
 .nav-item {
