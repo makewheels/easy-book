@@ -13,100 +13,146 @@
       </div>
       
       <div v-else-if="student" class="student-info">
-        <div class="info-section">
-          <h3>基本信息</h3>
-          <div class="info-item">
-            <label>姓名:</label>
-            <span>{{ student.name || '-' }}</span>
+        <!-- 学员概览卡片 -->
+        <div class="overview-card">
+          <div class="student-header">
+            <div class="student-name">{{ student.name }}</div>
+            <div class="package-badge">{{ student.package_type }}</div>
           </div>
-          <div class="info-item">
-            <label>学习项目:</label>
-            <span>{{ student.learning_item || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <label>备注:</label>
-            <span>{{ student.note || '' }}</span>
-          </div>
-        </div>
-        
-        <div class="info-section">
-          <h3>套餐信息</h3>
-          <div class="info-item">
-            <label>套餐类型:</label>
-            <span>{{ student.package_type || '-' }}</span>
-          </div>
-          <div class="info-item">
-            <label>剩余:</label>
-            <span class="remaining-lessons">{{ student.remaining_lessons || 0 }} 次</span>
-          </div>
-          <div class="info-item">
-            <label>总共:</label>
-            <span>{{ student.total_lessons || 0 }} 次</span>
-          </div>
-          <div class="info-item">
-            <label>已上课:</label>
-            <span class="completed-lessons">{{ (student.total_lessons || 0) - (student.remaining_lessons || 0) }} 次</span>
-          </div>
-          <div class="info-item">
-            <label>售价:</label>
-            <span>{{ student.price || 0 }} 元</span>
-          </div>
-          <div class="info-item">
-            <label>上交俱乐部:</label>
-            <span>{{ student.venue_share || 0 }} 元</span>
-          </div>
-          <div class="info-item">
-            <label>利润:</label>
-            <span>{{ student.profit || 0 }} 元</span>
-          </div>
-        </div>
-        
-        <div class="info-section">
-          <h3>上课记录</h3>
-          <div v-if="attendances.length === 0" class="no-records">
-            暂无上课记录
-          </div>
-          <div v-else class="attendance-list">
-            <div 
-              v-for="record in attendances" 
-              :key="record.id"
-              class="attendance-item"
-            >
-              <div class="record-info">
-                <div class="date-time">
-                  {{ record.date }} {{ record.time }}
-                </div>
-                <div class="status" :class="getStatusClass(record.status)">
-                  {{ getStatusText(record.status) }}
-                </div>
+
+          <div class="course-stats">
+            <div class="stat-item">
+              <div class="stat-number" :class="getRemainingClass(student.remaining_lessons)">
+                {{ student.remaining_lessons || 0 }}
               </div>
-              <div class="lessons-info">
-                上课前: {{ record.lessons_before }} 次 → 
-                上课后: {{ record.lessons_after }} 次
+              <div class="stat-label">剩余</div>
+            </div>
+            <div class="progress-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number completed">{{ (student.total_lessons || 0) - (student.remaining_lessons || 0) }}</div>
+              <div class="stat-label">已上课</div>
+            </div>
+            <div class="progress-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number total">{{ student.total_lessons || 0 }}</div>
+              <div class="stat-label">总共</div>
+            </div>
+          </div>
+          <!-- 进度条 -->
+          <div class="progress-section">
+            <div class="progress-bar-container">
+              <div class="progress-fill" :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"></div>
+            </div>
+            <div class="progress-text">课程进度: {{ Math.round(getProgressPercentage(student.remaining_lessons, student.total_lessons)) }}%</div>
+          </div>
+        </div>
+
+        <!-- 快捷操作按钮 -->
+        <div class="quick-actions">
+          <button class="action-btn primary" @click="showAppointmentDialog = true">
+            <span class="btn-icon">📅</span>
+            新增预约
+          </button>
+          <button class="action-btn secondary" @click="goToEdit">
+            <span class="btn-icon">✏️</span>
+            编辑信息
+          </button>
+        </div>
+
+        <!-- 详细信息卡片 -->
+        <div class="detail-cards">
+          <!-- 基本信息 -->
+          <div class="detail-card">
+            <div class="card-title">
+              <span class="title-icon">👤</span>
+              基本信息
+            </div>
+            <div class="card-content">
+              <div class="detail-row">
+                <span class="detail-label">学习项目</span>
+                <span class="detail-value">{{ student.learning_item || '-' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">备注</span>
+                <span class="detail-value">{{ student.note || '暂无备注' }}</span>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="info-section">
-          <h3>其他信息</h3>
-          <div class="info-item">
-            <label>创建时间:</label>
-            <span>{{ formatDate(student.create_time) }}</span>
+          <!-- 财务信息 -->
+          <div class="detail-card">
+            <div class="card-title">
+              <span class="title-icon">💰</span>
+              财务信息
+            </div>
+            <div class="card-content">
+              <div class="detail-row">
+                <span class="detail-label">课程售价</span>
+                <span class="detail-value price">¥{{ student.price || 0 }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">俱乐部分成</span>
+                <span class="detail-value">¥{{ student.venue_share || 0 }}</span>
+              </div>
+              <div class="detail-row highlight">
+                <span class="detail-label">净利润</span>
+                <span class="detail-value profit">¥{{ student.profit || 0 }}</span>
+              </div>
+            </div>
           </div>
-          <div class="info-item">
-            <label>最后更新:</label>
-            <span>{{ formatDate(student.update_time) }}</span>
-          </div>
-        </div>
 
-        <div class="actions">
-          <button class="btn-appointment" @click="showAppointmentDialog = true">
-            新增预约
-          </button>
-          <button class="btn-edit" @click="goToEdit">
-            编辑信息
-          </button>
+          <!-- 上课记录 -->
+          <div class="detail-card">
+            <div class="card-title">
+              <span class="title-icon">📚</span>
+              上课记录
+            </div>
+            <div class="card-content">
+              <div v-if="attendances.length === 0" class="empty-records">
+                <div class="empty-icon">📝</div>
+                <div class="empty-text">暂无上课记录</div>
+              </div>
+              <div v-else class="attendance-timeline">
+                <div
+                  v-for="record in attendances.slice().reverse()"
+                  :key="record.id"
+                  class="timeline-item"
+                >
+                  <div class="timeline-dot" :class="getStatusClass(record.status)"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-header">
+                      <span class="timeline-date">{{ formatDateShort(record.date) }}</span>
+                      <span class="timeline-time">{{ record.time }}</span>
+                      <span class="timeline-status" :class="getStatusClass(record.status)">
+                        {{ getStatusText(record.status) }}
+                      </span>
+                    </div>
+                    <div class="timeline-detail">
+                      课程消耗: {{ record.lessons_before }} → {{ record.lessons_after }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 系统信息 -->
+          <div class="detail-card">
+            <div class="card-title">
+              <span class="title-icon">⚙️</span>
+              系统信息
+            </div>
+            <div class="card-content">
+              <div class="detail-row">
+                <span class="detail-label">创建时间</span>
+                <span class="detail-value">{{ formatDate(student.create_time) }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">最后更新</span>
+                <span class="detail-value">{{ formatDate(student.update_time) }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -298,41 +344,83 @@ const formatDate = (dateString) => {
     return '时间格式错误'
   }
 }
+
+// 格式化短日期
+const formatDateShort = (dateString) => {
+  if (!dateString) return '未知时间'
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('zh-CN', {
+      month: '2-digit',
+      day: '2-digit'
+    })
+  } catch (error) {
+    return '时间格式错误'
+  }
+}
+
+// 计算课程进度百分比
+const getProgressPercentage = (remaining, total) => {
+  if (!total || total === 0) return 0
+  const completed = total - remaining
+  return (completed / total) * 100
+}
+
+// 根据剩余课程数量获取状态样式
+const getRemainingClass = (remaining) => {
+  if (remaining === 0) return 'remaining-empty'
+  if (remaining <= 2) return 'remaining-low'
+  if (remaining <= 5) return 'remaining-medium'
+  return 'remaining-good'
+}
 </script>
 
 <style scoped>
 .student-detail-page {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f8f9fa;
+  position: relative;
 }
 
 .header {
-  background: #1989fa;
-  color: #fff;
-  padding: 15px;
+  background: #fff;
+  color: #1a1a1a;
+  padding: 16px 20px;
   position: sticky;
   top: 0;
   z-index: 100;
   display: flex;
   align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
-  background: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   margin-right: 15px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .header h1 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
+  font-weight: 600;
 }
 
 .content {
-  padding: 15px;
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .loading {
@@ -341,124 +429,366 @@ const formatDate = (dateString) => {
   color: #666;
 }
 
-.info-section {
+/* 概览卡片 */
+.overview-card {
   background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-.info-section h3 {
-  margin: 0 0 15px 0;
-  color: #1989fa;
+.overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.student-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.package-badge {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.course-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+  min-width: 60px;
+  white-space: nowrap;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.stat-number.remaining-good {
+  color: #52c41a;
+}
+
+.stat-number.remaining-medium {
+  color: #faad14;
+}
+
+.stat-number.remaining-low {
+  color: #ff7a45;
+}
+
+.stat-number.remaining-empty {
+  color: #ff4d4f;
+}
+
+.stat-number.completed {
+  color: #1890ff;
+}
+
+.stat-number.total {
+  color: #722ed1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.progress-divider {
+  width: 1px;
+  height: 40px;
+  background: #e8e8e8;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+.progress-section {
+  margin-top: 16px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+/* 快捷操作 */
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
+}
+
+.action-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+}
+
+.action-btn.secondary {
+  background: #fff;
+  color: #1890ff;
+  border: 2px solid #1890ff;
+}
+
+.action-btn.secondary:hover {
+  background: #f0f9ff;
+  transform: translateY(-2px);
+}
+
+.btn-icon {
   font-size: 18px;
 }
 
-.info-item {
+/* 详细信息卡片 */
+.detail-cards {
   display: flex;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
-.info-item label {
-  min-width: 80px;
-  color: #666;
-  font-size: 14px;
+.title-icon {
+  font-size: 20px;
 }
 
-.info-item span {
-  color: #333;
-  font-size: 14px;
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.remaining-lessons {
-  color: #1989fa;
-  font-weight: bold;
-}
-
-.completed-lessons {
-  color: #52c41a;
-  font-weight: bold;
-}
-
-.no-records {
-  text-align: center;
-  color: #999;
-  padding: 20px 0;
-}
-
-.attendance-list {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.attendance-item {
-  padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.attendance-item:last-child {
-  border-bottom: none;
-}
-
-.record-info {
+.detail-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  padding: 8px 0;
 }
 
-.date-time {
+.detail-row.highlight {
+  background: #f6ffed;
+  margin: 0 -8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #52c41a;
+}
+
+.detail-label {
   font-size: 14px;
-  color: #333;
+  color: #666;
+  min-width: 80px;
 }
 
-.status {
+.detail-value {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+}
+
+.detail-value.price {
+  color: #fa8c16;
+  font-weight: 600;
+}
+
+.detail-value.profit {
+  color: #52c41a;
+  font-weight: 700;
+}
+
+/* 上课记录时间线 */
+.empty-records {
+  text-align: center;
+  padding: 30px 0;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 14px;
+}
+
+.attendance-timeline {
+  position: relative;
+  padding-left: 20px;
+}
+
+.attendance-timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e8e8e8;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -16px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-dot.status-checked {
+  background: #52c41a;
+}
+
+.timeline-dot.status-cancel {
+  background: #ff4d4f;
+}
+
+.timeline-content {
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 12px;
+  margin-left: 4px;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.timeline-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.timeline-time {
   font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  color: #666;
 }
 
-.status-checked {
+.timeline-status {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.timeline-status.status-checked {
   background: #e6f7e6;
   color: #52c41a;
 }
 
-.status-cancel {
-  background: #f5f5f5;
-  color: #999;
+.timeline-status.status-cancel {
+  background: #fff2f0;
+  color: #ff4d4f;
 }
 
-.lessons-info {
+.timeline-detail {
   font-size: 12px;
   color: #666;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.btn-appointment,
-.btn-edit {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.btn-appointment {
-  background: #1989fa;
-  color: #fff;
-}
-
-.btn-edit {
-  background: #52c41a;
-  color: #fff;
 }
 
 .appointment-dialog {

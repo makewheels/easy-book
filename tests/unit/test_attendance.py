@@ -10,8 +10,8 @@ import time
 import datetime
 import requests
 
-# 添加当前目录到路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# 添加tests目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from conftest import TestBase
 
 class TestAttendance(TestBase):

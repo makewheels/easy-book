@@ -16,8 +16,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
-# 添加当前目录到路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# 添加tests目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from conftest import TestBase
 
 class TestMondayRestriction(TestBase):

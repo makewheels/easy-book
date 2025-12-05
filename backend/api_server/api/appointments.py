@@ -51,7 +51,7 @@ async def get_student_appointments(
 @router.get("/daily/{target_date}")
 async def get_daily_appointments(target_date: date):
     try:
-        daily_data = await AppointmentService.get_daily(target_date)
+        daily_data = await AppointmentService.get_daily_appointments(str(target_date))
         return {
             "code": 200,
             "message": "获取成功",
@@ -65,7 +65,7 @@ async def get_upcoming_appointments(
     days: int = Query(30, description="获取未来多少天的预约，默认30天")
 ):
     try:
-        upcoming_data = await AppointmentService.get_upcoming(days)
+        upcoming_data = await AppointmentService.get_upcoming_appointments(days)
         return {
             "code": 200,
             "message": "获取成功",

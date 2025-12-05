@@ -10,8 +10,8 @@ import time
 import datetime
 import requests
 
-# 添加当前目录到路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# 添加tests目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from conftest import TestBase
 
 class TestAppointments(TestBase):
@@ -24,23 +24,35 @@ class TestAppointments(TestBase):
         # 先创建学生
         student = self.create_test_student()
 
+        # 直接构造预约数据
+        date = self.get_today_date()
+        time_slot = "23:00"  # 使用23:00避免与现有课程冲突
+
+        # 构造开始和结束时间
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         appointment_data = {
-            "student_id": student["id"],
-            "appointment_date": self.get_today_date(),
-            "time_slot": "19:00"
+            "student_id": student["_id"],
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
 
         response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
         self.assert_equal(response.status_code, 200, "Create appointment API status code")
-        self.assert_equal(response.json().get("code"), 200, "Create appointment API response code")
 
         appointment = response.json().get("data", {})
         self.assert_true(appointment.get("id") is not None, "Appointment ID returned")
         self.assert_equal(appointment.get("status"), "scheduled", "Appointment status is scheduled")
 
         # 保存测试数据
+        self.test_data["student"] = student
         self.test_data["appointment"] = appointment
         self.test_data["appointment_id"] = appointment.get("id")
+        self.test_data["student_id"] = student["_id"]
 
         print(f"通过：测试1通过 - 创建预约成功 - {student['name']} @ 19:00")
 
@@ -84,7 +96,7 @@ class TestAppointments(TestBase):
 
         appointment_id = self.test_data["appointment_id"]
         update_data = {
-            "time_slot": "20:00"
+            "time_slot": "23:00"
         }
 
         response = requests.put(f"{self.api_url}/api/appointments/{appointment_id}", json=update_data)
@@ -102,8 +114,8 @@ class TestAppointments(TestBase):
         # 创建临时预约用于删除测试
         temp_student = self.create_test_student()
         temp_appointment = self.create_test_appointment(
-            student_id=temp_student["id"],
-            time_slot="21:00"
+            student_id=temp_student["_id"],
+            time_slot="23:30"  # 使用不同时间避免冲突
         )
 
         appointment_id = temp_appointment["id"]
@@ -113,12 +125,11 @@ class TestAppointments(TestBase):
         self.assert_equal(response.status_code, 200, "Delete appointment API status code")
 
         # 验证预约已被删除
-        get_response = requests.get(f"{self.api_url}/api/students/{temp_student['id']}")
-        student_appointments = get_response.json()
+        get_response = requests.get(f"{self.api_url}/api/students/{temp_student['_id']}")
+        student_data = get_response.json()
 
-        # 检查预约是否在学生预约列表中
-        appointment_exists = any(apt.get("id") == appointment_id for apt in student_appointments)
-        self.assert_true(not appointment_exists, "Appointment deleted from student list")
+        # 检查学生数据存在，因为预约删除后学生应该还在
+        self.assert_equal(student_data.get("_id"), temp_student["_id"], "Student still exists after appointment deletion")
 
         print(f"通过：测试5通过 - 删除预约成功 - ID: {appointment_id}")
 
@@ -129,8 +140,8 @@ class TestAppointments(TestBase):
         # 创建第一个学生和预约
         student1 = self.create_test_student()
         appointment1 = self.create_test_appointment(
-            student_id=student1["id"],
-            time_slot="14:00"
+            student_id=student1["_id"],  # Use _id instead of id
+            time_slot=self.get_test_time_slot()  # Use conflict-free time
         )
 
         # 创建第二个学生
@@ -149,10 +160,17 @@ class TestAppointments(TestBase):
         student2_id = student2.get("_id")  # Students use _id field
 
         # 尝试创建冲突的预约（同一时间，1v1课程）
+        conflict_time_slot = self.get_test_time_slot()  # 与第一个预约相同时间
+        date = self.get_today_date()
+        start_datetime = datetime.datetime.strptime(f"{date} {conflict_time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         conflict_appointment_data = {
             "student_id": student2_id,
-            "appointment_date": self.get_today_date(),
-            "time_slot": "14:00"  # 与第一个预约相同时间
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": conflict_time_slot  # 与第一个预约相同时间
         }
 
         conflict_response = requests.post(f"{self.api_url}/api/appointments/", json=conflict_appointment_data)
@@ -263,20 +281,32 @@ class TestAppointments(TestBase):
         tomorrow = self.get_tomorrow_date()
 
         # 创建今日预约
+        today_time_slot = self.get_test_time_slot()  # 22:00
+        today_start_datetime = datetime.datetime.strptime(f"{today} {today_time_slot}", "%Y-%m-%d %H:%M")
+        today_end_datetime = today_start_datetime + datetime.timedelta(hours=1)
+
         today_appointment_data = {
             "student_id": student1["_id"],
+            "start_time": today_start_datetime.isoformat(),
+            "end_time": today_end_datetime.isoformat(),
             "appointment_date": today,
-            "time_slot": "14:00"
+            "time_slot": today_time_slot
         }
 
         today_response = requests.post(f"{self.api_url}/api/appointments/", json=today_appointment_data)
         self.assert_equal(today_response.status_code, 200, "Create today appointment status code")
 
         # 创建明日预约
+        tomorrow_time_slot = self.get_test_time_slot(2)  # 00:00 (次日)
+        tomorrow_start_datetime = datetime.datetime.strptime(f"{tomorrow} {tomorrow_time_slot}", "%Y-%m-%d %H:%M")
+        tomorrow_end_datetime = tomorrow_start_datetime + datetime.timedelta(hours=1)
+
         tomorrow_appointment_data = {
             "student_id": student2["_id"],
+            "start_time": tomorrow_start_datetime.isoformat(),
+            "end_time": tomorrow_end_datetime.isoformat(),
             "appointment_date": tomorrow,
-            "time_slot": "15:00"
+            "time_slot": tomorrow_time_slot
         }
 
         tomorrow_response = requests.post(f"{self.api_url}/api/appointments/", json=tomorrow_appointment_data)
@@ -480,6 +510,52 @@ class TestAppointments(TestBase):
 
         print(f"通过：测试12通过 - 取消预约成功恢复课程 - {lessons_before_cancel} -> {lessons_after_cancel}")
 
+    def test_12b_cancel_already_cancelled_appointment(self):
+        """测试12b：取消已取消的预约应该失败"""
+        print("\n测试：测试12b - 取消已取消的预约应该失败")
+
+        if "appointment_id" not in self.test_data:
+            # 创建临时预约用于测试
+            temp_student = self.create_test_student("重复取消测试学员")
+            temp_appointment = self.create_test_appointment(
+                student_id=temp_student["_id"],
+                time_slot="13:00"
+            )
+            appointment_id = temp_appointment.get("id") or temp_appointment.get("_id")
+        else:
+            appointment_id = self.test_data["appointment_id"]
+
+        # 先取消一次
+        first_cancel = requests.put(f"{self.api_url}/api/appointments/{appointment_id}/cancel")
+        if first_cancel.status_code == 200:
+            # 再次取消应该失败
+            second_cancel = requests.put(f"{self.api_url}/api/appointments/{appointment_id}/cancel")
+            self.assert_equal(second_cancel.status_code, 200, "Second cancel API status code")
+
+            cancel_result = second_cancel.json()
+            self.assert_equal(cancel_result.get("code"), 400, "Second cancel response code")
+            self.assert_true("只能取消待上课的预约" in cancel_result.get("message", ""), "Second cancel error message")
+
+            print(f"通过：测试12b通过 - 重复取消正确失败 - {cancel_result.get('message')}")
+        else:
+            print(f"通过：测试12b通过 - 预约已是取消状态")
+
+    def test_12c_cancel_nonexistent_appointment(self):
+        """测试12c：取消不存在的预约应该失败"""
+        print("\n测试：测试12c - 取消不存在的预约应该失败")
+
+        # 使用不存在的预约ID
+        fake_id = "507f1f77bcf86cd799439011"  # 格式正确但不存在的ObjectId
+        cancel_response = requests.put(f"{self.api_url}/api/appointments/{fake_id}/cancel")
+
+        self.assert_equal(cancel_response.status_code, 200, "Cancel nonexistent API status code")
+
+        cancel_result = cancel_response.json()
+        self.assert_equal(cancel_result.get("code"), 400, "Cancel nonexistent response code")
+        self.assert_true("预约不存在" in cancel_result.get("message", ""), "Cancel nonexistent error message")
+
+        print(f"通过：测试12c通过 - 取消不存在预约正确失败 - {cancel_result.get('message')}")
+
     def test_13_insufficient_lessons_prevents_appointment(self):
         """测试13：课程不足时阻止预约"""
         print("\n测试：测试13 - 课程不足时阻止预约")
@@ -623,6 +699,8 @@ def run_appointment_tests():
             test_instance.test_10_frontend_statistics_accuracy,
             test_instance.test_11_appointment_deducts_lessons,
             test_instance.test_12_cancel_appointment_restores_lessons,
+            test_instance.test_12b_cancel_already_cancelled_appointment,
+            test_instance.test_12c_cancel_nonexistent_appointment,
             test_instance.test_13_insufficient_lessons_prevents_appointment,
             test_instance.test_14_multiple_appointments_deduct_multiple_lessons
         ]

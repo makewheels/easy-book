@@ -220,12 +220,139 @@ class MongoDatabase:
             result = await self.db.appointments.delete_one({"_id": ObjectId(appointment_id)})
         except:
             result = await self.db.appointments.delete_one({"_id": appointment_id})
-        
+
         # 删除相关考勤
         if result.deleted_count > 0:
             await self.db.attendances.delete_many({"appointment_id": appointment_id})
-        
+
         return result.deleted_count > 0
+
+    async def get_daily_appointments(self, appointment_date: str) -> dict:
+        """获取指定日期的预约数据"""
+        if self.db is None:
+            await self.connect()
+
+        # 获取指定日期的所有预约（包括已取消的预约，但会显示状态）
+        appointments = []
+        async for appointment in self.db.appointments.find({
+            "appointment_date": appointment_date
+        }):
+            appointment["_id"] = str(appointment["_id"])
+            appointment["id"] = appointment["_id"]
+            appointments.append(appointment)
+
+        # 按时间段组织数据
+        time_slots = {}
+
+        # 只包含有预约的时间段
+        for appointment in appointments:
+            time_slot = None
+
+            # 尝试从新格式获取时间
+            if "start_time" in appointment:
+                from datetime import datetime
+                try:
+                    start_dt = datetime.fromisoformat(appointment["start_time"].replace('Z', '+00:00'))
+                    time_slot = start_dt.strftime("%H:%M")
+                except:
+                    pass
+
+            # 如果新格式失败，尝试从旧格式获取
+            if not time_slot and "time_slot" in appointment:
+                time_slot = appointment["time_slot"]
+
+            if time_slot:
+                if time_slot not in time_slots:
+                    time_slots[time_slot] = []
+
+                # 查询学生详细信息
+                student_name = ""
+                student_info = None
+                if appointment.get("student_id"):
+                    student_info = await self.get_student(appointment["student_id"])
+                    if student_info:
+                        student_name = student_info.get("name", "")
+
+                # 添加学生信息
+                student_data = {
+                    "id": appointment["_id"],
+                    "name": student_name,
+                    "package_type": appointment.get("package_type", ""),
+                    "learning_item": appointment.get("learning_item", ""),
+                    "appointment_id": appointment["_id"],
+                    "student_id": appointment.get("student_id", ""),
+                    "status": appointment.get("status", "scheduled"),
+                    "dynamic_status": appointment.get("status", "scheduled")
+                }
+
+                # 补充学生统计信息
+                if student_info:
+                    student_data["total_lessons"] = student_info.get("total_lessons", 0)
+                    student_data["attended_lessons"] = student_info.get("attended_lessons", 0)
+
+                time_slots[time_slot].append(student_data)
+
+        # 构建返回数据
+        result = {
+            "date": appointment_date,
+            "weekday": self._get_weekday(appointment_date),
+            "is_past": self._is_past_date(appointment_date),
+            "slots": []
+        }
+
+        # 只添加有学生的时间段
+        for time_slot in sorted(time_slots.keys()):
+            if time_slots[time_slot]:  # 只有当这个时段有学生时才添加
+                result["slots"].append({
+                    "time": time_slot,
+                    "students": time_slots[time_slot]
+                })
+
+        return result
+
+    async def get_upcoming_appointments(self, days: int = 30) -> List[dict]:
+        """获取从今天开始到未来指定天数的预约数据"""
+        if self.db is None:
+            await self.connect()
+
+        from datetime import datetime, timedelta
+
+        # 生成日期列表
+        today = datetime.now()
+        date_list = []
+        for i in range(days):
+            date = today + timedelta(days=i)
+            date_str = date.strftime("%Y-%m-%d")
+            date_list.append(date_str)
+
+        # 获取所有日期的预约数据
+        upcoming_data = []
+        for date_str in date_list:
+            daily_data = await self.get_daily_appointments(date_str)
+            if daily_data and daily_data.get("slots"):
+                upcoming_data.append(daily_data)
+
+        return upcoming_data
+
+    def _get_weekday(self, date_str: str) -> str:
+        """获取星期几"""
+        try:
+            from datetime import datetime
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+            return weekdays[date_obj.weekday()]
+        except:
+            return ""
+
+    def _is_past_date(self, date_str: str) -> bool:
+        """判断日期是否已过"""
+        try:
+            from datetime import datetime
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            return date_obj < today
+        except:
+            return False
     
     async def check_appointment_conflict(self, student_id: str, appointment_date: str, time_slot: str) -> bool:
         """检查预约冲突"""

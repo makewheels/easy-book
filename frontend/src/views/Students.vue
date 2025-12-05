@@ -32,6 +32,7 @@
           <div class="card-header">
             <div class="student-info">
               <div class="name">{{ student.name }}</div>
+              <div class="package-type">{{ student.package_type }}</div>
             </div>
             <button class="btn-appointment" @click.stop="quickAppointment(student)">
               预约
@@ -39,18 +40,29 @@
           </div>
 
           <div class="card-body">
-            <div class="info-row">
-              <span class="label">次数:</span>
-              <span class="value">[{{ student.total_lessons - student.remaining_lessons }}/{{ student.total_lessons }}]</span>
-              <span class="type">{{ student.package_type }}</span>
+            <!-- 剩余课程数量 - 突出显示 -->
+            <div class="remaining-lessons-section">
+              <div class="remaining-circle" :class="getRemainingClass(student.remaining_lessons)">
+                <div class="remaining-number">{{ student.remaining_lessons }}</div>
+                <div class="remaining-text">剩余课程</div>
+              </div>
+              <div class="progress-info">
+                <div class="progress-text">
+                  已上 {{ student.total_lessons - student.remaining_lessons }} / {{ student.total_lessons }} 节
+                </div>
+                <div class="progress-bar">
+                  <div
+                    class="progress-fill"
+                    :style="{ width: getProgressPercentage(student.remaining_lessons, student.total_lessons) + '%' }"
+                  ></div>
+                </div>
+              </div>
             </div>
-            <div class="info-row">
-              <span class="label">项目:</span>
-              <span class="value">{{ student.learning_item }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">剩余:</span>
-              <span class="value">{{ student.remaining_lessons }} 次</span>
+
+            <!-- 学习项目 -->
+            <div class="learning-item-section">
+              <div class="section-label">学习项目</div>
+              <div class="learning-item">{{ student.learning_item }}</div>
             </div>
           </div>
         </div>
@@ -231,6 +243,21 @@ const handleAppointmentSubmit = async () => {
     toast.error(error.message || '预约失败')
   }
 }
+
+// 计算课程进度百分比
+const getProgressPercentage = (remaining, total) => {
+  if (!total || total === 0) return 0
+  const completed = total - remaining
+  return (completed / total) * 100
+}
+
+// 根据剩余课程数量获取状态样式
+const getRemainingClass = (remaining) => {
+  if (remaining === 0) return 'remaining-empty'
+  if (remaining <= 2) return 'remaining-low'
+  if (remaining <= 5) return 'remaining-medium'
+  return 'remaining-good'
+}
 </script>
 
 <style scoped>
@@ -251,14 +278,15 @@ const handleAppointmentSubmit = async () => {
 
 .header h1 {
   font-size: 22px;
-  margin: 0 0 10px 0;
+  margin: 0;
   text-align: center;
 }
 
-.stats {
+.header .stats {
+  text-align: center;
+  margin-top: 5px;
   font-size: 14px;
   opacity: 0.8;
-  text-align: center;
 }
 
 .content {
@@ -294,82 +322,190 @@ const handleAppointmentSubmit = async () => {
 
 .student-card {
   background: #fff;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
 }
 
 .student-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  margin-bottom: 20px;
 }
 
 .student-info .name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.student-info .package-type {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-block;
 }
 
 .btn-appointment {
-  background: #1989fa;
+  background: linear-gradient(135deg, #1989fa 0%, #096dd9 100%);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
+  border-radius: 20px;
+  padding: 8px 16px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(25, 137, 250, 0.3);
+}
+
+.btn-appointment:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(25, 137, 250, 0.4);
 }
 
 .card-body {
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
-.info-row {
+/* 剩余课程突出显示部分 */
+.remaining-lessons-section {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
-  font-size: 14px;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 12px;
 }
 
-.info-row .label {
-  color: #666;
-  margin-right: 5px;
-  min-width: 40px;
+.remaining-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
-.info-row .value {
-  color: #333;
+.remaining-circle.remaining-good {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+}
+
+.remaining-circle.remaining-medium {
+  background: linear-gradient(135deg, #faad14 0%, #ffc53d 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(250, 173, 20, 0.3);
+}
+
+.remaining-circle.remaining-low {
+  background: linear-gradient(135deg, #ff7a45 0%, #ff9c6e 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 122, 69, 0.3);
+}
+
+.remaining-circle.remaining-empty {
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+}
+
+.remaining-number {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.remaining-text {
+  font-size: 10px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.progress-info {
   flex: 1;
 }
 
-.info-row .type {
-  background: #f0f9ff;
-  color: #1989fa;
-  padding: 2px 6px;
+.progress-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e8e8e8;
   border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1989fa 0%, #096dd9 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* 学习项目部分 */
+.learning-item-section {
+  padding: 12px 16px;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border-left: 4px solid #1989fa;
+}
+
+.section-label {
   font-size: 12px;
-  margin-left: 5px;
+  color: #666;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.learning-item {
+  font-size: 15px;
+  color: #1a1a1a;
+  font-weight: 500;
 }
 
 .add-student-btn {
-  background: #1989fa;
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
-  margin: 10px 0 20px 0;  /* 顶部按钮：上边距10px，下边距20px */
+  margin: 10px 0 20px 0;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+  transition: all 0.3s ease;
+}
+
+.add-student-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(82, 196, 26, 0.4);
 }
 
 .bottom-nav {

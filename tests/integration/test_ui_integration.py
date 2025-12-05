@@ -14,8 +14,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
-# 添加当前目录到路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# 添加tests目录到路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from conftest import TestBase
 
 class TestUIIntegration(TestBase):
@@ -108,7 +108,6 @@ class TestUIIntegration(TestBase):
             # 1. API创建学生
             student_data = {
                 "name": f"Workflow Test Student - {datetime.datetime.now().strftime('%H%M%S')}",
-                "nickname": "工作流测试",
                 "learning_item": "自由泳",
                 "package_type": "1v1",
                 "total_lessons": 8,
@@ -118,23 +117,19 @@ class TestUIIntegration(TestBase):
 
             student_response = requests.post(f"{self.api_url}/api/students/", json=student_data)
             self.assert_equal(student_response.status_code, 200, "Create student in workflow status code")
-            student = student_response.json().get("data", {})
+            student = student_response.json()  # Student API returns data directly
 
-            # 2. 创建预约
-            appointment_data = {
-                "student_id": student["id"],
-                "appointment_date": self.get_today_date(),
-                "time_slot": "17:00"
-            }
-
-            appointment_response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
-            self.assert_equal(appointment_response.status_code, 200, "Create appointment in workflow status code")
-            appointment = appointment_response.json().get("data", {})
+            # 2. 创建预约 - 使用create_test_appointment方法
+            appointment = self.create_test_appointment(
+                student_id=student["_id"],
+                date=self.get_today_date(),
+                time_slot="17:00"
+            )
 
             # 3. 签到
             checkin_data = {
                 "appointment_id": appointment["id"],
-                "student_id": student["id"]
+                "student_id": student["_id"]
             }
 
             checkin_response = requests.post(f"{self.api_url}/api/attendance/checkin", json=checkin_data)
