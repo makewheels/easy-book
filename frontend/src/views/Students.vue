@@ -43,7 +43,7 @@
                 <span class="package-type">{{ student.package_type }}</span>
               </div>
               <div class="right-info">
-                <span class="lessons-text">{{ student.remaining_lessons }}/{{ student.total_lessons }} 节课</span>
+                <span class="lessons-text">{{ student.remaining_lessons }} / {{ student.total_lessons }} 节课</span>
               </div>
             </div>
 
@@ -59,16 +59,7 @@
       </div>
     </div>
 
-    <div class="bottom-nav">
-      <div class="nav-item" @click="navigateTo('calendar')">
-        <div class="nav-icon">📅</div>
-        <span>课程日历</span>
-      </div>
-      <div class="nav-item active" @click="navigateTo('students')">
-        <div class="nav-icon">👥</div>
-        <span>学员管理</span>
-      </div>
-    </div>
+    <BottomNavigation :active-tab="'students'" @navigate="navigateTo" />
   </div>
 </template>
 
@@ -76,6 +67,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
+import BottomNavigation from '@/components/BottomNavigation.vue'
 
 const router = useRouter()
 const studentStore = useStudentStore()
@@ -277,7 +269,7 @@ const getProgressPercentage = (remaining, total) => {
 }
 
 .lessons-text {
-  font-size: 20px;
+  font-size: 24px;
   color: #0066cc;
   font-weight: 700;
 }
@@ -334,49 +326,6 @@ const getProgressPercentage = (remaining, total) => {
   font-weight: 400;
 }
 
-/* 底部导航 */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 60px);
-  max-width: calc(100vw - 60px);
-  height: 70px;
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
-  border-left: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  z-index: 100;
-  padding: 0 30px;
-  box-sizing: border-box;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.3s;
-  padding: 5px;
-}
-
-.nav-item.active {
-  color: #1989fa;
-}
-
-.nav-icon {
-  font-size: 24px;
-  margin-bottom: 4px;
-}
 
 /* 响应式设计 */
 @media (max-width: 480px) {

@@ -61,6 +61,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
 import { format, addDays, isSameDay } from 'date-fns'
+import BottomNavigation from '@/components/BottomNavigation.vue'
 
 const router = useRouter()
 const appointmentStore = useAppointmentStore()
@@ -424,41 +425,6 @@ onMounted(() => {
   100% { transform: rotate(360deg); }
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  z-index: 100;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.3s;
-  padding: 5px;
-}
-
-.nav-item.active {
-  color: #1989fa;
-}
-
-.nav-icon {
-  font-size: 24px;
-  margin-bottom: 4px;
-}
 
 /* 响应式设计 */
 @media (max-width: 480px) {
