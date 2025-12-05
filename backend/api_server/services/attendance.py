@@ -75,7 +75,7 @@ class AttendanceService:
             "status": "checked",
             "lessons_before": remaining_lessons,
             "lessons_after": remaining_lessons - 1,
-            "create_time": datetime.utcnow()
+            "create_time": datetime.now()
         }
 
         # 插入上课记录
@@ -85,7 +85,7 @@ class AttendanceService:
         await db.update_student(student_id, {"remaining_lessons": remaining_lessons - 1})
 
         # 更新预约状态
-        await db.update_appointment(appointment_id, {"status": "checked", "update_time": datetime.utcnow()})
+        await db.update_appointment(appointment_id, {"status": "checked", "update_time": datetime.now()})
 
         attendance_data["_id"] = attendance_data.get("id", "")
         return AttendanceModel(**attendance_data)
@@ -150,11 +150,11 @@ class AttendanceService:
             "status": "cancel",
             "lessons_before": remaining_lessons,
             "lessons_after": remaining_lessons,
-            "create_time": datetime.utcnow()
+            "create_time": datetime.now()
         }
 
         # 更新预约状态
-        await db.update_appointment(appointment_id, {"status": "cancel", "update_time": datetime.utcnow()})
+        await db.update_appointment(appointment_id, {"status": "cancel", "update_time": datetime.now()})
 
         # 插入考勤记录
         await db.create_attendance(attendance_data)

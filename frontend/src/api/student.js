@@ -3,7 +3,7 @@ import request from './index'
 export const studentApi = {
   // 获取学员列表
   getAll() {
-    return request.get('/students/')
+    return request.get('/students/?skip=0&limit=100')
   },
   
   // 获取学员详情

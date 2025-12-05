@@ -55,9 +55,14 @@ class StudentService:
         return student_data
 
     @staticmethod
-    async def get_all(skip: int = 0, limit: int = 20) -> List[StudentModel]:
+    async def get_all(skip: int = 0, limit: int = 100) -> List[StudentModel]:
         """
-        获取所有学员列表
+        获取所有学员列表（按优先级排序）
+
+        排序规则：
+        1. 有剩余课程的学生在前（remaining_lessons > 0）
+        2. 新建学生在前（create_time 降序）
+        3. 最近上过课的学生在前（基于考勤记录）
 
         Args:
             skip: 跳过的记录数
@@ -66,14 +71,72 @@ class StudentService:
         Returns:
             学员对象列表
         """
+        from datetime import datetime
+
         db = get_database()
         students = await db.get_students()
-        # 简单分页
+
+        # 批量获取所有考勤记录以提高性能
+        all_attendances = await db.get_attendances()
+
+        # 构建学生ID到最后考勤时间的映射
+        student_last_attendance = {}
+        for attendance in all_attendances:
+            student_id = attendance.get("student_id")
+            if student_id:
+                attendance_time = attendance.get("create_time", "")
+                if student_id not in student_last_attendance:
+                    student_last_attendance[student_id] = attendance_time
+                else:
+                    # 保留最新的考勤时间
+                    if attendance_time > student_last_attendance[student_id]:
+                        student_last_attendance[student_id] = attendance_time
+
+        # 为每个学生添加排序信息
+        def get_sort_key(student):
+            # 1. 剩余课程优先级（有剩余课程的学生排在前面）
+            remaining_lessons = student.get("remaining_lessons", 0)
+            has_lessons_priority = 0 if remaining_lessons > 0 else 1000000
+
+            # 2. 创建时间优先级（新学生排在前面）
+            create_time_str = student.get("create_time", "")
+            try:
+                if create_time_str:
+                    create_time = datetime.fromisoformat(create_time_str.replace('Z', '+00:00'))
+                    create_timestamp = create_time.timestamp()
+                else:
+                    create_timestamp = 0
+            except:
+                create_timestamp = 0
+            # 用负数让新学生排在前面
+            create_priority = -create_timestamp
+
+            # 3. 最近上课时间优先级（最近上课的学生排在前面）
+            last_attendance_time = student_last_attendance.get(student["_id"])
+            try:
+                if last_attendance_time:
+                    attendance_time = datetime.fromisoformat(last_attendance_time.replace('Z', '+00:00'))
+                    attendance_timestamp = attendance_time.timestamp()
+                else:
+                    attendance_timestamp = 0
+            except:
+                attendance_timestamp = 0
+            # 用负数让最近上课的排在前面
+            attendance_priority = -attendance_timestamp
+
+            # 返回排序元组：优先级越小的排在越前面
+            return (has_lessons_priority, create_priority, attendance_priority)
+
+        # 按排序键进行排序
+        students.sort(key=get_sort_key)
+
+        # 分页
         students = students[skip:skip+limit]
         processed_students = []
         for student in students:
-            student = StudentService._prepare_student_data(student.copy())
-            processed_students.append(StudentModel(**student))
+            student_copy = student.copy()
+            student_copy = StudentService._prepare_student_data(student_copy)
+            processed_students.append(StudentModel(**student_copy))
         return processed_students
 
     @staticmethod

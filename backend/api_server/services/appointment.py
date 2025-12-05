@@ -7,7 +7,7 @@ from typing import List, Optional, Union
 from datetime import datetime, date, timedelta
 from api_server.models import StudentModel, AppointmentModel
 from api_server.database import get_database
-from .utils import convert_legacy_time_data, calculate_dynamic_status_new, calculate_dynamic_status
+from .utils import calculate_dynamic_status_new
 
 
 class AppointmentService:
@@ -19,67 +19,56 @@ class AppointmentService:
         创建新预约
 
         Args:
-            appointment_data: 预约数据字典
+            appointment_data: 预约数据字典，必须包含 start_time 和 duration_in_minutes
 
         Returns:
             创建的预约对象
         """
         db = get_database()
 
-        # 处理新旧格式的时间数据
-        if "start_time" in appointment_data and "end_time" in appointment_data:
-            # 新格式：使用 start_time 和 end_time
-            start_time = appointment_data["start_time"]
-            end_time = appointment_data["end_time"]
+        # 验证必需字段
+        if "start_time" not in appointment_data:
+            raise ValueError("缺少 start_time 字段")
+        if "duration" not in appointment_data:
+            raise ValueError("缺少 duration 字段")
 
-            # 验证时间格式
-            if not isinstance(start_time, datetime):
-                if isinstance(start_time, str):
-                    start_time = datetime.fromisoformat(start_time)
-                    appointment_data["start_time"] = start_time
-                else:
-                    raise ValueError("start_time 格式错误")
-
-            if not isinstance(end_time, datetime):
-                if isinstance(end_time, str):
-                    end_time = datetime.fromisoformat(end_time)
-                    appointment_data["end_time"] = end_time
-                else:
-                    raise ValueError("end_time 格式错误")
-
-            # 验证时间逻辑
-            if start_time >= end_time:
-                raise ValueError("开始时间必须早于结束时间")
-
-            # 检查时间冲突（新格式）
-            await AppointmentService.check_time_conflict(
-                appointment_data["student_id"],
-                start_time,
-                end_time
-            )
-
-            # 为了兼容性，同时保存旧格式字段
-            appointment_data["appointment_date"] = start_time.date().isoformat()
-            appointment_data["time_slot"] = start_time.strftime("%H:%M")
-
+        # 处理开始时间格式
+        start_time = appointment_data["start_time"]
+        if not isinstance(start_time, datetime):
+            if isinstance(start_time, str):
+                start_time = datetime.fromisoformat(start_time)
+                # 确保转换为naive datetime
+                if start_time.tzinfo is not None:
+                    start_time = start_time.replace(tzinfo=None)
+                appointment_data["start_time"] = start_time
+            else:
+                raise ValueError("start_time 格式错误")
         else:
-            # 旧格式：使用 appointment_date 和 time_slot
-            appointment_date = appointment_data["appointment_date"]
-            time_slot = appointment_data["time_slot"]
+            # 确保现有datetime是naive的
+            if start_time.tzinfo is not None:
+                start_time = start_time.replace(tzinfo=None)
+                appointment_data["start_time"] = start_time
 
-            # 处理日期格式（确保统一存储为字符串）
-            if isinstance(appointment_date, date):
-                appointment_data["appointment_date"] = appointment_date.isoformat()
+        # 验证时长
+        duration = appointment_data["duration"]
+        if not isinstance(duration, int) or duration <= 0:
+            raise ValueError("duration 必须是大于0的整数（分钟）")
 
-            # 检查时间冲突（旧格式）
-            await AppointmentService.check_conflict(
-                appointment_data["student_id"],
-                appointment_date,
-                time_slot
-            )
+        # 计算结束时间
+        from datetime import timedelta
+        end_time = start_time + timedelta(minutes=duration)
+        appointment_data["end_time"] = end_time
 
-            # 转换为新格式
-            appointment_data = convert_legacy_time_data(appointment_data)
+        # 验证时间逻辑
+        if start_time >= end_time:
+            raise ValueError("开始时间必须早于结束时间")
+
+        # 检查时间冲突
+        await AppointmentService.check_time_conflict(
+            appointment_data["student_id"],
+            start_time,
+            end_time
+        )
 
         # 获取学员信息，检查剩余课程
         student = await db.get_student(appointment_data["student_id"])
@@ -94,12 +83,12 @@ class AppointmentService:
         new_remaining_lessons = remaining_lessons - 1
         await db.update_student(appointment_data["student_id"], {
             "remaining_lessons": new_remaining_lessons,
-            "update_time": datetime.utcnow()
+            "update_time": datetime.now()
         })
 
         # 设置创建和更新时间
-        appointment_data["create_time"] = datetime.utcnow()
-        appointment_data["update_time"] = datetime.utcnow()
+        appointment_data["create_time"] = datetime.now()
+        appointment_data["update_time"] = datetime.now()
 
         # 创建预约
         appointment_id = await db.create_appointment(appointment_data)
@@ -135,8 +124,18 @@ class AppointmentService:
                 # 处理字符串格式的时间
                 if isinstance(existing_start, str):
                     existing_start = datetime.fromisoformat(existing_start)
+                    if existing_start.tzinfo is not None:
+                        existing_start = existing_start.replace(tzinfo=None)
                 if isinstance(existing_end, str):
                     existing_end = datetime.fromisoformat(existing_end)
+                    if existing_end.tzinfo is not None:
+                        existing_end = existing_end.replace(tzinfo=None)
+
+                # 确保现有时间是naive的
+                if existing_start.tzinfo is not None:
+                    existing_start = existing_start.replace(tzinfo=None)
+                if existing_end.tzinfo is not None:
+                    existing_end = existing_end.replace(tzinfo=None)
 
                 # 检查时间重叠
                 if not (end_time <= existing_start or start_time >= existing_end):
@@ -193,7 +192,7 @@ class AppointmentService:
             更新后的预约对象，如果更新失败则返回None
         """
         db = get_database()
-        update_data["update_time"] = datetime.utcnow()
+        update_data["update_time"] = datetime.now()
         success = await db.update_appointment(appointment_id, update_data)
         if success:
             return await AppointmentService.get_by_id(appointment_id)
@@ -250,13 +249,13 @@ class AppointmentService:
         # 更新学员剩余课程
         await db.update_student(appointment.get("student_id"), {
             "remaining_lessons": new_remaining,
-            "update_time": datetime.utcnow()
+            "update_time": datetime.now()
         })
 
         # 更新预约状态为取消
         success = await db.update_appointment(appointment_id, {
             "status": "cancel",
-            "update_time": datetime.utcnow()
+            "update_time": datetime.now()
         })
 
         return success

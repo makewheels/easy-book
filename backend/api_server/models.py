@@ -39,13 +39,13 @@ class MongoDBAppointmentModel(MongoDBBaseModel):
             'background': True,
         },
         {
-            'fields': [('appointment_date', ASCENDING)],
-            'name': 'idx_appointment_date',
+            'fields': [('start_time', ASCENDING)],
+            'name': 'idx_start_time',
             'background': True,
         },
         {
-            'fields': [('appointment_date', ASCENDING), ('time_slot', ASCENDING)],
-            'name': 'idx_date_time',
+            'fields': [('start_time', ASCENDING), ('end_time', ASCENDING)],
+            'name': 'idx_time_range',
             'background': True,
         },
         {
@@ -104,8 +104,8 @@ class StudentModel(BaseModel):
     venue_share: int = Field(..., ge=0, description="上交俱乐部(元)")
     profit: Optional[int] = Field(None, description="利润(元)")
     note: Optional[str] = Field(None, max_length=500, description="备注")
-    create_time: datetime = Field(default_factory=datetime.utcnow)
-    update_time: datetime = Field(default_factory=datetime.utcnow)
+    create_time: datetime = Field(default_factory=datetime.now)
+    update_time: datetime = Field(default_factory=datetime.now)
 
     model_config = {"populate_by_name": True}
 
@@ -127,52 +127,45 @@ class AppointmentModel(BaseModel):
     id: Optional[str] = Field(alias="_id", default=None)
     student_id: str = Field(..., description="学员ID")
     start_time: datetime = Field(..., description="课程开始时间")
-    end_time: datetime = Field(..., description="课程结束时间")
+    end_time: Optional[datetime] = Field(None, description="课程结束时间（由服务端计算）")
+    duration_in_minutes: int = Field(..., gt=0, description="课程时长（分钟）")
     status: str = Field(default="scheduled", pattern="^(scheduled|checked|cancel)$", description="预约状态")
-    create_time: datetime = Field(default_factory=datetime.utcnow)
-    update_time: datetime = Field(default_factory=datetime.utcnow)
-
-    # 兼容性字段 - 保留旧字段以便迁移
-    appointment_date: Optional[date] = Field(None, description="预约日期（兼容性）")
-    time_slot: Optional[str] = Field(None, pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$", description="时间段（兼容性）")
+    create_time: datetime = Field(default_factory=datetime.now)
+    update_time: datetime = Field(default_factory=datetime.now)
 
     @property
     def duration_minutes(self) -> int:
-        """计算课程时长（分钟）"""
-        return int((self.end_time - self.start_time).total_seconds() / 60)
+        """获取课程时长（分钟）"""
+        return self.duration_in_minutes
 
     @property
     def duration_hours(self) -> float:
-        """计算课程时长（小时）"""
-        return round(self.duration_minutes / 60, 2)
+        """获取课程时长（小时）"""
+        return round(self.duration_in_minutes / 60, 2)
 
     model_config = {"populate_by_name": True}
 
 class AppointmentCreate(BaseModel):
     student_id: str = Field(..., description="学员ID")
     start_time: datetime = Field(..., description="课程开始时间")
-    end_time: datetime = Field(..., description="课程结束时间")
-
-    # 兼容性支持 - 允许旧格式数据（完全可选）
-    appointment_date: Optional[str] = Field(None, description="预约日期（兼容性）")
-    time_slot: Optional[str] = Field(None, pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$", description="时间段（兼容性）")
+    duration_in_minutes: int = Field(..., gt=0, description="课程时长（分钟）")
 
     model_config = {"populate_by_name": True}
 
 class AppointmentUpdate(BaseModel):
-    appointment_date: Optional[date] = Field(None)
-    time_slot: Optional[str] = Field(None, pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$")
+    start_time: Optional[datetime] = Field(None, description="课程开始时间")
+    duration_in_minutes: Optional[int] = Field(None, gt=0, description="课程时长（分钟）")
+    status: Optional[str] = Field(None, pattern="^(scheduled|checked|cancel)$", description="预约状态")
 
 class AttendanceModel(BaseModel):
     id: Optional[str] = Field(alias="_id", default=None)
     student_id: str = Field(..., description="学员ID")
     appointment_id: str = Field(..., description="预约ID")
     attendance_date: date = Field(..., description="上课日期")
-    time_slot: str = Field(..., description="时间段")
     status: str = Field(..., pattern="^(checked|cancel)$", description="出勤状态")
     lessons_before: int = Field(..., ge=0, description="上课前剩余课程数")
     lessons_after: int = Field(..., ge=0, description="上课后剩余课程数")
-    create_time: datetime = Field(default_factory=datetime.utcnow)
+    create_time: datetime = Field(default_factory=datetime.now)
 
     model_config = {"populate_by_name": True}
 

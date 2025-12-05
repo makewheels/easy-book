@@ -1,30 +1,22 @@
 <template>
-  <div class="calendar-page" :class="{ transitioning: isTransitioning }"
-       @touchstart="handleTouchStart"
-       @touchmove="handleTouchMove"
-       @touchend="handleTouchEnd">
-    <!-- 顶部导航栏 -->
+  <div class="calendar-page">
     <header class="header">
       <h1>课程日历</h1>
     </header>
 
-
-    <!-- 日历表格 -->
-    <div class="calendar-container" :class="{ transitioning: isTransitioning }">
+    <div class="calendar-container">
       <div v-if="loading" class="loading">
         加载中...
       </div>
 
-      <div v-else class="calendar-wrapper" :class="{ transitioning: isTransitioning }">
+      <div v-else class="calendar-wrapper">
         <div class="calendar-grid">
           <!-- 时间列头 -->
           <div class="time-header-cell"></div>
 
           <!-- 日期列头 -->
-          <div v-for="day in weekDates" :key="day.date" class="date-header-cell" :class="[getDayClass(day), { 'today-column': day.date === todayDate }]">
+          <div v-for="day in weekDates" :key="day.date" class="date-header-cell" :class="{ 'today-column': day.date === todayDate }">
             {{ day.weekday }}<br>{{ day.displayDate }}
-            <!-- 今天标记竖线 -->
-            <div v-if="day.date === todayDate" class="today-indicator"></div>
           </div>
 
           <!-- 时间行和内容 -->
@@ -39,16 +31,13 @@
               v-for="day in weekDates"
               :key="`${day.date}-${timeSlot}`"
               class="time-slot"
-              :class="[getTimeSlotClass(day.date, timeSlot), { 'today-slot': day.date === todayDate }]"
+              :class="{ 'today-slot': day.date === todayDate }"
             >
-              <!-- 空时段 -->
               <span
                 v-if="!hasStudents(day.date, timeSlot)"
                 class="empty-cell"
-                @click="showQuickMenu(day.date, timeSlot)"
               ></span>
 
-              <!-- 多学员垂直堆叠显示 -->
               <div v-else class="students-container">
                 <div
                   v-for="student in getStudents(day.date, timeSlot)"
@@ -85,172 +74,64 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
-import { format, addDays, startOfWeek, endOfWeek, isSameDay, parseISO } from 'date-fns'
-import { isMonday } from '@/utils/date'
-import { toast } from '@/utils/toast'
-import { zhCN } from 'date-fns/locale'
+import { format, addDays, isSameDay } from 'date-fns'
 
 const router = useRouter()
 const appointmentStore = useAppointmentStore()
 
-// 响应式数据
 const loading = ref(false)
 const currentWeekStart = ref(new Date())
 const weekData = ref({})
-const touchStartX = ref(0)
-const touchEndX = ref(0)
-const minSwipeDistance = 50
-const isTransitioning = ref(false)
 
-// 时间段配置 (早7点到晚7点，最后一节课19-20点)
 const timeSlots = [
   '07:00', '08:00', '09:00', '10:00', '11:00',
   '12:00', '14:00', '15:00', '16:00', '17:00',
   '18:00', '19:00'
 ]
 
-// 计算属性
 const weekDates = computed(() => {
   const dates = []
-  const startDate = startOfWeek(currentWeekStart.value, { weekStartsOn: 1 }) // 周一开始
+  const startDate = new Date(currentWeekStart.value)
 
-  for (let i = 0; i < 7; i++) {
+  // 从周二开始，只循环6次（周二到周日）
+  for (let i = 1; i < 7; i++) {
     const currentDate = addDays(startDate, i)
-
-    // 跳过周一（周一闭馆）
-    if (i === 0) continue
+    const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
 
     const dateStr = format(currentDate, 'yyyy-MM-dd')
     const isToday = isSameDay(currentDate, new Date())
 
+    const weekdayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    let weekdayIndex = dayOfWeek - 1
+    if (weekdayIndex > 0) weekdayIndex--
+
     dates.push({
       date: dateStr,
       displayDate: format(currentDate, 'MM/dd'),
-      weekday: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'][i],
-      isToday: isToday,
-      isPast: currentDate < new Date().setHours(0, 0, 0, 0)
+      weekday: weekdayNames[weekdayIndex],
+      isToday: isToday
     })
   }
 
   return dates
 })
 
-const dateRangeText = computed(() => {
-  if (weekDates.value.length === 0) return ''
-  const start = weekDates.value[0]
-  const end = weekDates.value[weekDates.value.length - 1]
-  return `${start.displayDate} - ${end.displayDate}`
-})
-
-// 今天日期
 const todayDate = computed(() => {
   return format(new Date(), 'yyyy-MM-dd')
 })
 
-// 今天在周几的索引（用于时间行样式）
-const todayColumnIndex = computed(() => {
-  return weekDates.value.findIndex(day => day.date === todayDate.value)
-})
-
-// 方法
 const fetchWeekData = async () => {
-  if (loading.value || isTransitioning.value) return
-
   loading.value = true
   try {
     const weekDataMap = await appointmentStore.fetchWeekAppointments(currentWeekStart.value)
     weekData.value = weekDataMap
-    preloadAdjacentWeeks()
   } catch (error) {
-    console.error('CalendarView: 获取周数据失败:', error)
+    console.error('获取周数据失败:', error)
   } finally {
     loading.value = false
-  }
-}
-
-const preloadAdjacentWeeks = async () => {
-  try {
-    const prevWeekStart = format(addDays(currentWeekStart.value, -7), 'yyyy-MM-dd')
-    const nextWeekStart = format(addDays(currentWeekStart.value, 7), 'yyyy-MM-dd')
-
-    Promise.all([
-      appointmentStore.fetchWeekAppointments(new Date(prevWeekStart)),
-      appointmentStore.fetchWeekAppointments(new Date(nextWeekStart))
-    ]).catch(error => {
-      console.warn('预加载失败:', error)
-    })
-  } catch (error) {
-    console.warn('预加载出错:', error)
-  }
-}
-
-// 触摸手势处理
-const handleTouchStart = (e) => {
-  touchStartX.value = e.touches[0].clientX
-}
-
-const handleTouchMove = (e) => {
-  touchEndX.value = e.touches[0].clientX
-}
-
-const handleTouchEnd = () => {
-  if (!touchStartX.value || !touchEndX.value) return
-
-  const distance = touchStartX.value - touchEndX.value
-  const isLeftSwipe = distance > minSwipeDistance
-  const isRightSwipe = distance < -minSwipeDistance
-
-  if (isTransitioning.value) return
-
-  if (isLeftSwipe) {
-    // 左滑 - 下一周
-    goToNextWeek()
-  } else if (isRightSwipe) {
-    // 右滑 - 上一周
-    goToPreviousWeek()
-  }
-
-  // 重置触摸位置
-  touchStartX.value = 0
-  touchEndX.value = 0
-}
-
-const goToPreviousWeek = async () => {
-  if (isTransitioning.value) return
-  isTransitioning.value = true
-  currentWeekStart.value = addDays(currentWeekStart.value, -7)
-  await fetchWeekData()
-  setTimeout(() => {
-    isTransitioning.value = false
-  }, 300)
-}
-
-const goToNextWeek = async () => {
-  if (isTransitioning.value) return
-  isTransitioning.value = true
-  currentWeekStart.value = addDays(currentWeekStart.value, 7)
-  await fetchWeekData()
-  setTimeout(() => {
-    isTransitioning.value = false
-  }, 300)
-}
-
-const getDayClass = (day) => {
-  return {
-    'today': day.isToday,
-    'past': day.isPast,
-    'weekend': [4, 5].includes(weekDates.value.indexOf(day)) // 周六、周日（索引调整后）
-  }
-}
-
-const getTimeSlotClass = (date, timeSlot) => {
-  const dayData = weekDates.value.find(d => d.date === date)
-  return {
-    'today': dayData?.isToday,
-    'past': dayData?.isPast
   }
 }
 
@@ -291,25 +172,12 @@ const goToStudent = (studentId) => {
   })
 }
 
-const showQuickMenu = (date, timeSlot) => {
-  console.log(`显示快捷菜单：${timeSlot} - ${date}`)
-
-  // 检查是否为周一（游泳馆闭馆）
-  if (isMonday(date)) {
-    toast.warning('游泳馆周一闭馆，不能预约')
-    return
-  }
-
-  // TODO: 实现快速创建预约功能
-}
-
 const navigateTo = (page) => {
   switch(page) {
     case 'home':
       router.push('/')
       break
     case 'calendar':
-      // 当前页面
       break
     case 'students':
       router.push('/students')
@@ -317,12 +185,6 @@ const navigateTo = (page) => {
   }
 }
 
-// 监听周变化
-watch(currentWeekStart, () => {
-  fetchWeekData()
-})
-
-// 生命周期
 onMounted(() => {
   fetchWeekData()
 })
@@ -335,107 +197,133 @@ onMounted(() => {
   min-height: 100vh;
   background: #f5f5f5;
   position: relative;
-  padding-bottom: 60px;
+  padding-bottom: 80px;
+  width: 100%;
 }
 
-/* 顶部导航栏 */
 .header {
-  background: #1989fa;
-  color: #fff;
-  padding: 15px;
+  background: #fff;
+  color: #1a1a1a;
+  padding: 20px;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header h1 {
-  font-size: 22px;
+  font-size: 32px;
+  font-weight: 800;
   margin: 0;
   text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-.calendar-page.transitioning {
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-/* 日历表格 */
 .calendar-container {
-  background: #fff;
+  padding: 20px 0;
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.calendar-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.calendar-container.transitioning {
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
-
-.calendar-wrapper {
-  background: #fff;
-  position: relative;
-}
-
-.calendar-wrapper.transitioning {
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
-
 .calendar-grid {
   display: grid;
-  grid-template-columns: 80px repeat(auto-fit, minmax(80px, 1fr));
-  grid-auto-rows: 55px auto;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  min-width: 600px;
+  grid-template-columns: 100px repeat(6, minmax(120px, 1fr));
+  grid-auto-rows: 70px;
+  background: transparent;
+  min-width: 900px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* 时间列头 */
 .time-header-cell {
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #e8e8e8;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1989fa;
+  border-bottom: 2px solid #e3f2fd;
   grid-row: 1;
   position: sticky;
   top: 0;
   left: 0;
   z-index: 20;
+  border-radius: 8px 0 0 0;
 }
 
-
-/* 日期列头 */
 .date-header-cell {
-  background: #f5f5f5;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  padding: 8px 4px;
-  line-height: 1.2;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1989fa;
+  padding: 12px 8px;
+  line-height: 1.3;
   text-align: center;
   grid-row: 1;
   position: sticky;
   top: 0;
   z-index: 10;
-  position: relative;
+  border-bottom: 2px solid #e3f2fd;
+  border-right: 1px solid #e0e0e0;
 }
 
 /* 今天列头特殊样式 */
 .date-header-cell.today-column {
-  background: #ffe7ba;
-  color: #333;
-  font-weight: 700;
+  background: linear-gradient(135deg, #fff1b8 0%, #ffec3d 100%);
+  color: #d48806;
+  font-weight: 900;
+  border-bottom: 3px solid #faad14;
+  border-right: 2px solid #faad14;
+  box-shadow: 0 4px 12px rgba(250, 173, 20, 0.4);
   position: relative;
+}
+
+/* 今天列头添加强调标记 */
+.date-header-cell.today-column::after {
+  content: '今天';
+  position: absolute;
+  top: -8px;
+  right: 4px;
+  background: #faad14;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* 今天时间段背景色 */
 .time-slot.today-slot {
-  background: #ffe7ba !important;
+  background: rgba(255, 235, 59, 0.3) !important;
+  border-right: 3px solid #faad14;
+  position: relative;
+}
+
+/* 今天时间段添加左侧强调条 */
+.time-slot.today-slot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #faad14;
+  box-shadow: 0 0 4px rgba(250, 173, 20, 0.4);
 }
 
 /* 确保今天时间段内的所有元素都使用统一背景 */
@@ -444,80 +332,77 @@ onMounted(() => {
   background: transparent !important;
 }
 
+/* 今天时间段内的学员卡片特殊效果 */
+.time-slot.today-slot .student-card {
+  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.2);
+  border-left: 3px solid #faad14;
+}
 
-/* 时间单元格 */
 .time-cell {
-  background: #fafafa;
+  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #e8e8e8;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1989fa;
+  width: 100px;
+  border-bottom: 1px solid #e0e0e0;
   grid-column: 1;
   position: sticky;
   left: 0;
   z-index: 15;
+  box-sizing: border-box;
+  border-right: 2px solid #e0e0e0;
 }
 
-/* 时间段样式 */
 .time-slot {
   position: relative;
-  padding: 0;
-  min-height: 55px;
+  padding: 4px;
+  min-height: 70px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s;
-  background: #f5f5f5;
+  background: rgba(240, 249, 255, 0.3);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  border-bottom: 1px solid rgba(224, 242, 254, 0.5);
+  border-right: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
 }
 
-.time-slot:hover {
-  filter: brightness(0.95);
-}
-
-.time-slot.today {
-  border-color: #bae7ff;
-  border-width: 2px;
-}
-
-/* 学员容器 */
 .students-container {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   box-sizing: border-box;
-  padding: 2px 0;
+  padding: 3px 0;
 }
 
-/* 学员卡片 */
 .student-card {
-  background: inherit;
-  color: #000;
-  font-weight: 600;
-  padding: 4px 8px;
-  height: 51px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a1a;
+  font-weight: 700;
+  padding: 8px 10px;
+  height: auto;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0;
+  border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.2s;
   text-align: center;
   box-sizing: border-box;
   line-height: 1.2;
-}
-
-.student-card:hover {
-  transform: scale(1.02);
+  margin: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .student-name {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: #1a1a1a;
   white-space: nowrap;
   overflow: hidden;
@@ -526,57 +411,73 @@ onMounted(() => {
 
 /* 状态颜色 */
 .status-upcoming {
-  background: #1989fa;
-  color: #000;
+  background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+  color: #0050b3;
 }
 
 .status-active {
-  background: #fa8c16;
-  color: #000;
+  background: linear-gradient(135deg, #fff7e6 0%, #ffd591 100%);
+  color: #ad6800;
 }
 
 .status-checked {
-  background: #52c41a;
-  color: #000;
+  background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+  color: #389e0d;
 }
 
 .status-during {
-  background: #d9d9d9;
-  color: #666;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  color: #8c8c8c;
 }
 
 .status-cancel {
-  background: #f5f5f5;
-  color: #999;
+  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+  color: #bfbfbf;
 }
 
-/* 空状态 */
 .empty-cell {
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px dashed #d9d9d9;
-  transition: all 0.2s;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px dashed rgba(24, 144, 255, 0.4);
+  transition: all 0.3s ease;
   cursor: pointer;
   position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 0;
+  top: 4px;
+  left: 4px;
+  border-radius: 4px;
+  margin: 0;
 }
 
-.empty-cell:hover {
-  background: rgba(24, 144, 255, 0.1);
-  border-color: #1890ff;
-}
-
-/* 加载状态 */
 .loading {
-  text-align: center;
-  padding: 40px;
-  color: #666;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
 }
 
-/* 底部导航 */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -584,13 +485,15 @@ onMounted(() => {
   transform: translateX(-50%);
   width: 100%;
   max-width: 430px;
-  height: 60px;
-  background: #fff;
-  border-top: 1px solid #eee;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: space-around;
   z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item {
@@ -599,9 +502,11 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: #666;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: color 0.3s;
+  padding: 5px;
 }
 
 .nav-item.active {
@@ -609,40 +514,30 @@ onMounted(() => {
 }
 
 .nav-icon {
-  font-size: 20px;
-  margin-bottom: 2px;
+  font-size: 24px;
+  margin-bottom: 4px;
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .calendar-table th {
-    font-size: 16px;
-    height: 55px;
-    padding: 6px 2px;
-    line-height: 1.2;
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 28px;
   }
 
-  .fixed-time-column {
-    min-width: 70px;
+  .time-header-cell {
+    font-size: 16px;
+  }
+
+  .date-header-cell {
+    font-size: 14px;
   }
 
   .time-cell {
     font-size: 16px;
-    height: 45px;
-  }
-
-  .time-header {
-    font-size: 16px;
-    height: 40px;
-  }
-
-  .student-card {
-    min-height: 45px;
-    padding: 0;
   }
 
   .student-name {
-    font-size: 16px; /* 移动端也保持较大字体 */
+    font-size: 14px;
   }
 }
 </style>

@@ -12,7 +12,7 @@ export const useStudentStore = defineStore('student', {
   getters: {
     totalStudents: (state) => state.students.length,
     activeStudents: (state) => state.students.filter(s => s.remaining_lessons > 0),
-    getStudentById: (state) => (id) => state.students.find(s => s.id === id)
+    getStudentById: (state) => (id) => state.students.find(s => s._id === id || s.id === id)
   },
   
   actions: {
@@ -50,12 +50,12 @@ export const useStudentStore = defineStore('student', {
       
       try {
         const updatedStudent = await studentApi.update(id, data)
-        const index = this.students.findIndex(s => s.id === id)
+        const index = this.students.findIndex(s => s._id === id || s.id === id)
         if (index !== -1) {
           this.students[index] = updatedStudent
         }
         
-        if (this.currentStudent?.id === id) {
+        if (this.currentStudent?._id === id || this.currentStudent?.id === id) {
           this.currentStudent = updatedStudent
         }
         
@@ -73,9 +73,9 @@ export const useStudentStore = defineStore('student', {
       
       try {
         await studentApi.delete(id)
-        this.students = this.students.filter(s => s.id !== id)
+        this.students = this.students.filter(s => s._id !== id && s.id !== id)
         
-        if (this.currentStudent?.id === id) {
+        if (this.currentStudent?._id === id || this.currentStudent?.id === id) {
           this.currentStudent = null
         }
       } catch (error) {

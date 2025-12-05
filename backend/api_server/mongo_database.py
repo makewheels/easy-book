@@ -62,8 +62,8 @@ class MongoDatabase:
         """创建学员"""
         student_data["_id"] = self._generate_id()
         student_data["id"] = student_data["_id"]
-        student_data["create_time"] = datetime.utcnow()
-        student_data["update_time"] = datetime.utcnow()
+        student_data["create_time"] = datetime.now()
+        student_data["update_time"] = datetime.now()
         
         result = await self.db.students.insert_one(student_data)
         return str(result.inserted_id)
@@ -102,7 +102,7 @@ class MongoDatabase:
     async def update_student(self, student_id: str, update_data: dict) -> bool:
         """更新学员"""
         from bson import ObjectId
-        update_data["update_time"] = datetime.utcnow()
+        update_data["update_time"] = datetime.now()
         # 首先尝试字符串查找，因为我们的ID是字符串格式
         result = await self.db.students.update_one(
             {"_id": student_id},
@@ -146,8 +146,8 @@ class MongoDatabase:
             await self.connect()
         appointment_data["_id"] = self._generate_id()
         appointment_data["id"] = appointment_data["_id"]
-        appointment_data["create_time"] = datetime.utcnow()
-        appointment_data["update_time"] = datetime.utcnow()
+        appointment_data["create_time"] = datetime.now()
+        appointment_data["update_time"] = datetime.now()
         appointment_data["status"] = "scheduled"
         
         result = await self.db.appointments.insert_one(appointment_data)
@@ -194,7 +194,7 @@ class MongoDatabase:
     async def update_appointment(self, appointment_id: str, update_data: dict) -> bool:
         """更新预约"""
         from bson import ObjectId
-        update_data["update_time"] = datetime.utcnow()
+        update_data["update_time"] = datetime.now()
         # 首先尝试字符串查找，与get_appointment保持一致
         result = await self.db.appointments.update_one(
             {"_id": appointment_id}, 
@@ -215,11 +215,15 @@ class MongoDatabase:
     async def delete_appointment(self, appointment_id: str) -> bool:
         """删除预约"""
         from bson import ObjectId
-        try:
-            # 删除预约
-            result = await self.db.appointments.delete_one({"_id": ObjectId(appointment_id)})
-        except:
-            result = await self.db.appointments.delete_one({"_id": appointment_id})
+        # 首先尝试字符串查找，与get_appointment保持一致
+        result = await self.db.appointments.delete_one({"_id": appointment_id})
+
+        # 如果字符串查找失败，尝试ObjectId查找
+        if result.deleted_count == 0:
+            try:
+                result = await self.db.appointments.delete_one({"_id": ObjectId(appointment_id)})
+            except:
+                pass
 
         # 删除相关考勤
         if result.deleted_count > 0:
@@ -232,10 +236,19 @@ class MongoDatabase:
         if self.db is None:
             await self.connect()
 
-        # 获取指定日期的所有预约（包括已取消的预约，但会显示状态）
+        from datetime import datetime, timedelta
+
+        # 设置日期范围（使用字符串查询更可靠）
+        start_date_str = appointment_date
+        end_date_str = f"{appointment_date}T23:59:59"
+
+        # 获取指定日期范围内的所有预约（包括已取消的预约，但会显示状态）
         appointments = []
         async for appointment in self.db.appointments.find({
-            "appointment_date": appointment_date
+            "start_time": {
+                "$gte": start_date_str,
+                "$lte": end_date_str
+            }
         }):
             appointment["_id"] = str(appointment["_id"])
             appointment["id"] = appointment["_id"]
@@ -248,18 +261,33 @@ class MongoDatabase:
         for appointment in appointments:
             time_slot = None
 
-            # 尝试从新格式获取时间
+            # 从新格式获取时间
             if "start_time" in appointment:
                 from datetime import datetime
                 try:
-                    start_dt = datetime.fromisoformat(appointment["start_time"].replace('Z', '+00:00'))
-                    time_slot = start_dt.strftime("%H:%M")
-                except:
-                    pass
+                    start_time = appointment["start_time"]
 
-            # 如果新格式失败，尝试从旧格式获取
-            if not time_slot and "time_slot" in appointment:
-                time_slot = appointment["time_slot"]
+                    # 如果已经是datetime对象，直接使用
+                    if isinstance(start_time, datetime):
+                        start_dt = start_time
+                    # 如果是字符串，解析为datetime
+                    elif isinstance(start_time, str):
+                        # 处理可能的时区信息
+                        start_time_str = start_time
+                        if 'Z' in start_time_str:
+                            start_time_str = start_time_str.replace('Z', '+00:00')
+                        start_dt = datetime.fromisoformat(start_time_str)
+                    # 如果是其他格式，尝试转换为字符串再解析
+                    else:
+                        try:
+                            start_dt = datetime.fromisoformat(str(start_time))
+                        except:
+                            continue
+
+                    time_slot = start_dt.strftime("%H:%M")
+                except Exception as e:
+                    print(f"Error parsing start_time: {e}, type: {type(appointment.get('start_time'))}")
+                    continue
 
             if time_slot:
                 if time_slot not in time_slots:

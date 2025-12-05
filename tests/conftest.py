@@ -24,7 +24,7 @@ class TestBase:
     """测试基础类，提供通用功能"""
 
     def __init__(self):
-        self.api_url = "http://localhost:8002"
+        self.api_url = "http://localhost:8004"
         self.frontend_url = "http://localhost:5174"
         self.db = None
         self.driver = None

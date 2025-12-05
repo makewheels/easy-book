@@ -64,11 +64,25 @@
           
           <div class="form-group">
             <label>套餐类型 *</label>
-            <select v-model="form.package_type" required>
-              <option value="">请选择套餐类型</option>
-              <option value="1v1">1v1</option>
-              <option value="1v多">1v多</option>
-            </select>
+            <input
+              type="text"
+              v-model="form.package_type"
+              required
+              placeholder="请输入套餐类型（如：1v1、1v多、小班课等）"
+            />
+            <div class="package-type-suggestions">
+              <div class="suggestion-label">常用类型：</div>
+              <div class="suggestion-chips">
+                <span
+                  v-for="type in packageTypeSuggestions"
+                  :key="type"
+                  class="suggestion-chip"
+                  @click="selectPackageType(type)"
+                >
+                  {{ type }}
+                </span>
+              </div>
+            </div>
           </div>
           
           <div class="form-group">
@@ -185,6 +199,19 @@ const learningItemSuggestions = [
   '防溺水'
 ]
 
+// 套餐类型建议列表
+const packageTypeSuggestions = [
+  '1v1',
+  '1v多',
+  '小班课',
+  '大班课',
+  '私教课',
+  '团体课',
+  '入门班',
+  '提高班',
+  '训练班'
+]
+
 // 上交俱乐部金额建议列表
 const venueShareSuggestions = [
   600
@@ -213,7 +240,7 @@ const fetchStudentData = async (studentId) => {
     }
   } catch (error) {
     toast.error('获取学员信息失败')
-    router.push('/students')
+    router.back() // 如果获取学员信息失败，返回上一个页面
   }
 }
 
@@ -223,6 +250,10 @@ const goBack = () => {
 
 const selectLearningItem = (item) => {
   form.learning_item = item
+}
+
+const selectPackageType = (type) => {
+  form.package_type = type
 }
 
 const selectVenueShare = (amount) => {
@@ -425,6 +456,10 @@ const handleSubmit = async () => {
 }
 
 .learning-item-suggestions {
+  margin-top: 8px;
+}
+
+.package-type-suggestions {
   margin-top: 8px;
 }
 

@@ -4,30 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat: refactor appointment model to support optional old format and add duration field in student appointment form">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述">
       <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/03-技术架构/技术选型文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/03-技术架构/技术选型文档.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/04-部署运维/安装指南.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/04-部署运维/安装指南.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendar-fixed.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendar-screenshot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendar_alignment_test.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calendar_button_centered.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/student.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/stores/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/student.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue.backup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/home-page-fixed.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/home-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/students-page-test.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/students-page-with-duration.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system_screenshot.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/features/test_monday_restriction.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/features/test_monday_restriction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/integration/test_ui_integration.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/integration/test_ui_integration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/unit/test_appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_attendance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_attendance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_health.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_students.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_students.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/utils/test_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/test_base.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -79,21 +85,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests for tests.automation.EasyBookAutomationTest.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in automation.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.automation.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.run.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests for tests.automation.EasyBookAutomationTest.executor": "Run",
+    "Python tests.Python tests for tests.unit.test_health.TestHealth.executor": "Run",
+    "Python tests.Python tests in automation.py.executor": "Run",
+    "Python.automation.executor": "Run",
+    "Python.main.executor": "Debug",
+    "Python.run.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHELLCHECK.PATH": "C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe",
+    "git-widget-placeholder": "master",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
-  <component name="RunManager" selected="Python tests.Python tests in automation.py">
+}]]></component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="pip install -r requirements.txt" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Python tests.Python tests for tests.unit.test_health.TestHealth">
     <configuration name="automation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="easy-book" />
       <option name="ENV_FILES" value="" />
@@ -108,28 +120,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/automation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="easy-book" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/app" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/app/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -181,6 +171,21 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for tests.unit.test_health.TestHealth" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="easy-book" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.unit.test_health.TestHealth&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests in automation.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="easy-book" />
       <option name="ENV_FILES" value="" />
@@ -198,11 +203,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for tests.unit.test_health.TestHealth" />
         <item itemvalue="Python tests.Python tests in automation.py" />
         <item itemvalue="Python tests.Python tests for tests.automation.EasyBookAutomationTest" />
         <item itemvalue="Python.automation" />
         <item itemvalue="Python.run" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -214,14 +219,6 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00002" summary="第一版实现基础功能">
-      <option name="closed" value="true" />
-      <created>1764502525023</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1764502525023</updated>
-    </task>
     <task id="LOCAL-00003" summary="部署">
       <option name="closed" value="true" />
       <created>1764505382881</created>
@@ -613,7 +610,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764864506159</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述">
+      <option name="closed" value="true" />
+      <created>1764939738081</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1764939738082</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -640,7 +645,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="build: update vite.config.js to specify output directory and assets directory" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="build: switch to official Python 3.10 slim image in Dockerfile" />
     <MESSAGE value="build: update Dockerfile to install all dependencies and configure nginx" />
     <MESSAGE value="build: update Dockerfile to use Node.js 16-alpine as the builder image" />
@@ -665,7 +670,8 @@
     <MESSAGE value="feat: add health check tests and enhance assertion methods" />
     <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
     <MESSAGE value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
+    <MESSAGE value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
