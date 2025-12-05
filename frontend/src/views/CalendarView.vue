@@ -57,10 +57,6 @@
 
     <!-- 底部导航 -->
     <nav class="bottom-nav">
-      <div class="nav-item" @click="navigateTo('home')">
-        <div class="nav-icon">🏠</div>
-        <span>预约管理</span>
-      </div>
       <div class="nav-item active" @click="navigateTo('calendar')">
         <div class="nav-icon">📅</div>
         <span>课程日历</span>

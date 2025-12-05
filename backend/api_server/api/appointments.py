@@ -136,7 +136,8 @@ async def update_appointment(appointment_id: str, appointment_update: Appointmen
                 raise HTTPException(status_code=404, detail="Appointment not found")
 
             start_time = update_data.get("start_time", current_appointment.get("start_time"))
-            duration = update_data.get("duration", current_appointment.get("duration"))
+            # Support both duration and duration_in_minutes for backward compatibility
+            duration = update_data.get("duration_in_minutes", update_data.get("duration", current_appointment.get("duration_in_minutes", current_appointment.get("duration"))))
 
             if start_time and duration:
                 end_time = start_time + timedelta(minutes=duration) if isinstance(start_time, datetime) else \

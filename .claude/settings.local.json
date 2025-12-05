@@ -91,7 +91,8 @@
       "Bash(start:*)",
       "Bash(npx vue-tsc:*)",
       "Bash(git checkout:*)",
-      "Bash(cmd /c \"taskkill /PID 11272 /F\")"
+      "Bash(cmd /c \"taskkill /PID 11272 /F\")",
+      "Bash(cmd:*)"
     ],
     "deny": [],
     "ask": []

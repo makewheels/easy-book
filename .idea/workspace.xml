@@ -4,37 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果">
       <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar-fixed.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar-screenshot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar_alignment_test.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar_button_centered.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/student.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/student.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constitution.md" beforeDir="false" afterPath="$PROJECT_DIR$/constitution.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/current-page.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-业务模块/预约管理/设计文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/02-业务模块/预约管理/需求文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/05-技术文档/预约时间重构设计文档.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/AppointmentList.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/BottomNavigation.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/HomePageHeader.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/AppointmentDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/AppointmentDialog.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue.backup" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Home.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/home-page-fixed.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/home-page.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/students-page-test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/students-page-with-duration.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/system_screenshot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/unit/test_appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/test_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/test_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/unit/test_appointments.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,14 +211,6 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00003" summary="部署">
-      <option name="closed" value="true" />
-      <created>1764505382881</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1764505382881</updated>
-    </task>
     <task id="LOCAL-00004" summary="部署">
       <option name="closed" value="true" />
       <created>1764505488841</created>
@@ -618,7 +602,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764939738082</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果">
+      <option name="closed" value="true" />
+      <created>1764948575874</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1764948575874</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -646,7 +638,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="build: switch to official Python 3.10 slim image in Dockerfile" />
     <MESSAGE value="build: update Dockerfile to install all dependencies and configure nginx" />
     <MESSAGE value="build: update Dockerfile to use Node.js 16-alpine as the builder image" />
     <MESSAGE value="build: add CLAUDE.md for project guidance and update settings.local.json for permissions" />
@@ -671,7 +662,8 @@
     <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
     <MESSAGE value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
     <MESSAGE value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
+    <MESSAGE value="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
