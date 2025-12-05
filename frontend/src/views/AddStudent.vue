@@ -61,11 +61,25 @@
           
           <div class="form-group">
             <label>套餐类型 *</label>
-            <select v-model="form.package_type" required>
-              <option value="">请选择套餐类型</option>
-              <option value="1v1">1v1</option>
-              <option value="1v多">1v多</option>
-            </select>
+            <input
+              type="text"
+              v-model="form.package_type"
+              required
+              placeholder="请输入套餐类型（如：1v1、1v多、小班课等）"
+            />
+            <div class="package-type-suggestions">
+              <div class="suggestion-label">常用类型：</div>
+              <div class="suggestion-chips">
+                <span
+                  v-for="type in packageTypeSuggestions"
+                  :key="type"
+                  class="suggestion-chip"
+                  @click="selectPackageType(type)"
+                >
+                  {{ type }}
+                </span>
+              </div>
+            </div>
           </div>
           
           <div class="form-group">
@@ -155,12 +169,29 @@ const learningItemSuggestions = [
   '防溺水'
 ]
 
+// 套餐类型建议列表
+const packageTypeSuggestions = [
+  '1v1',
+  '1v多',
+  '小班课',
+  '大班课',
+  '私教课',
+  '团体课',
+  '入门班',
+  '提高班',
+  '训练班'
+]
+
 const goBack = () => {
   router.back()
 }
 
 const selectLearningItem = (item) => {
   form.learning_item = item
+}
+
+const selectPackageType = (type) => {
+  form.package_type = type
 }
 
 const handleSubmit = async () => {
@@ -218,8 +249,8 @@ const handleSubmit = async () => {
 }
 
 .header {
-  background: #1989fa;
-  color: #fff;
+  background: #fff;
+  color: #1a1a1a;
   padding: 15px;
   position: fixed;
   top: 0;
@@ -230,6 +261,7 @@ const handleSubmit = async () => {
   align-items: center;
   height: 60px;
   box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
@@ -346,6 +378,10 @@ const handleSubmit = async () => {
 }
 
 .learning-item-suggestions {
+  margin-top: 8px;
+}
+
+.package-type-suggestions {
   margin-top: 8px;
 }
 

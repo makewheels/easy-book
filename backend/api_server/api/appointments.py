@@ -9,7 +9,18 @@ router = APIRouter()
 @router.post("/")
 async def create_appointment(appointment: AppointmentCreate):
     try:
-        appointment_data = appointment.dict()
+        # 计算结束时间
+        from datetime import timedelta
+        end_time = appointment.start_time + timedelta(minutes=appointment.duration)
+
+        # 构建完整数据
+        appointment_data = {
+            "student_id": appointment.student_id,
+            "start_time": appointment.start_time,
+            "end_time": end_time,
+            "duration": appointment.duration
+        }
+
         created_appointment = await AppointmentService.create(appointment_data)
         return {
             "code": 200,
@@ -25,7 +36,7 @@ async def create_appointment(appointment: AppointmentCreate):
     except Exception as e:
         # 处理 MongoDB 重复键错误
         error_str = str(e)
-        if "E11000 duplicate key error" in error_str and "student_id_1_appointment_date_1_time_slot_1" in error_str:
+        if "E11000 duplicate key error" in error_str:
             return {
                 "code": 400,
                 "message": "该时间段已有预约，请选择其他时间",
@@ -43,7 +54,14 @@ async def get_student_appointments(
     future_only: bool = Query(False, description="只获取未来预约")
 ):
     try:
-        appointments = await AppointmentService.get_by_student(student_id, future_only)
+        appointments = await AppointmentService.get_student_appointments(student_id)
+        if future_only:
+            # 过滤出未来的预约
+            now = datetime.now()
+            appointments = [
+                apt for apt in appointments
+                if hasattr(apt, 'start_time') and apt.start_time > now
+            ]
         return appointments
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -107,6 +125,24 @@ async def cancel_appointment(appointment_id: str):
 async def update_appointment(appointment_id: str, appointment_update: AppointmentUpdate):
     try:
         update_data = appointment_update.dict(exclude_unset=True)
+
+        # 如果更新了开始时间或时长，需要重新计算结束时间
+        if "start_time" in update_data or "duration" in update_data:
+            from datetime import timedelta
+
+            # 获取当前预约信息以获取缺失的字段
+            current_appointment = await AppointmentService.get_by_id(appointment_id)
+            if not current_appointment:
+                raise HTTPException(status_code=404, detail="Appointment not found")
+
+            start_time = update_data.get("start_time", current_appointment.get("start_time"))
+            duration = update_data.get("duration", current_appointment.get("duration"))
+
+            if start_time and duration:
+                end_time = start_time + timedelta(minutes=duration) if isinstance(start_time, datetime) else \
+                          datetime.fromisoformat(start_time) + timedelta(minutes=duration)
+                update_data["end_time"] = end_time
+
         updated_appointment = await AppointmentService.update(appointment_id, update_data)
 
         if updated_appointment:

@@ -88,7 +88,10 @@
       "Bash(cd:*)",
       "Bash(start http://localhost:5177)",
       "Bash(node:*)",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(git checkout:*)",
+      "Bash(cmd /c \"taskkill /PID 11272 /F\")"
     ],
     "deny": [],
     "ask": []

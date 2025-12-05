@@ -8,7 +8,7 @@
       <h1>课程日历</h1>
     </header>
 
-    
+
     <!-- 日历表格 -->
     <div class="calendar-container" :class="{ transitioning: isTransitioning }">
       <div v-if="loading" class="loading">
@@ -105,6 +105,14 @@ const touchEndX = ref(0)
 const minSwipeDistance = 50
 const isTransitioning = ref(false)
 
+// 初始化当前周，让今天显示在第二列
+const initWeekWithTodayInSecondColumn = () => {
+  const today = new Date()
+  const dayOfWeek = today.getDay() === 0 ? 7 : today.getDay() // 周日=7, 周一=1...
+  const offsetToTuesday = (2 - dayOfWeek) // 计算到周二的偏移量
+  currentWeekStart.value = new Date(today.getTime() + offsetToTuesday * 24 * 60 * 60 * 1000)
+}
+
 // 时间段配置 (早7点到晚7点，最后一节课19-20点)
 const timeSlots = [
   '07:00', '08:00', '09:00', '10:00', '11:00',
@@ -115,24 +123,32 @@ const timeSlots = [
 // 计算属性
 const weekDates = computed(() => {
   const dates = []
-  const startDate = startOfWeek(currentWeekStart.value, { weekStartsOn: 1 }) // 周一开始
+  // 使用当前设置的起始日期，而不是startOfWeek
+  const startDate = new Date(currentWeekStart.value)
 
   for (let i = 0; i < 7; i++) {
     const currentDate = addDays(startDate, i)
 
-    // 跳过周一（周一闭馆）
-    if (i === 0) continue
+    // 跳过周一（周一闭馆）- 如果当前日期是周一，跳过
+    const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
+    if (dayOfWeek === 1) continue
 
     const dateStr = format(currentDate, 'yyyy-MM-dd')
     const isToday = isSameDay(currentDate, new Date())
 
+    // 获取正确的星期名称（跳过周一）
+    const weekdayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    let weekdayIndex = dayOfWeek - 1 // 转换为0-6索引
+    if (weekdayIndex > 0) weekdayIndex-- // 跳过周一后，索引减1
+
     dates.push({
       date: dateStr,
       displayDate: format(currentDate, 'MM/dd'),
-      weekday: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'][i],
+      weekday: weekdayNames[weekdayIndex],
       isToday: isToday,
       isPast: currentDate < new Date().setHours(0, 0, 0, 0)
     })
+  }
 
   return dates
 })
@@ -323,6 +339,7 @@ watch(currentWeekStart, () => {
 
 // 生命周期
 onMounted(() => {
+  initWeekWithTodayInSecondColumn()
   fetchWeekData()
 })
 </script>
@@ -453,11 +470,15 @@ onMounted(() => {
   font-size: 20px;
   font-weight: 600;
   color: #333;
+  width: 80px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
   border-bottom: 1px solid #e8e8e8;
   grid-column: 1;
   position: sticky;
   left: 0;
   z-index: 15;
+  box-sizing: border-box;
 }
 
 /* 时间段样式 */
@@ -510,14 +531,11 @@ onMounted(() => {
   line-height: 1.2;
 }
 
-.student-card:hover {
-  transform: scale(1.02);
-}
 
 .student-name {
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #000000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -525,7 +543,7 @@ onMounted(() => {
 
 /* 状态颜色 */
 .status-upcoming {
-  background: #1989fa;
+  background: #63ADF4;
   color: #000;
 }
 

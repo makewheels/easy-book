@@ -95,8 +95,19 @@ class TestAppointments(TestBase):
             raise AssertionError("需要先创建预约")
 
         appointment_id = self.test_data["appointment_id"]
+
+        # For update, use new format with start_time and end_time
+        date = self.get_today_date()
+        new_time_slot = "23:00"
+        hour, minute = map(int, new_time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {new_time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         update_data = {
-            "time_slot": "23:00"
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": new_time_slot
         }
 
         response = requests.put(f"{self.api_url}/api/appointments/{appointment_id}", json=update_data)
@@ -220,10 +231,18 @@ class TestAppointments(TestBase):
         student1vmany = student1vmany_response.json()  # Student API returns data directly
 
         # 尝试在同一时间创建1v多预约
+        date = self.get_today_date()
+        time_slot = "15:00"  # 与1v1预约相同时间
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         vmany_appointment_data = {
             "student_id": student1vmany.get("_id"),  # Students use _id field
-            "appointment_date": self.get_today_date(),
-            "time_slot": "15:00"  # 与1v1预约相同时间
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
 
         vmany_response = requests.post(f"{self.api_url}/api/appointments/", json=vmany_appointment_data)
@@ -246,10 +265,18 @@ class TestAppointments(TestBase):
         student_id = self.test_data["student_id"]
 
         # 尝试创建重复预约（同一学生，同一时间）
+        date = self.get_today_date()
+        time_slot = "19:00"  # 使用现有预约的时间
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         duplicate_appointment_data = {
             "student_id": student_id,
-            "appointment_date": self.get_today_date(),
-            "time_slot": "19:00"  # 使用现有预约的时间
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
 
         duplicate_response = requests.post(f"{self.api_url}/api/appointments/", json=duplicate_appointment_data)
@@ -356,19 +383,35 @@ class TestAppointments(TestBase):
 
         # 今日创建2个预约
         for i, time_slot in enumerate(["14:00", "15:00"]):
+            date = today
+            hour, minute = map(int, time_slot.split(':'))
+            start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+            end_datetime = start_datetime + datetime.timedelta(hours=1)
+
+            student_id = student_today["_id"] if i == 0 else self.create_test_student(f"今日测试{i}")["_id"]
             appointment_data = {
-                "student_id": student_today["_id"] if i == 0 else self.create_test_student(f"今日测试{i}")["_id"],
-                "appointment_date": today,
+                "student_id": student_id,
+                "start_time": start_datetime.isoformat(),
+                "end_time": end_datetime.isoformat(),
+                "appointment_date": date,
                 "time_slot": time_slot
             }
             response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
             self.assert_equal(response.status_code, 200, f"Create today appointment {i+1}")
 
         # 明日创建1个预约
+        date = tomorrow
+        time_slot = "16:00"
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         tomorrow_appointment_data = {
             "student_id": student_tomorrow["_id"],
-            "appointment_date": tomorrow,
-            "time_slot": "16:00"
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
         response = requests.post(f"{self.api_url}/api/appointments/", json=tomorrow_appointment_data)
         self.assert_equal(response.status_code, 200, "Create tomorrow appointment")
@@ -427,10 +470,18 @@ class TestAppointments(TestBase):
         self.assert_equal(initial_lessons, 5, "Initial remaining lessons should be 5")
 
         # 创建预约（应该自动扣减1次课程）
+        date = self.get_today_date()
+        time_slot = "10:00"
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         appointment_data = {
             "student_id": student_id,
-            "appointment_date": self.get_today_date(),
-            "time_slot": "10:00"
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
 
         appointment_response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
@@ -581,10 +632,18 @@ class TestAppointments(TestBase):
         student_id = student.get("_id") or student.get("id")
 
         # 尝试创建预约（应该被拒绝）
+        date = self.get_today_date()
+        time_slot = "14:00"
+        hour, minute = map(int, time_slot.split(':'))
+        start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+        end_datetime = start_datetime + datetime.timedelta(hours=1)
+
         appointment_data = {
             "student_id": student_id,
-            "appointment_date": self.get_today_date(),
-            "time_slot": "14:00"
+            "start_time": start_datetime.isoformat(),
+            "end_time": end_datetime.isoformat(),
+            "appointment_date": date,
+            "time_slot": time_slot
         }
 
         appointment_response = requests.post(f"{self.api_url}/api/appointments/", json=appointment_data)
@@ -635,9 +694,16 @@ class TestAppointments(TestBase):
 
         # 创建多个预约
         for i, time_slot in enumerate(time_slots):
+            date = self.get_today_date()
+            hour, minute = map(int, time_slot.split(':'))
+            start_datetime = datetime.datetime.strptime(f"{date} {time_slot}", "%Y-%m-%d %H:%M")
+            end_datetime = start_datetime + datetime.timedelta(hours=1)
+
             appointment_data = {
                 "student_id": student_id,
-                "appointment_date": self.get_today_date(),
+                "start_time": start_datetime.isoformat(),
+                "end_time": end_datetime.isoformat(),
+                "appointment_date": date,
                 "time_slot": time_slot
             }
 
