@@ -1,9 +1,5 @@
 <template>
   <div class="calendar-page">
-    <header class="header">
-      <h1>课程日历</h1>
-    </header>
-
     <div class="calendar-container">
       <div v-if="loading" class="loading">
         加载中...
@@ -56,16 +52,7 @@
     </div>
 
     <!-- 底部导航 -->
-    <nav class="bottom-nav">
-      <div class="nav-item active" @click="navigateTo('calendar')">
-        <div class="nav-icon">📅</div>
-        <span>课程日历</span>
-      </div>
-      <div class="nav-item" @click="navigateTo('students')">
-        <div class="nav-icon">👥</div>
-        <span>学员管理</span>
-      </div>
-    </nav>
+    <BottomNavigation :active-tab="'calendar'" @navigate="navigateTo" />
   </div>
 </template>
 
@@ -188,8 +175,9 @@ onMounted(() => {
 
 <style scoped>
 .calendar-page {
-  max-width: 430px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
   background: #f5f5f5;
   position: relative;
@@ -216,22 +204,19 @@ onMounted(() => {
 }
 
 .calendar-container {
-  padding: 20px 0;
+  padding: 0;
   max-width: none;
   width: 100%;
   box-sizing: border-box;
 }
 
 .calendar-wrapper {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #fff;
+  padding: 40px 20px 20px 0;
   position: relative;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin: -30px 10px 0 10px;
 }
 
 .calendar-grid {
@@ -245,7 +230,7 @@ onMounted(() => {
 }
 
 .time-header-cell {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,11 +243,10 @@ onMounted(() => {
   top: 0;
   left: 0;
   z-index: 20;
-  border-radius: 8px 0 0 0;
 }
 
 .date-header-cell {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #f5f5f5;
   font-size: 16px;
   font-weight: 700;
   color: #1989fa;
@@ -279,12 +263,11 @@ onMounted(() => {
 
 /* 今天列头特殊样式 */
 .date-header-cell.today-column {
-  background: linear-gradient(135deg, #fff1b8 0%, #ffec3d 100%);
+  background: #fff3cd;
   color: #d48806;
   font-weight: 900;
   border-bottom: 3px solid #faad14;
   border-right: 2px solid #faad14;
-  box-shadow: 0 4px 12px rgba(250, 173, 20, 0.4);
   position: relative;
 }
 
@@ -299,43 +282,16 @@ onMounted(() => {
   font-size: 10px;
   font-weight: 700;
   padding: 2px 6px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* 今天时间段背景色 */
 .time-slot.today-slot {
-  background: rgba(255, 235, 59, 0.3) !important;
-  border-right: 3px solid #faad14;
-  position: relative;
-}
-
-/* 今天时间段添加左侧强调条 */
-.time-slot.today-slot::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: #faad14;
-  box-shadow: 0 0 4px rgba(250, 173, 20, 0.4);
-}
-
-/* 确保今天时间段内的所有元素都使用统一背景 */
-.time-slot.today-slot .empty-cell,
-.time-slot.today-slot .students-container {
-  background: transparent !important;
-}
-
-/* 今天时间段内的学员卡片特殊效果 */
-.time-slot.today-slot .student-card {
-  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.2);
-  border-left: 3px solid #faad14;
+  background: #fff9c4 !important;
+  border-right: 2px solid #faad14;
 }
 
 .time-cell {
-  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+  background: #f9f9f9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,13 +314,12 @@ onMounted(() => {
   min-height: 70px;
   font-size: 14px;
   cursor: pointer;
-  background: rgba(240, 249, 255, 0.3);
+  background: #f9f9f9;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid rgba(224, 242, 254, 0.5);
+  border-bottom: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
-  transition: all 0.3s ease;
 }
 
 .students-container {
@@ -376,7 +331,7 @@ onMounted(() => {
 }
 
 .student-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: #fff;
   color: #1a1a1a;
   font-weight: 700;
   padding: 8px 10px;
@@ -385,15 +340,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
   cursor: pointer;
   text-align: center;
   box-sizing: border-box;
   line-height: 1.2;
   margin: 0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  border: none;
-  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
 }
 
 .student-name {
@@ -407,41 +359,39 @@ onMounted(() => {
 
 /* 状态颜色 */
 .status-upcoming {
-  background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+  background: #e6f7ff;
   color: #0050b3;
 }
 
 .status-active {
-  background: linear-gradient(135deg, #fff7e6 0%, #ffd591 100%);
+  background: #fff7e6;
   color: #ad6800;
 }
 
 .status-checked {
-  background: linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%);
+  background: #f6ffed;
   color: #389e0d;
 }
 
 .status-during {
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: #f5f5f5;
   color: #8c8c8c;
 }
 
 .status-cancel {
-  background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+  background: #fafafa;
   color: #bfbfbf;
 }
 
 .empty-cell {
   width: calc(100% - 8px);
   height: calc(100% - 8px);
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px dashed rgba(24, 144, 255, 0.4);
-  transition: all 0.3s ease;
+  background: #fff;
+  border: 1px dashed #d0d0d0;
   cursor: pointer;
   position: absolute;
   top: 4px;
   left: 4px;
-  border-radius: 4px;
   margin: 0;
 }
 
@@ -477,19 +427,15 @@ onMounted(() => {
 .bottom-nav {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   width: 100%;
-  max-width: 430px;
   height: 70px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: space-around;
   z-index: 100;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item {
