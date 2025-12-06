@@ -1,9 +1,7 @@
 <template>
   <div class="edit-student-page">
     <div class="header">
-      <button class="back-btn" @click="goBack">
-        ← 返回
-      </button>
+      <BackButton />
       <h1>编辑学员</h1>
     </div>
     
@@ -68,7 +66,7 @@
               type="text"
               v-model="form.package_type"
               required
-              placeholder="请输入套餐类型（如：1v1、1v多、小班课等）"
+              placeholder="请输入套餐类型"
             />
             <div class="package-type-suggestions">
               <div class="suggestion-chips">
@@ -164,6 +162,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { toast } from '@/utils/toast'
+import BackButton from '@/components/common/BackButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -197,8 +196,10 @@ const learningItemSuggestions = [
 
 // 套餐类型建议列表
 const packageTypeSuggestions = [
-  '1v1',
-  '1v多'
+  '1 v 1',
+  '1 v 2',
+  '1 v 3',
+  '1 v 5'
 ]
 
 // 上交俱乐部金额建议列表
@@ -233,16 +234,14 @@ const fetchStudentData = async (studentId) => {
   }
 }
 
-const goBack = () => {
-  router.push(`/student/${route.params.id}`)
-}
 
 const selectLearningItem = (item) => {
   form.learning_item = item
 }
 
 const selectPackageType = (type) => {
-  form.package_type = type
+  // 移除显示用的空格，实际存储为紧凑格式
+  form.package_type = type.replace(/\s+v\s+/g, 'v')
 }
 
 const selectVenueShare = (amount) => {
@@ -358,7 +357,7 @@ const handleSubmit = async () => {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  margin: 0 10px;
+  margin: 0;
   border: 1px solid #e0e0e0;
   overflow: hidden;
 }
@@ -400,6 +399,7 @@ const handleSubmit = async () => {
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   font-size: 16px;
+  font-family: inherit;
   box-sizing: border-box;
   background: #fff;
   transition: border-color 0.3s ease;
@@ -429,7 +429,7 @@ const handleSubmit = async () => {
 .form-actions {
   display: flex;
   gap: 15px;
-  margin: 0 10px 20px 10px;
+  margin: 0 0 20px 0;
 }
 
 .btn-cancel,
@@ -446,12 +446,12 @@ const handleSubmit = async () => {
 
 .btn-cancel {
   background: #fff;
-  color: #666;
-  border: 2px solid #e0e0e0;
+  color: #1989fa;
+  border: 2px solid #1989fa;
 }
 
 .btn-cancel:hover {
-  background: #f8f8f8;
+  background: #f0f9ff;
 }
 
 .btn-save {

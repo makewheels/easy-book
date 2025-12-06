@@ -33,6 +33,23 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
+    // 创建预约
+    async createAppointment(appointmentData) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await appointmentApi.create(appointmentData)
+        return response
+      } catch (error) {
+        console.error('创建预约失败:', error)
+        this.error = error.message || '创建预约失败'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
     // 清除错误
     clearError() {
       this.error = null

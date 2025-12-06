@@ -13,14 +13,14 @@
       <div v-else-if="students.length === 0" class="empty-state">
         <div class="empty-message">暂无学员</div>
         <button class="add-first-btn" @click="goToAddStudent">
-          添加学员
+          ➕ 添加学员
         </button>
       </div>
 
       <div v-else>
         <!-- 新增学生按钮 - 移到顶部 -->
         <div class="add-student-btn" @click="goToAddStudent">
-          新增学员
+          ➕ 新增学员
         </div>
 
         <div class="students-grid">

@@ -470,21 +470,22 @@ const handleSubmit = () => {
 }
 
 .btn-cancel {
-  background: #f5f5f5;
-  color: #666;
+  background: #fff;
+  color: #1989fa;
+  border: 2px solid #1989fa;
 }
 
 .btn-cancel:hover {
-  background: #e8e8e8;
+  background: #f0f9ff;
 }
 
 .btn-confirm {
-  background: #52c41a;
+  background: #1989fa;
   color: #fff;
 }
 
 .btn-confirm:hover {
-  background: #389e0d;
+  background: #096dd9;
 }
 
 .btn-confirm:disabled {

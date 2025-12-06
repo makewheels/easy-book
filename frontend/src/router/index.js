@@ -4,6 +4,7 @@ import StudentDetail from '@/views/StudentDetail.vue'
 import AddStudent from '@/views/AddStudent.vue'
 import EditStudent from '@/views/EditStudent.vue'
 import CalendarView from '@/views/CalendarView.vue'
+import AddAppointment from '@/views/AddAppointment.vue'
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
     path: '/add-student',
     name: 'AddStudent',
     component: AddStudent
+  },
+  {
+    path: '/student/:studentId/add-appointment',
+    name: 'AddAppointment',
+    component: AddAppointment
   }
 ]
 

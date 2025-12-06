@@ -1,9 +1,7 @@
 <template>
   <div class="add-student-page">
     <div class="header">
-      <button class="back-btn" @click="goBack">
-        ← 返回
-      </button>
+      <BackButton />
       <h1>新增学员</h1>
     </div>
     
@@ -64,10 +62,9 @@
               type="text"
               v-model="form.package_type"
               required
-              placeholder="请输入套餐类型（如：1v1、1v多、小班课等）"
+              placeholder="请输入套餐类型"
             />
             <div class="package-type-suggestions">
-              <div class="suggestion-label">常用类型：</div>
               <div class="suggestion-chips">
                 <span
                   v-for="type in packageTypeSuggestions"
@@ -123,9 +120,7 @@
         </div>
         
         <div class="form-actions">
-          <button type="button" class="btn-cancel" @click="goBack">
-            取消
-          </button>
+          <BackButton text="取消" />
           <button type="submit" class="btn-save" :disabled="loading">
             {{ loading ? '保存中...' : '保存' }}
           </button>
@@ -140,6 +135,7 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { toast } from '@/utils/toast'
+import BackButton from '@/components/common/BackButton.vue'
 
 const router = useRouter()
 const studentStore = useStudentStore()
@@ -170,27 +166,20 @@ const learningItemSuggestions = [
 
 // 套餐类型建议列表
 const packageTypeSuggestions = [
-  '1v1',
-  '1v多',
-  '小班课',
-  '大班课',
-  '私教课',
-  '团体课',
-  '入门班',
-  '提高班',
-  '训练班'
+  '1 v 1',
+  '1 v 2',
+  '1 v 3',
+  '1 v 5'
 ]
 
-const goBack = () => {
-  router.back()
-}
 
 const selectLearningItem = (item) => {
   form.learning_item = item
 }
 
 const selectPackageType = (type) => {
-  form.package_type = type
+  // 移除显示用的空格，实际存储为紧凑格式
+  form.package_type = type.replace(/\s+v\s+/g, 'v')
 }
 
 const handleSubmit = async () => {
@@ -343,6 +332,7 @@ const handleSubmit = async () => {
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   font-size: 16px;
+  font-family: inherit;
   box-sizing: border-box;
   background: #fff;
   transition: border-color 0.3s ease;
