@@ -17,8 +17,7 @@ defineEmits(['showAppointment', 'editStudent'])
 .quick-actions {
   display: flex;
   gap: 15px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin: 15px 20px 15px 20px;
 }
 
 .action-btn {
