@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8005/api'
+const BASE_URL = 'http://localhost:8004/api'
 
 export const appointmentApi = {
   // 获取学员预约列表

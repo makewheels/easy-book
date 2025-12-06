@@ -30,7 +30,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
-import { attendanceApi } from '@/api/attendance'
+import { appointmentApi } from '@/api/appointment'
 import { isMonday } from '@/utils/date'
 import { toast } from '@/utils/toast'
 
@@ -95,10 +95,24 @@ const fetchStudentData = async (studentId) => {
 
 const fetchAttendanceData = async (studentId) => {
   try {
-    const response = await attendanceApi.getByStudent(studentId)
-    attendances.value = response.data || []
+    const response = await appointmentApi.getStudentAppointments(studentId)
+    const appointments = response.data || []
+
+    // 转换预约数据为考勤记录格式
+    attendances.value = appointments.map(appointment => ({
+      id: appointment.id,
+      date: appointment.create_time.split('T')[0], // 从创建时间提取日期
+      time: new Date(appointment.create_time).toLocaleTimeString('zh-CN', {
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      status: appointment.status,
+      lessons_before: '-', // 预约记录中没有课时变化信息，显示为'-'
+      lessons_after: '-'   // 预约记录中没有课时变化信息，显示为'-'
+    }))
   } catch (error) {
-    console.error('获取上课记录失败:', error)
+    console.error('获取预约记录失败:', error)
+    attendances.value = []
   }
 }
 

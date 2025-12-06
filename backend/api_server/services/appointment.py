@@ -75,7 +75,7 @@ class AppointmentService:
         await CourseService.add_student_to_course(course.id, student_id)
 
         # 获取创建的预约
-        appointment = await db.get_student_appointment(appointment_id)
+        appointment = await db.get_appointment(appointment_id)
         if appointment:
             return StudentAppointmentModel(**appointment)
         else:
@@ -93,7 +93,7 @@ class AppointmentService:
             预约对象，如果不存在则返回None
         """
         db = get_database()
-        appointments = await db.get_student_appointments(None)  # 获取所有预约来查找特定ID
+        appointments = await db.get_appointments(None)  # 获取所有预约来查找特定ID
         for appointment in appointments:
             if appointment.get("id") == appointment_id:
                 return StudentAppointmentModel(**appointment)
@@ -113,7 +113,7 @@ class AppointmentService:
         db = get_database()
 
         # 获取预约信息
-        appointments = await db.get_student_appointments(None)
+        appointments = await db.get_appointments(None)
         target_appointment = None
         for appointment in appointments:
             if appointment.get("id") == appointment_id:
@@ -142,7 +142,7 @@ class AppointmentService:
                 })
 
         # 更新预约状态为取消
-        success = await db.update_student_appointment(appointment_id, {
+        success = await db.update_appointment(appointment_id, {
             "status": "cancelled",
             "update_time": datetime.utcnow()
         })
@@ -169,7 +169,7 @@ class AppointmentService:
         db = get_database()
 
         # 获取预约信息
-        appointments = await db.get_student_appointments(None)
+        appointments = await db.get_appointments(None)
         target_appointment = None
         for appointment in appointments:
             if appointment.get("id") == appointment_id:
@@ -205,7 +205,7 @@ class AppointmentService:
         })
 
         # 更新预约状态
-        success = await db.update_student_appointment(appointment_id, {
+        success = await db.update_appointment(appointment_id, {
             "status": "completed",
             "lesson_consumed": True,
             "update_time": datetime.utcnow()
@@ -226,7 +226,7 @@ class AppointmentService:
             预约对象列表
         """
         db = get_database()
-        appointments = await db.get_student_appointments(student_id, status)
+        appointments = await db.get_appointments(student_id, status)
 
         # 为每个预约添加课程信息
         result_appointments = []
@@ -281,6 +281,7 @@ class AppointmentService:
         Returns:
             按时间分组的预约数据
         """
+        db = get_database()
         # 获取当天的课程
         courses = await CourseService.get_daily_courses(date)
 
@@ -302,7 +303,8 @@ class AppointmentService:
             if active_appointments:
                 students = []
                 for apt in active_appointments:
-                    student_info = apt.student
+                    # 通过 student_id 获取学生信息
+                    student_info = await db.get_student(apt.student_id)
                     if student_info:
                         student_data = {
                             "id": apt.id,
