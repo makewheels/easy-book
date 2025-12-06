@@ -27,10 +27,25 @@
     <!-- 原套餐类型 -->
     <div class="form-group">
       <label class="form-label">课程类型 *</label>
-      <select v-model="packageData.original_package_type" class="package-form-select">
-        <option value="1v1">一对一</option>
-        <option value="1v多">一对多</option>
-      </select>
+      <input
+        type="text"
+        v-model="packageData.original_package_type_display"
+        @input="onPackageTypeInput"
+        class="package-form-input"
+        placeholder="请输入课程类型"
+      />
+      <div class="package-type-suggestions">
+        <div class="suggestion-chips">
+          <span
+            v-for="type in packageTypeSuggestions"
+            :key="type.value"
+            class="suggestion-chip"
+            @click="selectPackageType(type)"
+          >
+            {{ type.display }}
+          </span>
+        </div>
+      </div>
     </div>
 
     <!-- 记次套餐选项 -->
@@ -94,29 +109,7 @@
       </div>
     </div>
 
-    <!-- 套餐信息预览 -->
-    <div class="package-preview">
-      <div class="preview-title">套餐信息预览</div>
-      <div class="preview-content">
-        <div class="preview-row">
-          <span class="preview-label">套餐类别：</span>
-          <span class="preview-value">{{ packageCategoryText }}</span>
-        </div>
-        <div class="preview-row">
-          <span class="preview-label">课程类型：</span>
-          <span class="preview-value">{{ originalPackageTypeText }}</span>
-        </div>
-        <div v-if="packageData.package_category === 'count_based'" class="preview-row">
-          <span class="preview-label">课程数量：</span>
-          <span class="preview-value">{{ packageData.total_lessons || 0 }}次</span>
-        </div>
-        <div v-else class="preview-row">
-          <span class="preview-label">套餐类型：</span>
-          <span class="preview-value">{{ durationTypeText }}</span>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script setup>
@@ -135,12 +128,21 @@ const emit = defineEmits(['update:modelValue'])
 // 套餐数据
 const packageData = ref({
   package_category: 'count_based',
-  original_package_type: '1v1',
+  original_package_type: '',
+  original_package_type_display: '',
   total_lessons: null,
   package_duration_type: '',
   package_duration_days: null,
   unlimited_access: false
 })
+
+// 课程类型建议列表
+const packageTypeSuggestions = [
+  { value: '1v1', display: '1 v 1' },
+  { value: '1v2', display: '1 v 2' },
+  { value: '1v3', display: '1 v 3' },
+  { value: '1v5', display: '1 v 5' }
+]
 
 // 计算属性
 const packageCategoryText = computed(() => {
@@ -148,7 +150,7 @@ const packageCategoryText = computed(() => {
 })
 
 const originalPackageTypeText = computed(() => {
-  return packageData.value.original_package_type === '1v1' ? '一对一' : '一对多'
+  return packageData.value.original_package_type_display || '1 v 1'
 })
 
 const durationTypeText = computed(() => {
@@ -206,6 +208,18 @@ const onDurationTypeChange = () => {
   emitUpdate()
 }
 
+const onPackageTypeInput = () => {
+  // 当用户手动输入时，同时更新两个字段
+  packageData.value.original_package_type = packageData.value.original_package_type_display
+  emitUpdate()
+}
+
+const selectPackageType = (type) => {
+  packageData.value.original_package_type_display = type.display
+  packageData.value.original_package_type = type.value
+  emitUpdate()
+}
+
 const emitUpdate = () => {
   emit('update:modelValue', { ...packageData.value })
 }
@@ -255,19 +269,54 @@ if (props.modelValue) {
 
 .radio-group {
   display: flex;
-  gap: 20px;
+  gap: 16px;
+  flex-wrap: nowrap;
+  width: 100%;
 }
 
 .radio-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   cursor: pointer;
+  white-space: nowrap;
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.3s ease;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.radio-item:hover {
+  border-color: #1890ff;
+  background: #f0f9ff;
+}
+
+.radio-item input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #1890ff;
+  margin: 0;
+}
+
+.radio-item input[type="radio"]:checked + .radio-label {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+.radio-item:has(input[type="radio"]:checked) {
+  border-color: #1890ff;
+  background: #f0f9ff;
 }
 
 .radio-label {
   font-size: 16px;
   color: #1a1a1a;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .checkbox-item {
@@ -347,5 +396,34 @@ if (props.modelValue) {
   font-size: 14px;
   font-weight: 500;
   color: #1a1a1a;
+}
+
+.package-type-suggestions {
+  margin-top: 12px;
+}
+
+.suggestion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestion-chip {
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #1890ff;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1890ff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.suggestion-chip:hover {
+  background: #1890ff;
+  color: #fff;
+  transform: translateY(-1px);
 }
 </style>

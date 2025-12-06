@@ -57,93 +57,6 @@
           </div>
         </div>
         
-        <div class="form-section">
-          <h3><span class="title-icon">💰</span> 套餐信息</h3>
-          
-          <div class="form-group">
-            <label>套餐类型 *</label>
-            <input
-              type="text"
-              v-model="form.package_type"
-              required
-              placeholder="请输入套餐类型"
-            />
-            <div class="package-type-suggestions">
-              <div class="suggestion-chips">
-                <span
-                  v-for="type in packageTypeSuggestions"
-                  :key="type"
-                  class="suggestion-chip"
-                  @click="selectPackageType(type)"
-                >
-                  {{ type }}
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>总共（次）</label>
-            <input
-              type="number"
-              v-model="form.total_lessons"
-              required
-              min="1"
-              placeholder="请输入总共次数"
-            />
-          </div>
-
-          <div class="form-group">
-            <label>剩余（次）</label>
-            <input
-              type="number"
-              v-model="form.remaining_lessons"
-              placeholder="请输入剩余次数"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>售价（元）*</label>
-            <input 
-              type="number" 
-              v-model="form.price" 
-              required
-              min="1"
-              placeholder="请输入售价"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>上交俱乐部（元）*</label>
-            <input
-              type="number"
-              v-model="form.venue_share"
-              required
-              min="0"
-              placeholder="请输入上交俱乐部"
-            />
-            <div class="venue-share-suggestions">
-              <div class="suggestion-chips">
-                <span
-                  v-for="amount in venueShareSuggestions"
-                  :key="amount"
-                  class="suggestion-chip"
-                  @click="selectVenueShare(amount)"
-                >
-                  {{ amount }} 元
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-group" v-if="form.price && form.venue_share">
-            <label>利润</label>
-            <div class="profit-display">
-              {{ form.price - form.venue_share }} 元
-            </div>
-          </div>
-        </div>
-        
         <div class="form-actions">
           <button type="button" class="btn-cancel" @click="goBack">
             取消
@@ -174,11 +87,6 @@ const initialLoading = ref(true)
 const form = reactive({
   name: '',
   learning_item: '',
-  package_type: '',
-  total_lessons: '',
-  remaining_lessons: '',
-  price: '',
-  venue_share: '',
   note: ''
 })
 
@@ -192,19 +100,6 @@ const learningItemSuggestions = [
   '考证',
   '技术改进',
   '防溺水'
-]
-
-// 套餐类型建议列表
-const packageTypeSuggestions = [
-  '1 v 1',
-  '1 v 2',
-  '1 v 3',
-  '1 v 5'
-]
-
-// 上交俱乐部金额建议列表
-const venueShareSuggestions = [
-  600
 ]
 
 onMounted(async () => {
@@ -221,11 +116,6 @@ const fetchStudentData = async (studentId) => {
     if (student) {
       form.name = student.name || ''
       form.learning_item = student.learning_item || ''
-      form.package_type = student.package_type || ''
-      form.total_lessons = student.total_lessons || ''
-      form.remaining_lessons = student.remaining_lessons || ''
-      form.price = student.price || ''
-      form.venue_share = student.venue_share || ''
       form.note = student.note || ''
     }
   } catch (error) {
@@ -239,51 +129,26 @@ const selectLearningItem = (item) => {
   form.learning_item = item
 }
 
-const selectPackageType = (type) => {
-  // 移除显示用的空格，实际存储为紧凑格式
-  form.package_type = type.replace(/\s+v\s+/g, 'v')
-}
-
-const selectVenueShare = (amount) => {
-  form.venue_share = amount
-}
-
 const goBack = () => {
   router.back()
 }
 
 const handleSubmit = async () => {
   // 验证表单
-  if (!form.name || !form.learning_item || !form.package_type || 
-      !form.total_lessons || !form.remaining_lessons || !form.price || !form.venue_share) {
+  if (!form.name || !form.learning_item) {
     toast.warning('请填写所有必填字段')
     return
   }
-  
-  if (form.total_lessons <= 0 || form.remaining_lessons < 0 || form.price <= 0 || form.venue_share < 0) {
-    toast.warning('请输入有效的数值')
-    return
-  }
-  
-  if (parseInt(form.remaining_lessons) > parseInt(form.total_lessons)) {
-    toast.warning('剩余课程数不能大于总课程数')
-    return
-  }
-  
+
   loading.value = true
-  
+
   try {
     await studentStore.updateStudent(route.params.id, {
       name: form.name,
       learning_item: form.learning_item,
-      package_type: form.package_type,
-      total_lessons: parseInt(form.total_lessons),
-      remaining_lessons: parseInt(form.remaining_lessons),
-      price: parseInt(form.price),
-      venue_share: parseInt(form.venue_share),
       note: form.note || undefined
     })
-    
+
     toast.success('学员信息更新成功')
     router.push(`/student/${route.params.id}`)
   } catch (error) {
@@ -416,20 +281,6 @@ const handleSubmit = async () => {
   border-color: #1989fa;
 }
 
-.profit-display {
-  padding: 20px;
-  background: #f8f9fa;
-  border: 2px solid #f5222d;
-  border-radius: 16px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #f5222d;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 2px;
-  letter-spacing: 1px;
-}
-
 .form-actions {
   display: flex;
   gap: 15px;
@@ -490,17 +341,8 @@ const handleSubmit = async () => {
   border: 2px dashed #d0d0d0;
 }
 
-.learning-item-suggestions,
-.package-type-suggestions,
-.venue-share-suggestions {
+.learning-item-suggestions {
   margin-top: 12px;
-}
-
-.suggestion-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  font-weight: 500;
 }
 
 .suggestion-chips {

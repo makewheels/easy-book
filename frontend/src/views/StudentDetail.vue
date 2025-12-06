@@ -20,7 +20,7 @@
         />
 
         <!-- 详细信息卡片组件 -->
-        <StudentDetailCards :student="student" :attendances="attendances" />
+        <StudentDetailCards :student="student" :attendances="attendances.length > 0 ? attendances : mockAttendances" />
       </div>
     </div>
   </div>
@@ -50,15 +50,76 @@ const referrerUrl = ref('')
 const loading = ref(false)
 const attendances = ref([])
 
+// Mock data for testing - remove this when real data is available
+const mockAttendances = ref([
+  {
+    id: '1',
+    date: '2024-01-15',
+    time: '14:00',
+    status: 'completed',
+    lessons_before: '8',
+    lessons_after: '7'
+  },
+  {
+    id: '2',
+    date: '2024-01-10',
+    time: '10:00',
+    status: 'completed',
+    lessons_before: '9',
+    lessons_after: '8'
+  },
+  {
+    id: '3',
+    date: '2024-01-05',
+    time: '16:00',
+    status: 'completed',
+    lessons_before: '10',
+    lessons_after: '9'
+  },
+  {
+    id: '4',
+    date: '2023-12-28',
+    time: '13:00',
+    status: 'completed',
+    lessons_before: '11',
+    lessons_after: '10'
+  },
+  {
+    id: '5',
+    date: '2023-12-20',
+    time: '15:00',
+    status: 'completed',
+    lessons_before: '12',
+    lessons_after: '11'
+  },
+  {
+    id: '6',
+    date: '2023-12-15',
+    time: '11:00',
+    status: 'completed',
+    lessons_before: '13',
+    lessons_after: '12'
+  },
+  {
+    id: '7',
+    date: '2023-12-10',
+    time: '14:30',
+    status: 'completed',
+    lessons_before: '14',
+    lessons_after: '13'
+  }
+])
+
 const student = computed(() => studentStore.currentStudent)
 
-// 智能返回导航：如果记录了有效的referrer，则使用它；否则默认到学员列表页
+// 智能返回导航：优先返回上一个页面，如果没有上一个页面则返回主页
 const backDestination = computed(() => {
+  // 如果有记录的referrer URL，返回到上一个页面
   if (referrerUrl.value) {
     return referrerUrl.value
   }
-  // 默认返回到学员列表页
-  return '/students'
+  // 如果没有记录的上一个页面，使用 router.back() 返回历史记录
+  return null
 })
 
 onMounted(async () => {
