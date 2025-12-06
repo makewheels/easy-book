@@ -507,7 +507,7 @@ const handleSubmit = async () => {
 
 .suggestion-chip {
   padding: 8px 12px;
-  background: #f0f9ff;
+  background: #fff;
   border: 1px solid #1989fa;
   border-radius: 8px;
   font-size: 14px;

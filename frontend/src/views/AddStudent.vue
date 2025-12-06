@@ -285,7 +285,7 @@ const handleSubmit = async () => {
 }
 
 .content {
-  padding: 20px;
+  padding: 20px 0;
   margin: 0;
   min-height: calc(100vh - 60px);
   box-sizing: border-box;
@@ -418,25 +418,25 @@ const handleSubmit = async () => {
 .suggestion-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .suggestion-chip {
-  padding: 4px 8px;
-  background: #f0f9ff;
-  border: 1px solid #b3d8ff;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #1989fa;
+  border-radius: 8px;
+  font-size: 14px;
   color: #1989fa;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .suggestion-chip:hover {
   background: #1989fa;
   color: #fff;
-  border-color: #1989fa;
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 </style>
