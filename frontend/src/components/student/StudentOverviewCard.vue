@@ -102,23 +102,23 @@ const getProgressPercentage = (remaining, total) => {
 }
 
 .stat-number.medium {
-  color: #fa8c16;
+  color: #52c41a;
 }
 
 .stat-number.low {
-  color: #fa541c;
+  color: #52c41a;
 }
 
 .stat-number.empty {
-  color: #f5222d;
+  color: #52c41a;
 }
 
 .stat-number.completed {
-  color: #1989fa;
+  color: #1a1a1a;
 }
 
 .stat-number.total {
-  color: #722ed1;
+  color: #1a1a1a;
 }
 
 .stat-label {

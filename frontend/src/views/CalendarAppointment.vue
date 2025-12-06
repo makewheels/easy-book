@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="header">
-      <BackButton />
+      <BackButton to="/calendar" />
       <h1>日历预约</h1>
     </div>
 
@@ -50,7 +50,7 @@
             <div class="existing-students">
               <div
                 v-for="appointment in existingAppointments"
-                :key="appointment.appointment_id"
+                :key="appointment.id"
                 class="existing-student-item"
               >
                 <div class="existing-student-content">
@@ -68,7 +68,7 @@
                   <button
                     type="button"
                     class="cancel-appointment-btn"
-                    @click="cancelAppointment(appointment.appointment_id)"
+                    @click="cancelAppointment(appointment.id)"
                     :disabled="loading"
                   >
                     取消
@@ -135,7 +135,7 @@
           </div>
 
           <div class="form-actions mt-3">
-            <BackButton text="取消" />
+            <BackButton text="取消" to="/calendar" />
             <button
               type="button"
               class="btn-save"
@@ -330,12 +330,13 @@ const handleSubmit = async () => {
   try {
     // 为每个选中的学员创建预约
     const promises = selectedStudents.value.map(student => {
+      // 将日期和时间合并为ISO格式的datetime字符串
+      const startDateTime = new Date(`${selectedDate.value}T${selectedTime.value}:00`).toISOString()
+
       const appointmentData = {
         student_id: student.id,
-        date: selectedDate.value,
-        time: selectedTime.value,
-        duration_in_minutes: 60,
-        status: 'scheduled'
+        start_time: startDateTime,
+        duration_in_minutes: 60
       }
       return appointmentStore.createAppointment(appointmentData)
     })
@@ -343,7 +344,10 @@ const handleSubmit = async () => {
     await Promise.all(promises)
 
     toast.success(`预约成功，共创建${selectedStudents.value.length}个预约`)
-    router.push('/calendar')
+
+    // 清空选中的学生并重新获取已预约学生列表
+    selectedStudents.value = []
+    await fetchExistingAppointments()
   } catch (error) {
     errorMessage.value = error.message || '创建失败'
     toast.error(error.message || '创建失败')
@@ -796,9 +800,4 @@ const handleSubmit = async () => {
   border: 2px solid #1989fa;
 }
 
-.form-actions :deep(.back-btn:hover) {
-  background: #f0f9ff;
-  color: #1989fa;
-  border-color: #1989fa;
-}
 </style>
