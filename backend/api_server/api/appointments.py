@@ -39,14 +39,25 @@ async def create_student_appointment(appointment: dict):
         }
 
         created_appointment = await AppointmentService.create_appointment(appointment_data)
+
+        # 安全地获取数据
+        if hasattr(created_appointment, 'dict'):
+            appointment_dict = created_appointment.dict()
+        elif isinstance(created_appointment, dict):
+            appointment_dict = created_appointment
+        else:
+            appointment_dict = str(created_appointment)
+
         return {
             "code": 200,
             "message": "预约创建成功",
-            "data": created_appointment.dict()
+            "data": appointment_dict
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        import traceback
+        traceback.print_exc()  # 保留错误堆栈用于生产环境调试
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{appointment_id}", response_model=StudentAppointmentModel)

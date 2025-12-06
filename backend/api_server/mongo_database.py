@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING
 from bson import ObjectId
 from typing import List, Dict, Optional
-from datetime import datetime, date
+from datetime import datetime, date, timezone, timedelta
 from api_server.models import MongoDBStudentModel, MongoDBCourseModel, MongoDBAppointmentModel
 from api_server.base_model import IndexManager
 
@@ -143,9 +143,9 @@ class MongoDatabase:
             except:
                 pass
 
-        # 删除相关预约（使用新的 student_appointments 表）
+        # 删除相关预约（使用新的 appointments 表）
         if result.deleted_count > 0:
-            await self.db.student_appointments.delete_many({"student_id": student_id})
+            await self.db.appointments.delete_many({"student_id": student_id})
 
         return result.deleted_count > 0
     
@@ -202,50 +202,56 @@ class MongoDatabase:
         appointment_data["create_time"] = datetime.utcnow()
         appointment_data["update_time"] = datetime.utcnow()
 
-        result = await self.db.student_appointments.insert_one(appointment_data)
+        result = await self.db.appointments.insert_one(appointment_data)
         return str(result.inserted_id)
 
-    async def get_student_appointments(self, student_id: str, status: Optional[str] = None) -> List[dict]:
+    async def get_appointments(self, student_id: str, status: Optional[str] = None) -> List[dict]:
         """获取学生的预约列表"""
         query = {"student_id": student_id}
         if status:
             query["status"] = status
 
         appointments = []
-        async for appointment in self.db.student_appointments.find(query).sort("create_time", -1):
+        async for appointment in self.db.appointments.find(query).sort("create_time", -1):
             appointments.append(self._convert_id(dict(appointment)))
         return appointments
 
-    async def get_student_appointment(self, appointment_id: str) -> Optional[dict]:
+    async def get_appointment(self, appointment_id: str) -> Optional[dict]:
         """根据ID获取单个学生预约"""
-        appointment = await self.db.student_appointments.find_one({"_id": ObjectId(appointment_id)})
+        appointment = await self.db.appointments.find_one({"id": appointment_id})
         return self._convert_id(appointment) if appointment else None
 
     async def get_course_appointments(self, course_id: str) -> List[dict]:
         """获取课程的所有预约"""
         appointments = []
-        async for appointment in self.db.student_appointments.find({"course_id": course_id}).sort("create_time", 1):
+        async for appointment in self.db.appointments.find({"course_id": course_id}).sort("create_time", 1):
             appointments.append(self._convert_id(dict(appointment)))
         return appointments
 
-    async def update_student_appointment(self, appointment_id: str, update_data: dict) -> bool:
+    async def update_appointment(self, appointment_id: str, update_data: dict) -> bool:
         """更新学生预约"""
         update_data["update_time"] = datetime.utcnow()
-        result = await self.db.student_appointments.update_one(
-            {"_id": appointment_id},
+        result = await self.db.appointments.update_one(
+            {"id": appointment_id},
             {"$set": update_data}
         )
         return result.modified_count > 0
 
-    async def delete_student_appointment(self, appointment_id: str) -> bool:
+    async def delete_appointment(self, appointment_id: str) -> bool:
         """删除学生预约"""
-        result = await self.db.student_appointments.delete_one({"_id": appointment_id})
+        result = await self.db.appointments.delete_one({"id": appointment_id})
         return result.deleted_count > 0
 
     async def check_student_time_conflict(self, student_id: str, start_time: datetime, end_time: datetime) -> bool:
         """检查学生时间冲突"""
+        # 确保输入时间都是UTC时区的（数据库标准）
+        if start_time.tzinfo is None:
+            start_time = start_time.replace(tzinfo=timezone.utc)
+        if end_time.tzinfo is None:
+            end_time = end_time.replace(tzinfo=timezone.utc)
+
         # 查找该学生在同一时间段的预约
-        conflict = await self.db.student_appointments.find_one({
+        conflict = await self.db.appointments.find_one({
             "student_id": student_id,
             "status": "scheduled"
         })
@@ -257,10 +263,19 @@ class MongoDatabase:
                 # 检查时间是否重叠
                 course_start = course.get("start_time")
                 course_end = course.get("end_time")
+                # 处理课程开始时间
                 if isinstance(course_start, str):
                     course_start = datetime.fromisoformat(course_start)
+                # 确保课程时间是UTC时区的（数据库标准）
+                if course_start.tzinfo is None:
+                    course_start = course_start.replace(tzinfo=timezone.utc)
+
+                # 处理课程结束时间
                 if isinstance(course_end, str):
                     course_end = datetime.fromisoformat(course_end)
+                # 确保课程时间是UTC时区的（数据库标准）
+                if course_end.tzinfo is None:
+                    course_end = course_end.replace(tzinfo=timezone.utc)
 
                 # 检查时间重叠
                 if not (end_time <= course_start or start_time >= course_end):
