@@ -108,17 +108,21 @@ defineProps({
 
 const getStatusClass = (status) => {
   return {
-    'status-attended': status === 'attended',
+    'status-attended': status === 'completed' || status === 'attended',
     'status-absent': status === 'absent',
-    'status-cancel': status === 'cancel'
+    'status-cancel': status === 'cancel' || status === 'cancelled',
+    'status-scheduled': status === 'scheduled'
   }
 }
 
 const getStatusText = (status) => {
   const statusMap = {
+    'completed': '已完成',
     'attended': '已上课',
     'absent': '缺席',
-    'cancel': '已取消'
+    'cancel': '已取消',
+    'cancelled': '已取消',
+    'scheduled': '已预约'
   }
   return statusMap[status] || status
 }
@@ -260,6 +264,10 @@ const formatDateShort = (dateString) => {
   background: #999;
 }
 
+.timeline-dot.status-scheduled {
+  background: #1890ff;
+}
+
 .timeline-content {
   flex: 1;
 }
@@ -306,6 +314,12 @@ const formatDateShort = (dateString) => {
   background: #f5f5f5;
   color: #999;
   border: 1px solid #d9d9d9;
+}
+
+.timeline-status.status-scheduled {
+  background: #e6f7ff;
+  color: #1890ff;
+  border: 1px solid #91d5ff;
 }
 
 .timeline-detail {

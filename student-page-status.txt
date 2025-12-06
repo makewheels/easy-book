@@ -1,2 +1,0 @@
-uid=98_0 RootWebArea "泳课预约系统" url="http://localhost:5173/student/692bd06358ba9900a7ac5b67"
-  uid=98_1 button "← 返回"
