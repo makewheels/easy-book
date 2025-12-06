@@ -29,10 +29,9 @@
               type="text"
               v-model="form.learning_item"
               required
-              placeholder="请输入学习项目（如：自由泳、蛙泳、仰泳、蝶泳、踩水、考证等）"
+              placeholder="请输入学习项目"
             />
             <div class="learning-item-suggestions">
-              <div class="suggestion-label">常用项目：</div>
               <div class="suggestion-chips">
                 <span
                   v-for="item in learningItemSuggestions"
@@ -245,86 +244,108 @@ const handleSubmit = async () => {
 .add-student-page {
   min-height: 100vh;
   background: #f5f5f5;
-  overflow-y: auto;
+  position: relative;
+  font-size: 20px;
 }
 
 .header {
   background: #fff;
   color: #1a1a1a;
-  padding: 15px;
-  position: fixed;
+  padding: 16px 20px;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
-  height: 60px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .back-btn {
   background: none;
   border: none;
-  color: #fff;
-  font-size: 18px;
+  color: #666;
+  font-size: 16px;
   cursor: pointer;
   margin-right: 15px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.back-btn:hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
 }
 
 .header h1 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
+  font-weight: 600;
 }
 
 .content {
-  padding: 15px;
-  padding-top: 75px;
+  padding: 20px;
+  margin: 0;
   min-height: calc(100vh - 60px);
   box-sizing: border-box;
 }
 
 .student-form {
-  max-width: 400px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .form-section {
   background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
 }
 
 .form-section h3 {
-  margin: 0 0 15px 0;
-  color: #1989fa;
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  margin: -20px -20px 20px -20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
-  font-size: 14px;
-  color: #333;
-  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
   box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.3s ease;
 }
 
 .form-group input:focus,
@@ -335,30 +356,33 @@ const handleSubmit = async () => {
 }
 
 .profit-display {
-  padding: 10px;
-  background: #f0f9ff;
-  border: 1px solid #b3d8ff;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #1989fa;
+  padding: 20px;
+  background: #f8f9fa;
+  border: 2px solid #f5222d;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f5222d;
   text-align: center;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  letter-spacing: 1px;
 }
 
 .form-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  gap: 15px;
+  margin: 0 0 20px 0;
 }
 
 .btn-cancel,
 .btn-save {
   flex: 1;
-  padding: 12px;
+  padding: 16px 20px;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
 }
 
