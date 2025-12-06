@@ -107,19 +107,19 @@ const fetchAttendanceData = async (studentId) => {
     const response = await appointmentApi.getStudentAppointments(studentId)
     const appointments = response.data || []
 
-    // 转换预约数据为考勤记录格式，使用课程的实际上课时间而不是预约创建时间
+    // 转换预约数据为考勤记录格式
     attendances.value = await Promise.all(appointments.map(async (appointment) => {
-      // 获取课程信息以获取实际的上课时间
+      // 获取课程信息以获取准确的上课时间
       let courseDate = appointment.create_time.split('T')[0] // 默认使用创建时间日期
       let courseTime = '00:00' // 默认时间
 
       try {
         // 尝试获取课程详情以获取准确的上课时间
-        const courseResponse = await fetch(`/api/courses/${appointment.course_id}`)
+        const courseResponse = await fetch(`http://localhost:8004/api/courses/${appointment.course_id}`)
         if (courseResponse.ok) {
           const courseData = await courseResponse.json()
-          if (courseData.data && courseData.data.start_time) {
-            const courseStartTime = new Date(courseData.data.start_time)
+          if (courseData.start_time) {
+            const courseStartTime = new Date(courseData.start_time)
             courseDate = courseStartTime.toISOString().split('T')[0]
             courseTime = courseStartTime.toLocaleTimeString('zh-CN', {
               hour: '2-digit',
@@ -141,9 +141,14 @@ const fetchAttendanceData = async (studentId) => {
                    appointment.status === 'scheduled' ? '已预约' : appointment.status,
         lessons_before: appointment.lesson_consumed ? '上课前' : '-',
         lessons_after: appointment.lesson_consumed ? '已消耗' : '-',
-        courseTitle: `(课程)` // 可以后续添加课程标题
+        courseTitle: `(课程)`, // 可以后续添加课程标题
+        // 保留原始预约创建时间，后端已经按创建时间倒序返回
+        createTime: new Date(appointment.create_time)
       }
     }))
+
+    // 后端已经按创建时间倒序返回，不需要额外排序
+    // attendances.value 已经是正确的顺序：最新的在最上面
   } catch (error) {
     console.error('获取预约记录失败:', error)
     attendances.value = []

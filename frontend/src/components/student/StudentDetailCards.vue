@@ -52,7 +52,7 @@
         </div>
         <div v-else class="attendance-timeline">
           <div
-            v-for="record in attendances.slice().reverse()"
+            v-for="record in attendances"
             :key="record.id"
             class="timeline-item"
           >

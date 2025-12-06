@@ -111,16 +111,18 @@
             />
           </div>
           
-          <div class="form-group" v-if="form.price && form.venue_share">
+          <div class="form-group">
             <label>利润</label>
             <div class="profit-display">
-              {{ form.price - form.venue_share }} 元
+              {{ (form.price || 0) - (form.venue_share || 0) }} 元
             </div>
           </div>
         </div>
         
         <div class="form-actions">
-          <BackButton text="取消" />
+          <button type="button" class="btn-cancel" @click="goBack" :disabled="loading">
+            取消
+          </button>
           <button type="submit" class="btn-save" :disabled="loading">
             {{ loading ? '保存中...' : '保存' }}
           </button>
@@ -180,6 +182,10 @@ const selectLearningItem = (item) => {
 const selectPackageType = (type) => {
   // 移除显示用的空格，实际存储为紧凑格式
   form.package_type = type.replace(/\s+v\s+/g, 'v')
+}
+
+const goBack = () => {
+  router.back()
 }
 
 const handleSubmit = async () => {
@@ -362,7 +368,7 @@ const handleSubmit = async () => {
 .form-actions {
   display: flex;
   gap: 15px;
-  margin: 0 0 20px 0;
+  margin: 0 20px 20px 20px;
 }
 
 .btn-cancel,
@@ -374,16 +380,28 @@ const handleSubmit = async () => {
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-cancel {
-  background: #f5f5f5;
-  color: #666;
+  background: #fff;
+  color: #1989fa;
+  border: 2px solid #1989fa;
+}
+
+.btn-cancel:hover {
+  background: #f0f9ff;
 }
 
 .btn-save {
   background: #1989fa;
   color: #fff;
+  border: 2px solid #1989fa;
+}
+
+.btn-save:hover {
+  background: #096dd9;
+  border-color: #096dd9;
 }
 
 .btn-save:disabled {

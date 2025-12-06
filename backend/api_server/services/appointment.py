@@ -102,7 +102,7 @@ class AppointmentService:
     @staticmethod
     async def cancel_appointment(appointment_id: str) -> bool:
         """
-        取消预约
+        取消预约 - 处理虚拟预约数据
 
         Args:
             appointment_id: 预约ID
@@ -112,7 +112,7 @@ class AppointmentService:
         """
         db = get_database()
 
-        # 获取预约信息
+        # 首先尝试从真实预约表中查找
         appointments = await db.get_appointments(None)
         target_appointment = None
         for appointment in appointments:
@@ -120,40 +120,88 @@ class AppointmentService:
                 target_appointment = appointment
                 break
 
-        if not target_appointment:
+        if target_appointment:
+            # 处理真实预约记录的取消
+            if target_appointment.get("status") == "cancelled":
+                raise ValueError("预约已取消")
+
+            # 如果已消耗课程，恢复学生课程数
+            if target_appointment.get("lesson_consumed", False):
+                student_id = target_appointment.get("student_id")
+                student = await db.get_student(student_id)
+                if student:
+                    current_remaining = student.get("remaining_lessons", 0)
+                    total_lessons = student.get("total_lessons", 0)
+                    new_remaining = min(current_remaining + 1, total_lessons)
+
+                    await db.update_student(student_id, {
+                        "remaining_lessons": new_remaining,
+                        "update_time": datetime.utcnow()
+                    })
+
+            # 更新预约状态为取消
+            success = await db.update_appointment(appointment_id, {
+                "status": "cancelled",
+                "update_time": datetime.utcnow()
+            })
+
+            if success:
+                # 从课程中移除学生
+                course_id = target_appointment.get("course_id")
+                student_id = target_appointment.get("student_id")
+                await CourseService.remove_student_from_course(course_id, student_id)
+
+            return success
+
+        # 如果没有找到真实预约，尝试通过课程查找对应预约
+        try:
+            # 获取所有课程来查找该预约
+            from datetime import date
+            start_date = datetime(2020, 1, 1)
+            end_date = datetime(2030, 12, 31)
+            courses = await db.get_courses_by_date_range(start_date, end_date)
+
+            for course in courses:
+                course_id = course.get("_id") or course.get("id")
+                # 获取该课程的所有预约
+                course_appointments = await db.get_course_appointments(course_id)
+
+                for apt in course_appointments:
+                    apt_id = apt.get("_id") or apt.get("id")
+                    if apt_id == appointment_id:
+                        # 找到匹配的预约，执行取消操作
+                        student_id = apt.get("student_id")
+
+                        # 如果已消耗课程，恢复学生课程数
+                        if apt.get("lesson_consumed", False):
+                            student = await db.get_student(student_id)
+                            if student:
+                                current_remaining = student.get("remaining_lessons", 0)
+                                total_lessons = student.get("total_lessons", 0)
+                                new_remaining = min(current_remaining + 1, total_lessons)
+
+                                await db.update_student(student_id, {
+                                    "remaining_lessons": new_remaining,
+                                    "update_time": datetime.utcnow()
+                                })
+
+                        # 更新预约状态为取消
+                        success = await db.update_appointment(appointment_id, {
+                            "status": "cancelled",
+                            "update_time": datetime.utcnow()
+                        })
+
+                        if success:
+                            # 从课程中移除学生
+                            if student_id:
+                                await CourseService.remove_student_from_course(course_id, student_id)
+                            return True
+
+            # 如果在所有课程中都没找到
             raise ValueError("预约不存在")
 
-        # 检查预约状态
-        if target_appointment.get("status") == "cancelled":
-            raise ValueError("预约已取消")
-
-        # 如果已消耗课程，恢复学生课程数
-        if target_appointment.get("lesson_consumed", False):
-            student_id = target_appointment.get("student_id")
-            student = await db.get_student(student_id)
-            if student:
-                current_remaining = student.get("remaining_lessons", 0)
-                total_lessons = student.get("total_lessons", 0)
-                new_remaining = min(current_remaining + 1, total_lessons)
-
-                await db.update_student(student_id, {
-                    "remaining_lessons": new_remaining,
-                    "update_time": datetime.utcnow()
-                })
-
-        # 更新预约状态为取消
-        success = await db.update_appointment(appointment_id, {
-            "status": "cancelled",
-            "update_time": datetime.utcnow()
-        })
-
-        if success:
-            # 从课程中移除学生
-            course_id = target_appointment.get("course_id")
-            student_id = target_appointment.get("student_id")
-            await CourseService.remove_student_from_course(course_id, student_id)
-
-        return success
+        except Exception as e:
+            raise ValueError(f"取消预约失败: {str(e)}")
 
     @staticmethod
     async def checkin_appointment(appointment_id: str) -> bool:
@@ -223,7 +271,7 @@ class AppointmentService:
             status: 预约状态过滤
 
         Returns:
-            预约对象列表
+            预约对象列表，按创建时间倒序排列（最新的在最上面）
         """
         db = get_database()
         appointments = await db.get_appointments(student_id, status)
@@ -239,6 +287,10 @@ class AppointmentService:
                     apt["course"] = course
 
             result_appointments.append(StudentAppointmentModel(**apt))
+
+        # 按创建时间倒序排序（最新的在最上面）
+        # 使用 create_time 或创建时间相关的字段进行排序
+        result_appointments.sort(key=lambda apt: apt.create_time or apt.create_time, reverse=True)
 
         return result_appointments
 
