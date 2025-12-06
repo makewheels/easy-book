@@ -55,7 +55,7 @@
               >
                 <div class="existing-student-content">
                   <div class="student-info-row">
-                    <span class="student-name">{{ appointment.name === '许志玲' ? '王芳' : appointment.name }}</span>
+                    <span class="student-name">{{ appointment.name }}</span>
                   </div>
                   <div class="existing-student-price-row">
                     <span v-if="appointment.package_type || appointment.learning_item" class="course-type-text">{{ getCourseTypeTextForAppointment(appointment) }}</span>
@@ -103,7 +103,7 @@
                 <div class="student-content">
                   <div class="student-row">
                     <div class="student-left">
-                      <span class="student-name">{{ student.name === '许志玲' ? '王芳' : student.name }}</span>
+                      <span class="student-name">{{ student.name }}</span>
                       <div class="student-price-row">
                         <span v-if="student.package_type || student.learning_item" class="course-type-text">{{ getCourseTypeText(student) }}</span>
                         <span class="remaining-text">剩{{ student.remaining_lessons }}次</span>
@@ -206,8 +206,7 @@ const displayStudents = computed(() => {
 // 获取可用学员（未预约的学员）
 const availableStudents = computed(() => {
   const existingStudentIds = existingAppointments.value.map(appointment => {
-    const studentName = appointment.name === '许志玲' ? '王芳' : appointment.name
-    const student = students.value.find(s => s.name === studentName)
+    const student = students.value.find(s => s.name === appointment.name)
     return student ? student.id : null
   }).filter(id => id !== null)
 
