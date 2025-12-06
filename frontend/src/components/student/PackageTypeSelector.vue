@@ -35,11 +35,11 @@
         placeholder="请输入课程类型"
       />
       <div class="package-type-suggestions">
-        <div class="suggestion-chips">
+        <div class="form-suggestion-chips">
           <span
             v-for="type in packageTypeSuggestions"
             :key="type.value"
-            class="suggestion-chip"
+            class="form-suggestion-chip"
             @click="selectPackageType(type)"
           >
             {{ type.display }}
@@ -51,14 +51,22 @@
     <!-- 记次套餐选项 -->
     <div v-if="packageData.package_category === 'count_based'" class="count-based-options">
       <div class="form-group">
-        <label class="form-label">总课程数 *</label>
+        <label class="form-label">课程总数（节） *</label>
         <input
           type="number"
           v-model.number="packageData.total_lessons"
           min="1"
           class="package-form-input"
-          placeholder="请输入总课程数"
+          placeholder="请输入课程总节数"
         />
+        <div class="form-suggestion-chips">
+          <span
+            class="form-suggestion-chip"
+            @click="selectPackageCount(12)"
+          >
+            12节
+          </span>
+        </div>
       </div>
     </div>
 
@@ -102,9 +110,15 @@
         </label>
       </div>
 
+      <!-- 显示开始时间和结束时间 -->
+      <div v-if="packageData.package_category === 'time_based' && !packageData.unlimited_access && packageData.package_duration_type" class="preview-info">
+        <div class="preview-label">开始时间：</div>
+        <div class="preview-value">{{ previewStartDate }}</div>
+      </div>
+
       <!-- 预览到期时间 -->
       <div v-if="showPreviewEndDate" class="preview-info">
-        <div class="preview-label">预计到期时间：</div>
+        <div class="preview-label">结束时间：</div>
         <div class="preview-value">{{ previewEndDate }}</div>
       </div>
     </div>
@@ -113,7 +127,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { PackageService } from '@/services/package'
 
 const props = defineProps({
@@ -124,6 +139,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+const route = useRoute()
+const router = useRouter()
 
 // 套餐数据
 const packageData = ref({
@@ -187,6 +205,19 @@ const previewEndDate = computed(() => {
   }
 })
 
+const previewStartDate = computed(() => {
+  if (packageData.value.package_category !== 'time_based') return ''
+  if (packageData.value.unlimited_access) return '立即生效'
+  if (!packageData.value.package_duration_type) return ''
+
+  try {
+    const startDate = new Date()
+    return startDate.toLocaleDateString('zh-CN')
+  } catch (error) {
+    return '计算错误'
+  }
+})
+
 // 方法
 const onCategoryChange = () => {
   // 切换类别时重置相关字段
@@ -198,6 +229,7 @@ const onCategoryChange = () => {
     packageData.value.total_lessons = null
   }
   emitUpdate()
+  updateURL()
 }
 
 const onDurationTypeChange = () => {
@@ -206,31 +238,90 @@ const onDurationTypeChange = () => {
     packageData.value.package_duration_days = null
   }
   emitUpdate()
+  updateURL()
 }
 
 const onPackageTypeInput = () => {
   // 当用户手动输入时，同时更新两个字段
   packageData.value.original_package_type = packageData.value.original_package_type_display
   emitUpdate()
+  updateURL()
 }
 
 const selectPackageType = (type) => {
   packageData.value.original_package_type_display = type.display
   packageData.value.original_package_type = type.value
   emitUpdate()
+  updateURL()
+}
+
+const selectPackageCount = (count) => {
+  packageData.value.total_lessons = count
+  emitUpdate()
+  updateURL()
 }
 
 const emitUpdate = () => {
   emit('update:modelValue', { ...packageData.value })
 }
 
+// 更新URL参数
+const updateURL = () => {
+  const query = { ...route.query }
+
+  // 只保存重要的套餐类型信息
+  if (packageData.value.package_category) {
+    query.category = packageData.value.package_category
+  }
+  if (packageData.value.original_package_type) {
+    query.type = packageData.value.original_package_type
+  }
+  if (packageData.value.package_duration_type) {
+    query.duration = packageData.value.package_duration_type
+  }
+
+  // 移除空的参数
+  Object.keys(query).forEach(key => {
+    if (!query[key]) {
+      delete query[key]
+    }
+  })
+
+  router.replace({ query })
+}
+
+// 从URL参数初始化数据
+const initFromURL = () => {
+  const { category, type, duration } = route.query
+
+  if (category) {
+    packageData.value.package_category = category
+  }
+  if (type) {
+    packageData.value.original_package_type = type
+    // 如果type是预定义的值，设置对应的显示文本
+    const matchedType = packageTypeSuggestions.find(s => s.value === type)
+    if (matchedType) {
+      packageData.value.original_package_type_display = matchedType.display
+    }
+  }
+  if (duration) {
+    packageData.value.package_duration_type = duration
+  }
+}
+
 // 监听变化
 watch(packageData, emitUpdate, { deep: true })
 
 // 初始化
-if (props.modelValue) {
-  Object.assign(packageData.value, props.modelValue)
-}
+onMounted(() => {
+  // 先从props初始化
+  if (props.modelValue) {
+    Object.assign(packageData.value, props.modelValue)
+  }
+  // 然后从URL参数覆盖（URL优先级更高）
+  initFromURL()
+})
 </script>
 
 <style scoped>
@@ -336,8 +427,6 @@ if (props.modelValue) {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-left: 20px;
-  border-left: 3px solid #e0e0e0;
 }
 
 .preview-info {
@@ -399,30 +488,30 @@ if (props.modelValue) {
 }
 
 .package-type-suggestions {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
-.suggestion-chips {
+.form-suggestion-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.suggestion-chip {
+.form-suggestion-chip {
   padding: 8px 12px;
   background: #fff;
-  border: 1px solid #1890ff;
+  border: 1px solid #1989fa;
   border-radius: 8px;
   font-size: 14px;
-  color: #1890ff;
+  color: #1989fa;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
   font-weight: 500;
 }
 
-.suggestion-chip:hover {
-  background: #1890ff;
+.form-suggestion-chip:hover {
+  background: #1989fa;
   color: #fff;
   transform: translateY(-1px);
 }

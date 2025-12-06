@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑">
-      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示">
       <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,14 +197,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00023" summary="build: 更新Dockerfile，切换到华为云镜像的Python 3.11">
-      <option name="closed" value="true" />
-      <created>1764590173845</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1764590173845</updated>
     </task>
     <task id="LOCAL-00024" summary="build: 更新Dockerfile，切换到USTC镜像的Python 3.10">
       <option name="closed" value="true" />
@@ -595,7 +582,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765032309905</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示">
+      <option name="closed" value="true" />
+      <created>1765035597001</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1765035597001</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -623,7 +618,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: update deployment documentation and add server upload script for improved deployment process" />
     <MESSAGE value="feat: add student status update functionality and enhance testing documentation" />
     <MESSAGE value="feat: add automation testing dependencies and enhance documentation for deployment and API" />
     <MESSAGE value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
@@ -648,7 +642,8 @@
     <MESSAGE value="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置" />
     <MESSAGE value="feat(appointment): 优化学员详情页面，支持智能返回导航和准确的上课时间显示" />
     <MESSAGE value="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑" />
+    <MESSAGE value="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
