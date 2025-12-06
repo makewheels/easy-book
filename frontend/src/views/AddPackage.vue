@@ -181,8 +181,20 @@ const handleSubmit = async () => {
       return
     }
   } else {
+    // 验证时长套餐的开始日期
+    if (!packageTypeData.value.package_start_date) {
+      toast.warning('时长套餐必须设置开始日期')
+      return
+    }
+
+    // 验证时长套餐的结束日期
+    if (!packageTypeData.value.package_end_date) {
+      toast.warning('时长套餐必须设置结束日期')
+      return
+    }
+
     if (!packageTypeData.value.unlimited_access && !packageTypeData.value.package_duration_type) {
-      toast.warning('时长套餐必须选择时长类型或设置永久有效')
+      toast.warning('时长套餐必须选择时长类型')
       return
     }
 
@@ -220,15 +232,8 @@ const handleSubmit = async () => {
       packageData.package_duration_type = packageTypeData.value.package_duration_type
       packageData.package_duration_days = packageTypeData.value.package_duration_days
       packageData.unlimited_access = packageTypeData.value.unlimited_access
-
-      // 如果不是永久有效且有时长类型，计算结束时间
-      if (!packageTypeData.value.unlimited_access && packageTypeData.value.package_duration_type) {
-        const endDate = calculateEndDate(
-          packageTypeData.value.package_duration_type,
-          packageTypeData.value.package_duration_days
-        )
-        packageData.package_end_date = endDate
-      }
+      packageData.package_start_date = packageTypeData.value.package_start_date
+      packageData.package_end_date = packageTypeData.value.package_end_date
     }
 
     await packageApi.createPackage(packageData)
