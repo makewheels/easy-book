@@ -96,23 +96,7 @@ class StudentService:
         db = get_database()
         students = await db.get_students()
 
-        # 批量获取所有考勤记录以提高性能
-        all_attendances = await db.get_attendances()
-
-        # 构建学生ID到最后考勤时间的映射
-        student_last_attendance = {}
-        for attendance in all_attendances:
-            student_id = attendance.get("student_id")
-            if student_id:
-                attendance_time = attendance.get("create_time", "")
-                if student_id not in student_last_attendance:
-                    student_last_attendance[student_id] = attendance_time
-                else:
-                    # 保留最新的考勤时间
-                    if attendance_time > student_last_attendance[student_id]:
-                        student_last_attendance[student_id] = attendance_time
-
-        # 为每个学生添加排序信息
+        # 简化排序逻辑：优先按剩余课程数排序，然后按创建时间排序
         def get_sort_key(student):
             # 1. 剩余课程优先级（有剩余课程的学生排在前面）
             remaining_lessons = student.get("remaining_lessons", 0)
@@ -131,21 +115,8 @@ class StudentService:
             # 用负数让新学生排在前面
             create_priority = -create_timestamp
 
-            # 3. 最近上课时间优先级（最近上课的学生排在前面）
-            last_attendance_time = student_last_attendance.get(student["_id"])
-            try:
-                if last_attendance_time:
-                    attendance_time = datetime.fromisoformat(last_attendance_time.replace('Z', '+00:00'))
-                    attendance_timestamp = attendance_time.timestamp()
-                else:
-                    attendance_timestamp = 0
-            except:
-                attendance_timestamp = 0
-            # 用负数让最近上课的排在前面
-            attendance_priority = -attendance_timestamp
-
             # 返回排序元组：优先级越小的排在越前面
-            return (has_lessons_priority, create_priority, attendance_priority)
+            return (has_lessons_priority, create_priority)
 
         # 按排序键进行排序
         students.sort(key=get_sort_key)

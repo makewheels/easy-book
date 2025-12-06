@@ -101,6 +101,23 @@ export const useAppointmentStore = defineStore('appointment', {
       }
     },
 
+    // 学员签到
+    async checkinAppointment(appointmentId) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await appointmentApi.checkin(appointmentId)
+        return response
+      } catch (error) {
+        console.error('签到失败:', error)
+        this.error = error.message || '签到失败'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
+
     // 清除错误
     clearError() {
       this.error = null
