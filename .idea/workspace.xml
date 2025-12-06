@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 新增预约管理功能&#10;&#10;- 新增预约创建页面，支持选择日期、时间和课程时长&#10;- 实现预约表单验证和提交逻辑&#10;- 添加预约相关的状态管理和API调用方法&#10;- 重构学生详情页，将预约功能移至独立页面&#10;- 优化按钮组件，统一使用BackButton组件处理返回逻辑&#10;- 调整套餐类型建议列表和输入处理逻辑&#10;- 更新路由配置，添加新增预约页面路由&#10;- 优化UI样式，改进颜色和交互效果">
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 更新预约创建页面，支持未来6天日期选择和样式优化">
+      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,14 +203,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00014" summary="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录">
-      <option name="closed" value="true" />
-      <created>1764588541185</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1764588541185</updated>
     </task>
     <task id="LOCAL-00015" summary="build: 更新Dockerfile，切换到官方库的Python、Node.js和nginx镜像">
       <option name="closed" value="true" />
@@ -591,7 +588,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764996469100</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="feat(appointment): 更新预约创建页面，支持未来6天日期选择和样式优化">
+      <option name="closed" value="true" />
+      <created>1764997178085</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1764997178085</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -619,7 +624,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: add id card and phone number fields to student forms, enhance student detail display" />
     <MESSAGE value="feat: enhance student detail display with default values and add creation/update timestamps" />
     <MESSAGE value="feat: update student forms and details display with improved labels and readonly fields" />
     <MESSAGE value="feat: update settings and workspace configuration for improved task management and commit tracking" />
@@ -644,7 +648,8 @@
     <MESSAGE value="refactor(backend): 统一MongoDB与API数据格式映射逻辑&#10;&#10;- 新增map_mongo_to_api和map_api_to_mongo函数处理ID字段转换&#10;- 移除模型中的alias配置和populate_by_name选项&#10;- 更新数据库层ID处理逻辑，统一转换ObjectId为字符串&#10;- 修改服务层调用映射函数确保数据格式一致性&#10;- 调整前端存储和路由使用标准id字段替代_id&#10;- 更新预约创建逻辑适配duration字段命名变更" />
     <MESSAGE value="style(AddStudent): 优化学生添加页面样式和布局&#10;&#10;- 调整页面整体字体大小为20px&#10;- 修改头部导航栏样式，使用sticky定位并添加底部边框&#10;- 更新返回按钮样式，增加悬停效果&#10;- 重新设计表单区域布局，使用flexbox垂直排列&#10;- 改进表单区块样式，增加圆角和边框&#10;- 优化表单标题样式，使用flex布局并添加背景色&#10;- 统一表单控件样式，增大内边距和圆角&#10;- 重新设计利润显示区域样式，使用更大字体和红色主题&#10;- 调整按钮样式，增大内边距和字体大小&#10;- 移除学习项目输入框的默认提示文本&#10;- 删除常用项目建议标签，保留建议项功能" />
     <MESSAGE value="feat(appointment): 新增预约管理功能&#10;&#10;- 新增预约创建页面，支持选择日期、时间和课程时长&#10;- 实现预约表单验证和提交逻辑&#10;- 添加预约相关的状态管理和API调用方法&#10;- 重构学生详情页，将预约功能移至独立页面&#10;- 优化按钮组件，统一使用BackButton组件处理返回逻辑&#10;- 调整套餐类型建议列表和输入处理逻辑&#10;- 更新路由配置，添加新增预约页面路由&#10;- 优化UI样式，改进颜色和交互效果" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 新增预约管理功能&#10;&#10;- 新增预约创建页面，支持选择日期、时间和课程时长&#10;- 实现预约表单验证和提交逻辑&#10;- 添加预约相关的状态管理和API调用方法&#10;- 重构学生详情页，将预约功能移至独立页面&#10;- 优化按钮组件，统一使用BackButton组件处理返回逻辑&#10;- 调整套餐类型建议列表和输入处理逻辑&#10;- 更新路由配置，添加新增预约页面路由&#10;- 优化UI样式，改进颜色和交互效果" />
+    <MESSAGE value="feat(appointment): 更新预约创建页面，支持未来6天日期选择和样式优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 更新预约创建页面，支持未来6天日期选择和样式优化" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

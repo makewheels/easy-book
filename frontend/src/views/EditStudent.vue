@@ -248,6 +248,10 @@ const selectVenueShare = (amount) => {
   form.venue_share = amount
 }
 
+const goBack = () => {
+  router.back()
+}
+
 const handleSubmit = async () => {
   // 验证表单
   if (!form.name || !form.learning_item || !form.package_type || 
@@ -429,7 +433,7 @@ const handleSubmit = async () => {
 .form-actions {
   display: flex;
   gap: 15px;
-  margin: 0 0 20px 0;
+  margin: 0 20px 20px 20px;
 }
 
 .btn-cancel,

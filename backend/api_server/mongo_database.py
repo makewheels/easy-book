@@ -243,16 +243,16 @@ class MongoDatabase:
 
         from datetime import datetime, timedelta
 
-        # 设置日期范围（使用字符串查询更可靠）
-        start_date_str = appointment_date
-        end_date_str = f"{appointment_date}T23:59:59"
+        # 设置日期范围（使用datetime对象查询，因为数据库存储的是datetime对象）
+        start_date = datetime.strptime(appointment_date, "%Y-%m-%d")
+        end_date = datetime.strptime(f"{appointment_date}T23:59:59", "%Y-%m-%dT%H:%M:%S")
 
         # 获取指定日期范围内的所有预约（包括已取消的预约，但会显示状态）
         appointments = []
         async for appointment in self.db.appointments.find({
             "start_time": {
-                "$gte": start_date_str,
-                "$lte": end_date_str
+                "$gte": start_date,
+                "$lte": end_date
             }
         }):
             appointment["_id"] = str(appointment["_id"])

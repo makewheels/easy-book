@@ -28,6 +28,7 @@
               :key="`${day.date}-${timeSlot}`"
               class="time-slot"
               :class="{ today: day.isToday }"
+              @click="goToCalendarAppointment(day.date, timeSlot)"
               >
               <span
                 v-if="!hasStudents(day.date, timeSlot)"
@@ -72,7 +73,9 @@ const getWeekStart = () => {
   const today = new Date()
   const day = today.getDay() || 7 // 将周日(0)转换为7
   const diff = today.getDate() - day + 1 // 周一的日期
-  return new Date(today.setDate(diff))
+  const mondayDate = new Date(today)
+  mondayDate.setDate(diff)
+  return mondayDate
 }
 
 const currentWeekStart = ref(getWeekStart())
@@ -160,6 +163,13 @@ const goToStudent = (studentId) => {
   router.push({
     name: 'StudentDetail',
     params: { id: studentId }
+  })
+}
+
+const goToCalendarAppointment = (date, time) => {
+  router.push({
+    name: 'CalendarAppointment',
+    query: { date, time }
   })
 }
 

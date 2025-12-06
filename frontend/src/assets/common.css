@@ -1,0 +1,218 @@
+/* 通用字体样式 */
+.page-container {
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+/* 通用页面容器 */
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  position: relative;
+  padding-bottom: 80px; /* 为底部导航留出空间 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 通用头部样式 */
+.header {
+  background: #fff;
+  color: #1a1a1a;
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+/* 通用内容区域 */
+.content {
+  padding: 20px 0;
+  margin: 0;
+}
+
+/* 通用表单样式 */
+.form-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.form-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  margin: -20px -20px 20px -20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e8e8e8;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  box-sizing: border-box;
+  background: #fff;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1989fa;
+}
+
+/* 通用按钮样式 */
+.btn {
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #1989fa;
+  color: #fff;
+  border: 2px solid #1989fa;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #096dd9;
+  border-color: #096dd9;
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #1989fa;
+  border: 2px solid #1989fa;
+}
+
+.btn-secondary:hover {
+  background: #f0f9ff;
+}
+
+/* 通用加载状态 */
+.loading {
+  text-align: center;
+  padding: 50px 0;
+  color: #666;
+}
+
+/* 通用错误信息 */
+.error-message {
+  padding: 12px 16px;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+  color: #ff4d4f;
+  font-size: 14px;
+  margin: 0 0 20px 0;
+}
+
+/* 通用操作按钮组 */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin: 0 20px 20px 20px;
+}
+
+/* 通用显示区域 */
+.display-box {
+  padding: 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* 字体大小工具类 */
+.text-xs { font-size: 12px; }
+.text-sm { font-size: 14px; }
+.text-base { font-size: 16px; }
+.text-lg { font-size: 18px; }
+.text-xl { font-size: 20px; }
+.text-2xl { font-size: 22px; }
+.text-3xl { font-size: 24px; }
+.text-4xl { font-size: 28px; }
+
+/* 字体粗细工具类 */
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+
+/* 颜色工具类 */
+.text-gray { color: #666; }
+.text-primary { color: #1989fa; }
+.text-success { color: #52c41a; }
+.text-warning { color: #faad14; }
+.text-error { color: #ff4d4f; }
+
+/* 间距工具类 */
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 4px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-5 { margin-bottom: 20px; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mt-5 { margin-top: 20px; }
