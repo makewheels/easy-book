@@ -24,8 +24,8 @@
       </div>
     </div>
 
-    <!-- 原套餐类型 -->
-    <div class="form-group">
+    <!-- 原套餐类型 - 只在记次套餐时显示 -->
+    <div v-if="packageData.package_category === 'count_based'" class="form-group">
       <label class="form-label">课程类型 *</label>
       <input
         type="text"
@@ -72,55 +72,48 @@
 
     <!-- 时长套餐选项 -->
     <div v-else class="time-based-options">
-      <div class="form-group">
-        <label class="form-label">时长类型</label>
-        <select
-          v-model="packageData.package_duration_type"
-          @change="onDurationTypeChange"
-          class="package-form-select"
-        >
-          <option value="">请选择</option>
-          <option value="monthly">月卡</option>
-          <option value="quarterly">季卡</option>
-          <option value="yearly">年卡</option>
-          <option value="custom">自定义</option>
-        </select>
-      </div>
-
-      <!-- 自定义天数 -->
-      <div v-if="packageData.package_duration_type === 'custom'" class="form-group">
-        <label class="form-label">有效天数 *</label>
+      <!-- 显示开始时间 -->
+      <div v-if="packageData.package_category === 'time_based'" class="form-group">
+        <label class="form-label">开始日期 *</label>
         <input
-          type="number"
-          v-model.number="packageData.package_duration_days"
-          min="1"
+          type="date"
+          v-model="packageData.package_start_date"
+          @change="onStartDateChange"
           class="package-form-input"
-          placeholder="请输入有效天数"
+          required
         />
       </div>
 
-      <!-- 无限制选项 -->
-      <div class="form-group">
-        <label class="checkbox-item">
-          <input
-            type="checkbox"
-            v-model="packageData.unlimited_access"
-          />
-          <span class="checkbox-label">永久有效</span>
-        </label>
+      <!-- 显示结束时间 -->
+      <div v-if="packageData.package_category === 'time_based'" class="form-group end-date-group">
+        <label class="form-label">结束日期 *</label>
+        <input
+          type="date"
+          v-model="packageData.package_end_date"
+          @change="onEndDateChange"
+          class="package-form-input"
+          required
+        />
+        <div class="package-type-suggestions">
+          <div class="form-suggestion-chips">
+            <span
+              class="form-suggestion-chip"
+              @click="selectDurationType('monthly')"
+              :class="{ active: packageData.package_duration_type === 'monthly' }"
+            >
+              月卡
+            </span>
+            <span
+              class="form-suggestion-chip"
+              @click="selectDurationType('quarterly')"
+              :class="{ active: packageData.package_duration_type === 'quarterly' }"
+            >
+              季卡
+            </span>
+          </div>
+        </div>
       </div>
 
-      <!-- 显示开始时间和结束时间 -->
-      <div v-if="packageData.package_category === 'time_based' && !packageData.unlimited_access && packageData.package_duration_type" class="preview-info">
-        <div class="preview-label">开始时间：</div>
-        <div class="preview-value">{{ previewStartDate }}</div>
-      </div>
-
-      <!-- 预览到期时间 -->
-      <div v-if="showPreviewEndDate" class="preview-info">
-        <div class="preview-label">结束时间：</div>
-        <div class="preview-value">{{ previewEndDate }}</div>
-      </div>
     </div>
 
     </div>
@@ -151,6 +144,8 @@ const packageData = ref({
   total_lessons: null,
   package_duration_type: '',
   package_duration_days: null,
+  package_start_date: '',
+  package_end_date: '',
   unlimited_access: false
 })
 
@@ -186,37 +181,60 @@ const durationTypeText = computed(() => {
 
 const showPreviewEndDate = computed(() => {
   return packageData.value.package_category === 'time_based' &&
-         packageData.value.package_duration_type &&
-         !packageData.value.unlimited_access
+         packageData.value.package_duration_type
 })
 
 const previewEndDate = computed(() => {
   if (!showPreviewEndDate.value) return ''
 
   try {
+    const startDate = packageData.value.package_start_date ? new Date(packageData.value.package_start_date) : new Date()
     const endDate = PackageService.calculatePackageEndDate(
       packageData.value.package_duration_type,
-      new Date(),
+      startDate,
       packageData.value.package_duration_days
     )
-    return endDate ? endDate.toLocaleDateString('zh-CN') : ''
+    return endDate ? endDate.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }) : ''
   } catch (error) {
     return '计算错误'
   }
 })
 
-const previewStartDate = computed(() => {
-  if (packageData.value.package_category !== 'time_based') return ''
-  if (packageData.value.unlimited_access) return '立即生效'
-  if (!packageData.value.package_duration_type) return ''
-
-  try {
-    const startDate = new Date()
-    return startDate.toLocaleDateString('zh-CN')
-  } catch (error) {
-    return '计算错误'
+const onStartDateChange = () => {
+  // 当开始日期改变时，重新计算结束日期
+  if (packageData.value.package_duration_type) {
+    calculateEndDate()
   }
-})
+  emitUpdate()
+  updateURL()
+}
+
+const onEndDateChange = () => {
+  emitUpdate()
+  updateURL()
+}
+
+const calculateEndDate = () => {
+  if (packageData.value.package_duration_type && packageData.value.package_start_date) {
+    const startDate = new Date(packageData.value.package_start_date)
+    const endDate = new Date(startDate)
+
+    switch (packageData.value.package_duration_type) {
+      case 'monthly':
+        endDate.setMonth(endDate.getMonth() + 1)
+        break
+      case 'quarterly':
+        endDate.setMonth(endDate.getMonth() + 3)
+        break
+    }
+
+    packageData.value.package_end_date = endDate.toISOString().split('T')[0]
+  }
+}
 
 // 方法
 const onCategoryChange = () => {
@@ -224,18 +242,20 @@ const onCategoryChange = () => {
   if (packageData.value.package_category === 'count_based') {
     packageData.value.package_duration_type = ''
     packageData.value.package_duration_days = null
-    packageData.value.unlimited_access = false
   } else {
     packageData.value.total_lessons = null
+    // 时长套餐自动设置课程类型为通用的"时长套餐"
+    packageData.value.original_package_type = 'time_based'
+    packageData.value.original_package_type_display = '时长套餐'
   }
   emitUpdate()
   updateURL()
 }
 
 const onDurationTypeChange = () => {
-  // 切换时长类型时重置自定义天数
-  if (packageData.value.package_duration_type !== 'custom') {
-    packageData.value.package_duration_days = null
+  // 当选择时长类型时，自动计算结束日期
+  if (packageData.value.package_duration_type) {
+    calculateEndDate()
   }
   emitUpdate()
   updateURL()
@@ -261,6 +281,11 @@ const selectPackageCount = (count) => {
   updateURL()
 }
 
+const selectDurationType = (durationType) => {
+  packageData.value.package_duration_type = durationType
+  onDurationTypeChange()
+}
+
 const emitUpdate = () => {
   emit('update:modelValue', { ...packageData.value })
 }
@@ -276,9 +301,6 @@ const updateURL = () => {
   if (packageData.value.original_package_type) {
     query.type = packageData.value.original_package_type
   }
-  if (packageData.value.package_duration_type) {
-    query.duration = packageData.value.package_duration_type
-  }
 
   // 移除空的参数
   Object.keys(query).forEach(key => {
@@ -292,7 +314,7 @@ const updateURL = () => {
 
 // 从URL参数初始化数据
 const initFromURL = () => {
-  const { category, type, duration } = route.query
+  const { category, type } = route.query
 
   if (category) {
     packageData.value.package_category = category
@@ -305,9 +327,6 @@ const initFromURL = () => {
       packageData.value.original_package_type_display = matchedType.display
     }
   }
-  if (duration) {
-    packageData.value.package_duration_type = duration
-  }
 }
 
 // 监听变化
@@ -319,6 +338,10 @@ onMounted(() => {
   if (props.modelValue) {
     Object.assign(packageData.value, props.modelValue)
   }
+  // 设置默认开始日期为今天
+  if (!packageData.value.package_start_date) {
+    packageData.value.package_start_date = new Date().toISOString().split('T')[0]
+  }
   // 然后从URL参数覆盖（URL优先级更高）
   initFromURL()
 })
@@ -328,13 +351,18 @@ onMounted(() => {
 .package-type-selector {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 20px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-label {
@@ -356,6 +384,14 @@ onMounted(() => {
 .package-form-select:focus {
   outline: none;
   border-color: #1890ff;
+}
+
+.package-form-input.readonly {
+  background: #f8f9fa;
+  border-color: #e0e0e0;
+  color: #666;
+  cursor: default;
+  user-select: none;
 }
 
 .radio-group {
@@ -514,5 +550,10 @@ onMounted(() => {
   background: #1989fa;
   color: #fff;
   transform: translateY(-1px);
+}
+
+.form-suggestion-chip.active {
+  background: #1989fa;
+  color: #fff;
 }
 </style>
