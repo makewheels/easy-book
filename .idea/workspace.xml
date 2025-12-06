@@ -4,19 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(course): 新增课程管理功能并优化预约系统&#10;&#10;- 添加课程创建、查询、更新和删除功能&#10;- 实现课程与学生预约的关联管理&#10;- 更新预约相关API，支持按课程获取预约列表&#10;- 优化数据库模型，整合课程与预约数据">
-      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-appointment-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/current-appointment-page.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-page-detailed.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-page-status.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/final-page-snapshot.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/final-result-snapshot.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置">
+      <change beforePath="$PROJECT_DIR$/appointment-booking-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/appointment-error-status.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/booking-error.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_appointments.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_attendances.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_collections.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_latest_appointments.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cleanup_old_collection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cleanup_simple.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cleanup_students.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compare_collections.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/current-appointment-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/current-students-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/final-appointment-success.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixed-students-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test-appointment-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test-appointment-page.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-error-snapshot.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-page-status.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/students-list-final.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-appointment-after-fix.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-appointment-page.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test-appointment-page.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_api_flow.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_appointment.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_appointment_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_appointment_time.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_daily_appointments.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,14 +223,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00020" summary="build: 更新Dockerfile，切换到网易云镜像的Python、Node.js和nginx">
-      <option name="closed" value="true" />
-      <created>1764589155425</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1764589155425</updated>
     </task>
     <task id="LOCAL-00021" summary="build: 更新Dockerfile，切换到腾讯云镜像的Python、Node.js和nginx">
       <option name="closed" value="true" />
@@ -600,7 +608,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765022967898</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置">
+      <option name="closed" value="true" />
+      <created>1765026329048</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1765026329048</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -628,7 +644,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: update settings and workspace configuration for enhanced task management and commit tracking" />
     <MESSAGE value="feat: refactor attendance management with cancellation feature and improve UI components" />
     <MESSAGE value="feat: add git push command to local settings for enhanced workflow" />
     <MESSAGE value="feat: update deployment documentation and add server upload script for improved deployment process" />
@@ -653,7 +668,8 @@
     <MESSAGE value="style(student): 统一学生概览卡片中的统计数字颜色样式&#10;&#10;- 将 medium、low 和 empty 状态的统计数字颜色统一为绿色 (#52c41a)&#10;- 将 completed 和 total 状态的统计数字颜色更改为深灰色 (#1a1a1a)&#10;- 移除原有的多种颜色区分，提升视觉一致性" />
     <MESSAGE value="feat(appointment): 实现学员签到功能并移除独立考勤模块&#10;&#10;- 在预约服务中新增签到方法，自动扣减课程数并更新预约状态&#10;- 前端API和服务层添加签到接口调用逻辑&#10;- 移除独立的考勤管理模块及相关数据库模型和路由&#10;- 修改学员列表排序规则，简化为按剩余课程和创建时间排序&#10;- 更新预约查询逻辑，过滤掉已取消的预约记录&#10;- 调整数据库删除操作，不再关联删除考勤记录&#10;- 修改前端API基础URL端口号从8003为8004" />
     <MESSAGE value="feat(course): 新增课程管理功能并优化预约系统&#10;&#10;- 添加课程创建、查询、更新和删除功能&#10;- 实现课程与学生预约的关联管理&#10;- 更新预约相关API，支持按课程获取预约列表&#10;- 优化数据库模型，整合课程与预约数据" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(course): 新增课程管理功能并优化预约系统&#10;&#10;- 添加课程创建、查询、更新和删除功能&#10;- 实现课程与学生预约的关联管理&#10;- 更新预约相关API，支持按课程获取预约列表&#10;- 优化数据库模型，整合课程与预约数据" />
+    <MESSAGE value="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

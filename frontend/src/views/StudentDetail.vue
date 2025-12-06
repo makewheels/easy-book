@@ -1,7 +1,7 @@
 <template>
   <div class="student-detail-page">
     <div class="header">
-      <BackButton />
+      <BackButton :to="backDestination" />
     </div>
 
     <div class="content">
@@ -52,6 +52,15 @@ const attendances = ref([])
 
 const student = computed(() => studentStore.currentStudent)
 
+// 智能返回导航：如果记录了有效的referrer，则使用它；否则默认到学员列表页
+const backDestination = computed(() => {
+  if (referrerUrl.value) {
+    return referrerUrl.value
+  }
+  // 默认返回到学员列表页
+  return '/students'
+})
+
 onMounted(async () => {
   const studentId = route.params.id
 
@@ -98,17 +107,42 @@ const fetchAttendanceData = async (studentId) => {
     const response = await appointmentApi.getStudentAppointments(studentId)
     const appointments = response.data || []
 
-    // 转换预约数据为考勤记录格式
-    attendances.value = appointments.map(appointment => ({
-      id: appointment.id,
-      date: appointment.create_time.split('T')[0], // 从创建时间提取日期
-      time: new Date(appointment.create_time).toLocaleTimeString('zh-CN', {
-        hour: '2-digit',
-        minute: '2-digit'
-      }),
-      status: appointment.status,
-      lessons_before: '-', // 预约记录中没有课时变化信息，显示为'-'
-      lessons_after: '-'   // 预约记录中没有课时变化信息，显示为'-'
+    // 转换预约数据为考勤记录格式，使用课程的实际上课时间而不是预约创建时间
+    attendances.value = await Promise.all(appointments.map(async (appointment) => {
+      // 获取课程信息以获取实际的上课时间
+      let courseDate = appointment.create_time.split('T')[0] // 默认使用创建时间日期
+      let courseTime = '00:00' // 默认时间
+
+      try {
+        // 尝试获取课程详情以获取准确的上课时间
+        const courseResponse = await fetch(`/api/courses/${appointment.course_id}`)
+        if (courseResponse.ok) {
+          const courseData = await courseResponse.json()
+          if (courseData.data && courseData.data.start_time) {
+            const courseStartTime = new Date(courseData.data.start_time)
+            courseDate = courseStartTime.toISOString().split('T')[0]
+            courseTime = courseStartTime.toLocaleTimeString('zh-CN', {
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          }
+        }
+      } catch (courseError) {
+        console.warn('获取课程信息失败:', courseError)
+        // 如果获取课程信息失败，继续使用默认的预约时间
+      }
+
+      return {
+        id: appointment.id,
+        date: courseDate,
+        time: courseTime,
+        status: appointment.lesson_consumed ? 'completed' : appointment.status,
+        statusText: appointment.lesson_consumed ? '已完成' :
+                   appointment.status === 'scheduled' ? '已预约' : appointment.status,
+        lessons_before: appointment.lesson_consumed ? '上课前' : '-',
+        lessons_after: appointment.lesson_consumed ? '已消耗' : '-',
+        courseTitle: `(课程)` // 可以后续添加课程标题
+      }
     }))
   } catch (error) {
     console.error('获取预约记录失败:', error)
