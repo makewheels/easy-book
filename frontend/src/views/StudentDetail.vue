@@ -1,9 +1,7 @@
 <template>
   <div class="student-detail-page">
     <div class="header">
-      <button class="back-btn" @click="goBack">
-        ← 返回
-      </button>
+      <BackButton />
     </div>
 
     <div class="content">
@@ -17,22 +15,14 @@
 
         <!-- 快捷操作按钮组件 -->
         <QuickActions
-          @show-appointment="showAppointmentDialog = true"
-          @edit-student="goToEdit"
+          @showAppointment="goToAddAppointment"
+          @editStudent="goToEdit"
         />
 
         <!-- 详细信息卡片组件 -->
         <StudentDetailCards :student="student" :attendances="attendances" />
       </div>
     </div>
-
-    <!-- 预约弹窗组件 -->
-    <AppointmentDialog
-      :show="showAppointmentDialog"
-      :student-name="student?.name"
-      @close="closeAppointmentDialog"
-      @submit="handleAppointmentSubmit"
-    />
   </div>
 </template>
 
@@ -41,15 +31,14 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { attendanceApi } from '@/api/attendance'
-import { appointmentApi } from '@/api/appointment'
 import { isMonday } from '@/utils/date'
 import { toast } from '@/utils/toast'
 
 // 导入组件
+import BackButton from '@/components/common/BackButton.vue'
 import StudentOverviewCard from '@/components/student/StudentOverviewCard.vue'
 import QuickActions from '@/components/student/QuickActions.vue'
 import StudentDetailCards from '@/components/student/StudentDetailCards.vue'
-import AppointmentDialog from '@/components/student/AppointmentDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -60,7 +49,6 @@ const referrerUrl = ref('')
 
 const loading = ref(false)
 const attendances = ref([])
-const showAppointmentDialog = ref(false)
 
 const student = computed(() => studentStore.currentStudent)
 
@@ -114,54 +102,13 @@ const fetchAttendanceData = async (studentId) => {
   }
 }
 
-const goBack = () => {
-  console.log('goBack called, referrer:', referrerUrl.value)
-  console.log('current route:', router.currentRoute.value.path)
-  console.log('router history length:', window.history.length)
-
-  // 智能返回导航：优先使用记录的referrer，其次返回学生列表
-  if (referrerUrl.value && referrerUrl.value !== '/') {
-    console.log('Navigating to referrer:', referrerUrl.value)
-    router.push(referrerUrl.value)
-  } else {
-    console.log('Navigating to students list')
-    router.push('/students')
-  }
-}
 
 const goToEdit = () => {
   router.push(`/student/${student.value.id}/edit`)
 }
 
-const closeAppointmentDialog = () => {
-  showAppointmentDialog.value = false
-}
-
-const handleAppointmentSubmit = async (formData) => {
-  if (!formData.start_time || !formData.duration) {
-    toast.warning('请选择开始时间和课程时长')
-    return
-  }
-
-  // 检查是否为周一（游泳馆闭馆）
-  const startDate = new Date(formData.start_time)
-  if (isMonday(startDate.toISOString().split('T')[0])) {
-    toast.warning('游泳馆周一闭馆，不能预约')
-    return
-  }
-
-  try {
-    await appointmentApi.create({
-      student_id: student.value.id,
-      start_time: formData.start_time,
-      duration: formData.duration
-    })
-
-    toast.success('预约创建成功')
-    closeAppointmentDialog()
-  } catch (error) {
-    toast.error(error.message || '预约失败')
-  }
+const goToAddAppointment = () => {
+  router.push(`/student/${student.value.id}/add-appointment`)
 }
 </script>
 
