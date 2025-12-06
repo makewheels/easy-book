@@ -89,7 +89,9 @@
         </div>
 
         <div class="form-actions">
-          <BackButton text="取消" />
+          <button type="button" class="btn-cancel" @click="handleCancel">
+            取消
+          </button>
           <button type="submit" class="btn-save" :disabled="loading">
             {{ loading ? '预约中...' : '确认预约' }}
           </button>
@@ -235,6 +237,10 @@ const selectDuration = (duration) => {
   errorMessage.value = ''
 }
 
+const handleCancel = () => {
+  router.back()
+}
+
 const handleSubmit = async () => {
   // 验证表单
   if (!form.selectedDate || form.selectedHour === null || !form.duration) {
@@ -242,30 +248,25 @@ const handleSubmit = async () => {
     return
   }
 
-  // 检查预约时间是否在未来
-  const appointmentTime = new Date(startDateTime)
-  const now = new Date()
-
-  if (appointmentTime <= now) {
-    toast.error('预约时间必须在未来')
-    return
-  }
-
+  
   loading.value = true
   errorMessage.value = ''
 
   try {
+    // 构建完整的datetime字符串
+    const timeString = `${form.selectedHour.toString().padStart(2, '0')}:00`
+    const startDateTime = new Date(`${form.selectedDate}T${timeString}`)
+    const isoString = startDateTime.toISOString()
+
     const appointmentData = {
       student_id: studentId,
-      date: form.selectedDate,
-      time: `${form.selectedHour.toString().padStart(2, '0')}:00`,
-      duration_in_minutes: form.duration,
-      status: 'scheduled'
+      start_time: isoString,
+      duration_in_minutes: form.duration
     }
 
     await appointmentStore.createAppointment(appointmentData)
 
-    toast.success('预约创建成功')
+    toast.success('预约成功')
     router.push(`/student/${studentId}`)
   } catch (error) {
     errorMessage.value = error.message || '创建失败'
@@ -557,7 +558,7 @@ onMounted(async () => {
 }
 
 .btn-save,
-.form-actions :deep(.back-btn) {
+.btn-cancel {
   flex: 1;
   padding: 16px 20px;
   border: none;
@@ -579,13 +580,13 @@ onMounted(async () => {
   border-color: #096dd9;
 }
 
-.form-actions :deep(.back-btn) {
+.btn-cancel {
   background: #fff;
   color: #1989fa;
   border: 2px solid #1989fa;
 }
 
-.form-actions :deep(.back-btn:hover) {
+.btn-cancel:hover {
   background: #f0f9ff;
   color: #1989fa;
   border-color: #1989fa;
