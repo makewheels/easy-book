@@ -4,12 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 优化学员详情页面，支持智能返回导航和准确的上课时间显示">
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑">
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -201,14 +202,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00022" summary="build: 更新Dockerfile，切换到华为云镜像的Python、Node.js和nginx">
-      <option name="closed" value="true" />
-      <created>1764589449773</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1764589449773</updated>
     </task>
     <task id="LOCAL-00023" summary="build: 更新Dockerfile，切换到华为云镜像的Python 3.11">
       <option name="closed" value="true" />
@@ -594,7 +587,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765026978045</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑">
+      <option name="closed" value="true" />
+      <created>1765032309904</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1765032309905</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -622,7 +623,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: add git push command to local settings for enhanced workflow" />
     <MESSAGE value="feat: update deployment documentation and add server upload script for improved deployment process" />
     <MESSAGE value="feat: add student status update functionality and enhance testing documentation" />
     <MESSAGE value="feat: add automation testing dependencies and enhance documentation for deployment and API" />
@@ -647,7 +647,8 @@
     <MESSAGE value="feat(course): 新增课程管理功能并优化预约系统&#10;&#10;- 添加课程创建、查询、更新和删除功能&#10;- 实现课程与学生预约的关联管理&#10;- 更新预约相关API，支持按课程获取预约列表&#10;- 优化数据库模型，整合课程与预约数据" />
     <MESSAGE value="fix(appointment): 更新预约相关API，统一学生预约数据获取逻辑并修复端口配置" />
     <MESSAGE value="feat(appointment): 优化学员详情页面，支持智能返回导航和准确的上课时间显示" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 优化学员详情页面，支持智能返回导航和准确的上课时间显示" />
+    <MESSAGE value="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

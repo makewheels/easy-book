@@ -6,6 +6,8 @@ import EditStudent from '@/views/EditStudent.vue'
 import CalendarView from '@/views/CalendarView.vue'
 import AddAppointment from '@/views/AddAppointment.vue'
 import CalendarAppointment from '@/views/CalendarAppointment.vue'
+import AddPackage from '@/views/AddPackage.vue'
+import EditPackage from '@/views/EditPackage.vue'
 
 const routes = [
   {
@@ -47,6 +49,16 @@ const routes = [
     path: '/calendar-appointment',
     name: 'CalendarAppointment',
     component: CalendarAppointment
+  },
+  {
+    path: '/student/:studentId/add-package',
+    name: 'AddPackage',
+    component: AddPackage
+  },
+  {
+    path: '/packages/:id/edit',
+    name: 'EditPackage',
+    component: EditPackage
   }
 ]
 

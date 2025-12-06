@@ -53,78 +53,12 @@
           </div>
         </div>
         
-        <div class="form-section">
-          <h3>套餐信息</h3>
-          
-          <div class="form-group">
-            <label>套餐类型 *</label>
-            <input
-              type="text"
-              v-model="form.package_type"
-              required
-              placeholder="请输入套餐类型"
-            />
-            <div class="package-type-suggestions">
-              <div class="suggestion-chips">
-                <span
-                  v-for="type in packageTypeSuggestions"
-                  :key="type"
-                  class="suggestion-chip"
-                  @click="selectPackageType(type)"
-                >
-                  {{ type }}
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label>总共 *</label>
-            <input
-              type="number"
-              v-model="form.total_lessons"
-              required
-              min="1"
-              placeholder="请输入总共次数"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>售价（元）*</label>
-            <input 
-              type="number" 
-              v-model="form.price" 
-              required
-              min="1"
-              placeholder="请输入售价"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>上交俱乐部（元）*</label>
-            <input
-              type="number"
-              v-model="form.venue_share"
-              required
-              min="0"
-              placeholder="请输入上交俱乐部"
-            />
-          </div>
-          
-          <div class="form-group">
-            <label>利润</label>
-            <div class="profit-display">
-              {{ (form.price || 0) - (form.venue_share || 0) }} 元
-            </div>
-          </div>
-        </div>
-        
         <div class="form-actions">
           <button type="button" class="btn-cancel" @click="goBack" :disabled="loading">
             取消
           </button>
           <button type="submit" class="btn-save" :disabled="loading">
-            {{ loading ? '保存中...' : '保存' }}
+            {{ loading ? '保存中...' : '新增学员' }}
           </button>
         </div>
       </form>
@@ -147,10 +81,6 @@ const loading = ref(false)
 const form = reactive({
   name: '',
   learning_item: '',
-  package_type: '',
-  total_lessons: '',
-  price: '',
-  venue_share: '',
   note: ''
 })
 
@@ -166,22 +96,8 @@ const learningItemSuggestions = [
   '防溺水'
 ]
 
-// 套餐类型建议列表
-const packageTypeSuggestions = [
-  '1 v 1',
-  '1 v 2',
-  '1 v 3',
-  '1 v 5'
-]
-
-
 const selectLearningItem = (item) => {
   form.learning_item = item
-}
-
-const selectPackageType = (type) => {
-  // 移除显示用的空格，实际存储为紧凑格式
-  form.package_type = type.replace(/\s+v\s+/g, 'v')
 }
 
 const goBack = () => {
@@ -190,41 +106,23 @@ const goBack = () => {
 
 const handleSubmit = async () => {
   // 验证表单
-  if (!form.name || !form.learning_item || !form.package_type ||
-      !form.total_lessons || !form.price || !form.venue_share) {
+  if (!form.name || !form.learning_item) {
     toast.warning('请填写所有必填字段')
-    return
-  }
-
-  if (form.total_lessons <= 0 || form.price <= 0 || form.venue_share < 0) {
-    toast.warning('请输入有效的数值')
     return
   }
 
   loading.value = true
 
-  // 显式构建要发送的数据
+  // 构建要发送的数据
   const studentData = {
     name: form.name,
     learning_item: form.learning_item,
-    package_type: form.package_type,
-    total_lessons: parseInt(form.total_lessons),
-    price: parseInt(form.price),
-    venue_share: parseInt(form.venue_share),
     note: form.note || undefined
-  }
-
-  // 显式添加身份证和手机号字段（如果存在）
-  if (form.id_card && form.id_card.trim()) {
-    studentData.id_card = form.id_card.trim()
-  }
-  if (form.phone && form.phone.trim()) {
-    studentData.phone = form.phone.trim()
   }
 
   try {
     await studentStore.createStudent(studentData)
-    
+
     toast.success('学员创建成功')
     router.push('/students')
   } catch (error) {
@@ -351,20 +249,6 @@ const handleSubmit = async () => {
   border-color: #1989fa;
 }
 
-.profit-display {
-  padding: 20px;
-  background: #f8f9fa;
-  border: 2px solid #f5222d;
-  border-radius: 16px;
-  font-size: 24px;
-  font-weight: 800;
-  color: #f5222d;
-  text-align: center;
-  margin-top: 10px;
-  margin-bottom: 2px;
-  letter-spacing: 1px;
-}
-
 .form-actions {
   display: flex;
   gap: 15px;
@@ -411,16 +295,6 @@ const handleSubmit = async () => {
 
 .learning-item-suggestions {
   margin-top: 8px;
-}
-
-.package-type-suggestions {
-  margin-top: 8px;
-}
-
-.suggestion-label {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 5px;
 }
 
 .suggestion-chips {
