@@ -73,19 +73,21 @@ class MongoDatabase:
         if self.db is None:
             await self.connect()
         from bson import ObjectId
+
         # 首先尝试字符串查找，因为我们的ID是字符串格式
         student = await self.db.students.find_one({"_id": student_id})
-        
+
         # 如果字符串查找失败，尝试ObjectId查找
         if not student:
             try:
                 student = await self.db.students.find_one({"_id": ObjectId(student_id)})
             except:
                 pass
-        
-        if student:
+
+        # 保持MongoDB原生格式，只转换ObjectId为字符串
+        if student and "_id" in student:
             student["_id"] = str(student["_id"])
-            student["id"] = student["_id"]
+
         return student
     
     async def get_students(self) -> List[dict]:
@@ -94,8 +96,9 @@ class MongoDatabase:
             await self.connect()
         students = []
         async for student in self.db.students.find():
-            student["_id"] = str(student["_id"])
-            student["id"] = student["_id"]
+            # 保持MongoDB原生格式，只转换ObjectId为字符串
+            if "_id" in student:
+                student["_id"] = str(student["_id"])
             students.append(student)
         return students
     
@@ -166,9 +169,9 @@ class MongoDatabase:
             except:
                 pass
         
-        if appointment:
+        # 保持MongoDB原生格式，只转换ObjectId为字符串
+        if appointment and "_id" in appointment:
             appointment["_id"] = str(appointment["_id"])
-            appointment["id"] = appointment["_id"]
         return appointment
     
     async def get_appointments(self) -> List[dict]:
@@ -177,8 +180,9 @@ class MongoDatabase:
             await self.connect()
         appointments = []
         async for appointment in self.db.appointments.find():
-            appointment["_id"] = str(appointment["_id"])
-            appointment["id"] = appointment["_id"]
+            # 保持MongoDB原生格式，只转换ObjectId为字符串
+            if "_id" in appointment:
+                appointment["_id"] = str(appointment["_id"])
             appointments.append(appointment)
         return appointments
     
@@ -186,8 +190,9 @@ class MongoDatabase:
         """获取学员的预约"""
         appointments = []
         async for appointment in self.db.appointments.find({"student_id": student_id}):
-            appointment["_id"] = str(appointment["_id"])
-            appointment["id"] = appointment["_id"]
+            # 保持MongoDB原生格式，只转换ObjectId为字符串
+            if "_id" in appointment:
+                appointment["_id"] = str(appointment["_id"])
             appointments.append(appointment)
         return appointments
     

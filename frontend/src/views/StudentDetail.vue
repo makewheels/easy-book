@@ -119,18 +119,18 @@ const goBack = () => {
   console.log('current route:', router.currentRoute.value.path)
   console.log('router history length:', window.history.length)
 
-  // 智能返回导航：优先使用记录的referrer，其次使用router.back()
-  if (referrerUrl.value) {
+  // 智能返回导航：优先使用记录的referrer，其次返回学生列表
+  if (referrerUrl.value && referrerUrl.value !== '/') {
     console.log('Navigating to referrer:', referrerUrl.value)
     router.push(referrerUrl.value)
   } else {
-    console.log('Using router.back()')
-    router.back()
+    console.log('Navigating to students list')
+    router.push('/students')
   }
 }
 
 const goToEdit = () => {
-  router.push(`/student/${student.value._id}/edit`)
+  router.push(`/student/${student.value.id}/edit`)
 }
 
 const closeAppointmentDialog = () => {
@@ -152,7 +152,7 @@ const handleAppointmentSubmit = async (formData) => {
 
   try {
     await appointmentApi.create({
-      student_id: student.value._id,
+      student_id: student.value.id,
       start_time: formData.start_time,
       duration: formData.duration
     })

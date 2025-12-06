@@ -37,14 +37,13 @@ defineEmits(['showAppointment', 'editStudent'])
 }
 
 .action-btn.primary {
-  background: #1989fa;
-  color: #fff;
-  border: 1px solid #1989fa;
+  background: #fff;
+  color: #1989fa;
+  border: 2px solid #1989fa;
 }
 
 .action-btn.primary:hover {
-  background: #096dd9;
-  border-color: #096dd9;
+  background: #f0f9ff;
 }
 
 .action-btn.secondary {

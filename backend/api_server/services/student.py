@@ -8,6 +8,24 @@ from api_server.models import StudentModel
 from api_server.database import get_database
 
 
+def map_mongo_to_api(mongo_doc: dict) -> dict:
+    """将MongoDB文档映射为API响应格式"""
+    api_doc = mongo_doc.copy()
+    if '_id' in api_doc:
+        api_doc['id'] = str(api_doc['_id'])
+        del api_doc['_id']
+    return api_doc
+
+
+def map_api_to_mongo(api_doc: dict) -> dict:
+    """将API请求数据映射为MongoDB格式"""
+    mongo_doc = api_doc.copy()
+    if 'id' in mongo_doc:
+        mongo_doc['_id'] = mongo_doc['id']
+        del mongo_doc['id']
+    return mongo_doc
+
+
 class StudentService:
     """学员服务类"""
 
@@ -33,7 +51,9 @@ class StudentService:
         student_data["_id"] = student_id
         student_data["id"] = student_id
 
-        return StudentModel(**student_data)
+        # 映射为API格式
+        api_data = map_mongo_to_api(student_data)
+        return StudentModel(**api_data)
 
     @staticmethod
     def _prepare_student_data(student_data: dict) -> dict:
@@ -136,7 +156,9 @@ class StudentService:
         for student in students:
             student_copy = student.copy()
             student_copy = StudentService._prepare_student_data(student_copy)
-            processed_students.append(StudentModel(**student_copy))
+            # 映射为API格式
+            api_data = map_mongo_to_api(student_copy)
+            processed_students.append(StudentModel(**api_data))
         return processed_students
 
     @staticmethod
@@ -154,7 +176,9 @@ class StudentService:
         student = await db.get_student(student_id)
         if student:
             student = StudentService._prepare_student_data(student)
-            return StudentModel(**student)
+            # 映射为API格式
+            api_data = map_mongo_to_api(student)
+            return StudentModel(**api_data)
         return None
 
     @staticmethod
@@ -163,14 +187,16 @@ class StudentService:
         更新学员信息
 
         Args:
-            student_id: 学员ID
+            student_id: 学员ID（标准id）
             update_data: 更新的数据
 
         Returns:
             更新后的学员对象，如果更新失败则返回None
         """
         db = get_database()
-        success = await db.update_student(student_id, update_data)
+        # 将标准id映射为MongoDB的_id进行查询
+        mongo_student_id = student_id
+        success = await db.update_student(mongo_student_id, update_data)
         if success:
             return await StudentService.get_by_id(student_id)
         return None

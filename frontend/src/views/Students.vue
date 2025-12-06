@@ -28,7 +28,7 @@
             v-for="student in students"
             :key="student.id"
             :student="student"
-            @click="goToDetail(student._id)"
+            @click="goToDetail(student.id)"
           />
         </div>
       </div>
