@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="style(students): 优化学生详情页和学生卡片样式&#10;&#10;- 更新学生详情页的引用记录逻辑，排除编辑页面的引用&#10;- 调整返回按钮的样式，简化视觉效果&#10;- 修改学生卡片内的价格和利润显示格式，增加单位&#10;- 统一学生信息的字体颜色和权重，提升可读性">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BottomNavigation.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BottomNavigation.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/QuickActions.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/student.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Students.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Students.vue" afterDir="false" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="style(AddStudent): 优化学生添加页面样式和布局&#10;&#10;- 调整页面整体字体大小为20px&#10;- 修改头部导航栏样式，使用sticky定位并添加底部边框&#10;- 更新返回按钮样式，增加悬停效果&#10;- 重新设计表单区域布局，使用flexbox垂直排列&#10;- 改进表单区块样式，增加圆角和边框&#10;- 优化表单标题样式，使用flex布局并添加背景色&#10;- 统一表单控件样式，增大内边距和圆角&#10;- 重新设计利润显示区域样式，使用更大字体和红色主题&#10;- 调整按钮样式，增大内边距和字体大小&#10;- 移除学习项目输入框的默认提示文本&#10;- 删除常用项目建议标签，保留建议项功能">
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddStudent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditStudent.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,28 +191,12 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
-    <task id="LOCAL-00010" summary="chore: 新增 node-shell.sh 实现前端自动部署脚本并优化工作区配置">
-      <option name="closed" value="true" />
-      <created>1764515952010</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1764515952010</updated>
-    </task>
     <task active="true" id="Default" summary="Default task">
       <changelist id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="chore: 新增 node-shell.sh 实现前端自动部署脚本并优化工作区配置" />
       <created>1764584917679</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00011" summary="build: 更新Dockerfile和docker-compose配置，升级Python和Node.js版本，添加健康检查和nginx支持">
-      <option name="closed" value="true" />
-      <created>1764586047625</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1764586047625</updated>
     </task>
     <task id="LOCAL-00012" summary="build: 更新Dockerfile和workspace.xml，调整前端构建配置和任务记录">
       <option name="closed" value="true" />
@@ -601,7 +574,23 @@
       <option name="project" value="LOCAL" />
       <updated>1764955441425</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="refactor(backend): 统一MongoDB与API数据格式映射逻辑&#10;&#10;- 新增map_mongo_to_api和map_api_to_mongo函数处理ID字段转换&#10;- 移除模型中的alias配置和populate_by_name选项&#10;- 更新数据库层ID处理逻辑，统一转换ObjectId为字符串&#10;- 修改服务层调用映射函数确保数据格式一致性&#10;- 调整前端存储和路由使用标准id字段替代_id&#10;- 更新预约创建逻辑适配duration字段命名变更">
+      <option name="closed" value="true" />
+      <created>1764993393037</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1764993393038</updated>
+    </task>
+    <task id="LOCAL-00060" summary="style(AddStudent): 优化学生添加页面样式和布局&#10;&#10;- 调整页面整体字体大小为20px&#10;- 修改头部导航栏样式，使用sticky定位并添加底部边框&#10;- 更新返回按钮样式，增加悬停效果&#10;- 重新设计表单区域布局，使用flexbox垂直排列&#10;- 改进表单区块样式，增加圆角和边框&#10;- 优化表单标题样式，使用flex布局并添加背景色&#10;- 统一表单控件样式，增大内边距和圆角&#10;- 重新设计利润显示区域样式，使用更大字体和红色主题&#10;- 调整按钮样式，增大内边距和字体大小&#10;- 移除学习项目输入框的默认提示文本&#10;- 删除常用项目建议标签，保留建议项功能">
+      <option name="closed" value="true" />
+      <created>1764993595798</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1764993595798</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -629,8 +618,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="fix: improve appointment update logic and enhance student check-in conditions" />
-    <MESSAGE value="build: enhance deployment script and update MongoDB index management" />
     <MESSAGE value="fix: enhance student update logic to handle string and ObjectId, improve UI layout and add date header" />
     <MESSAGE value="feat: add id card and phone number fields to student forms, enhance student detail display" />
     <MESSAGE value="feat: enhance student detail display with default values and add creation/update timestamps" />
@@ -654,7 +641,9 @@
     <MESSAGE value="style(students): 重新设计学生页面UI布局和样式&#10;&#10;- 重新组织学生卡片内的信息布局，将学习项目和套餐类型移至左下角&#10;- 调整进度条样式并优化显示逻辑&#10;- 更新页面整体样式，去除毛玻璃效果，改用纯色背景&#10;- 修改加载状态和空状态的视觉设计&#10;- 调整底部导航栏样式和尺寸&#10;- 优化响应式布局，支持更宽的屏幕显示&#10;- 修正课程进度计算逻辑，假设remaining为已完成课数" />
     <MESSAGE value="style(frontend): 统一界面组件样式规范&#10;&#10;- 移除所有组件的 box-shadow 属性，统一使用边框样式&#10;- 调整按钮、卡片等元素的边框颜色为 #e0e0e0&#10;- 统一字体大小规范，提升整体可读性&#10;- 优化按钮悬停效果和交互反馈&#10;- 重构学生详情页布局，简化信息层级&#10;- 更新快速操作按钮样式，移除图标容器&#10;- 调整学员卡片进度条样式和尺寸&#10;- 优化页面间距和边距设置，提升视觉一致性" />
     <MESSAGE value="style(students): 优化学生详情页和学生卡片样式&#10;&#10;- 更新学生详情页的引用记录逻辑，排除编辑页面的引用&#10;- 调整返回按钮的样式，简化视觉效果&#10;- 修改学生卡片内的价格和利润显示格式，增加单位&#10;- 统一学生信息的字体颜色和权重，提升可读性" />
-    <option name="LAST_COMMIT_MESSAGE" value="style(students): 优化学生详情页和学生卡片样式&#10;&#10;- 更新学生详情页的引用记录逻辑，排除编辑页面的引用&#10;- 调整返回按钮的样式，简化视觉效果&#10;- 修改学生卡片内的价格和利润显示格式，增加单位&#10;- 统一学生信息的字体颜色和权重，提升可读性" />
+    <MESSAGE value="refactor(backend): 统一MongoDB与API数据格式映射逻辑&#10;&#10;- 新增map_mongo_to_api和map_api_to_mongo函数处理ID字段转换&#10;- 移除模型中的alias配置和populate_by_name选项&#10;- 更新数据库层ID处理逻辑，统一转换ObjectId为字符串&#10;- 修改服务层调用映射函数确保数据格式一致性&#10;- 调整前端存储和路由使用标准id字段替代_id&#10;- 更新预约创建逻辑适配duration字段命名变更" />
+    <MESSAGE value="style(AddStudent): 优化学生添加页面样式和布局&#10;&#10;- 调整页面整体字体大小为20px&#10;- 修改头部导航栏样式，使用sticky定位并添加底部边框&#10;- 更新返回按钮样式，增加悬停效果&#10;- 重新设计表单区域布局，使用flexbox垂直排列&#10;- 改进表单区块样式，增加圆角和边框&#10;- 优化表单标题样式，使用flex布局并添加背景色&#10;- 统一表单控件样式，增大内边距和圆角&#10;- 重新设计利润显示区域样式，使用更大字体和红色主题&#10;- 调整按钮样式，增大内边距和字体大小&#10;- 移除学习项目输入框的默认提示文本&#10;- 删除常用项目建议标签，保留建议项功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="style(AddStudent): 优化学生添加页面样式和布局&#10;&#10;- 调整页面整体字体大小为20px&#10;- 修改头部导航栏样式，使用sticky定位并添加底部边框&#10;- 更新返回按钮样式，增加悬停效果&#10;- 重新设计表单区域布局，使用flexbox垂直排列&#10;- 改进表单区块样式，增加圆角和边框&#10;- 优化表单标题样式，使用flex布局并添加背景色&#10;- 统一表单控件样式，增大内边距和圆角&#10;- 重新设计利润显示区域样式，使用更大字体和红色主题&#10;- 调整按钮样式，增大内边距和字体大小&#10;- 移除学习项目输入框的默认提示文本&#10;- 删除常用项目建议标签，保留建议项功能" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
