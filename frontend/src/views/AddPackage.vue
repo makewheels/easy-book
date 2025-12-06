@@ -2,7 +2,7 @@
   <div class="add-package-page">
     <div class="header">
       <BackButton />
-      <h1>{{ studentName }} - 新增套餐</h1>
+      <h1>新增套餐 - {{ studentName }}</h1>
     </div>
 
     <div class="content">
@@ -38,11 +38,11 @@
               placeholder="请输入上交俱乐部金额"
             />
             <div class="venue-share-suggestions">
-              <div class="suggestion-chips">
+              <div class="form-suggestion-chips">
                 <span
                   v-for="amount in venueShareSuggestions"
                   :key="amount"
-                  class="suggestion-chip"
+                  class="form-suggestion-chip"
                   @click="selectVenueShare(amount)"
                 >
                   {{ amount }} 元
@@ -51,10 +51,10 @@
             </div>
           </div>
 
-          <div class="form-group" v-if="form.price && form.venue_share">
+          <div class="form-group">
             <label>利润</label>
             <div class="profit-display">
-              {{ form.price - form.venue_share }} 元
+              {{ (parseInt(form.price) || 0) - (parseInt(form.venue_share) || 0) }} 元
             </div>
           </div>
         </div>
@@ -117,17 +117,40 @@ watch(packageTypeData, (newData) => {
 // 页面加载时获取学生信息
 onMounted(async () => {
   const studentId = route.params.studentId
+  console.log('AddPackage mounted, studentId:', studentId)
+
   if (studentId) {
     try {
-      const response = await studentApi.getStudentById(studentId)
-      const student = response.data
+      console.log('Calling student API with ID:', studentId)
+      const response = await studentApi.getById(studentId)
+      console.log('Student API response:', response)
+
+      // 尝试不同的数据结构
+      let student = null
+      if (response.data) {
+        student = response.data
+      } else if (response) {
+        student = response
+      }
+
+      console.log('Student data:', student)
+
       if (student) {
-        studentName.value = student.name
+        // 尝试不同的姓名字段
+        studentName.value = student.name || student.student_name || student.username || `学员${studentId}`
+        console.log('Student name set to:', studentName.value)
+      } else {
+        console.log('No student data found in response')
+        studentName.value = `学员${studentId}`
       }
     } catch (error) {
-      toast.error('获取学生信息失败')
-      router.back()
+      console.error('获取学生信息失败:', error)
+      // 不显示错误toast，直接使用ID作为名称
+      studentName.value = `学员${studentId}`
     }
+  } else {
+    console.log('No studentId provided in route')
+    studentName.value = '新增套餐'
   }
 })
 
@@ -382,13 +405,13 @@ const calculateEndDate = (durationType, customDays) => {
   margin-top: 12px;
 }
 
-.suggestion-chips {
+.form-suggestion-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.suggestion-chip {
+.form-suggestion-chip {
   padding: 8px 12px;
   background: #fff;
   border: 1px solid #1989fa;
@@ -401,7 +424,7 @@ const calculateEndDate = (durationType, customDays) => {
   font-weight: 500;
 }
 
-.suggestion-chip:hover {
+.form-suggestion-chip:hover {
   background: #1989fa;
   color: #fff;
   transform: translateY(-1px);
