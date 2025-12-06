@@ -10,6 +10,24 @@ from api_server.database import get_database
 from .utils import calculate_dynamic_status_new
 
 
+def map_mongo_to_api(mongo_doc: dict) -> dict:
+    """将MongoDB文档映射为API响应格式"""
+    api_doc = mongo_doc.copy()
+    if '_id' in api_doc:
+        api_doc['id'] = str(api_doc['_id'])
+        del api_doc['_id']
+    return api_doc
+
+
+def map_api_to_mongo(api_doc: dict) -> dict:
+    """将API请求数据映射为MongoDB格式"""
+    mongo_doc = api_doc.copy()
+    if 'id' in mongo_doc:
+        mongo_doc['_id'] = mongo_doc['id']
+        del mongo_doc['id']
+    return mongo_doc
+
+
 class AppointmentService:
     """预约服务类"""
 
@@ -93,9 +111,10 @@ class AppointmentService:
         # 创建预约
         appointment_id = await db.create_appointment(appointment_data)
         appointment_data["_id"] = appointment_id
-        appointment_data["id"] = appointment_id
 
-        return AppointmentModel(**appointment_data)
+        # 映射为API格式
+        api_data = map_mongo_to_api(appointment_data)
+        return AppointmentModel(**api_data)
 
     @staticmethod
     async def check_time_conflict(student_id: str, start_time: datetime, end_time: datetime):
@@ -176,7 +195,9 @@ class AppointmentService:
         db = get_database()
         appointment = await db.get_appointment(appointment_id)
         if appointment:
-            return AppointmentModel(**appointment)
+            # 映射为API格式
+            api_data = map_mongo_to_api(appointment)
+            return AppointmentModel(**api_data)
         return None
 
     @staticmethod
@@ -278,7 +299,13 @@ class AppointmentService:
         if status:
             appointments = [apt for apt in appointments if apt.get("status") == status]
 
-        return [AppointmentModel(**apt) for apt in appointments]
+        # 应用ID映射
+        processed_appointments = []
+        for apt in appointments:
+            api_data = map_mongo_to_api(apt)
+            processed_appointments.append(AppointmentModel(**api_data))
+
+        return processed_appointments
 
     @staticmethod
     async def get_upcoming_appointments(days: int = 30) -> List[dict]:

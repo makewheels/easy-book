@@ -11,14 +11,14 @@ async def create_appointment(appointment: AppointmentCreate):
     try:
         # 计算结束时间
         from datetime import timedelta
-        end_time = appointment.start_time + timedelta(minutes=appointment.duration)
+        end_time = appointment.start_time + timedelta(minutes=appointment.duration_in_minutes)
 
         # 构建完整数据
         appointment_data = {
             "student_id": appointment.student_id,
             "start_time": appointment.start_time,
             "end_time": end_time,
-            "duration": appointment.duration
+            "duration_in_minutes": appointment.duration_in_minutes
         }
 
         created_appointment = await AppointmentService.create(appointment_data)

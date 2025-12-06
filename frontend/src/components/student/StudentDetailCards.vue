@@ -48,7 +48,6 @@
       </div>
       <div class="card-content">
         <div v-if="attendances.length === 0" class="empty-records">
-          <div class="empty-icon">📝</div>
           <div class="empty-text">暂无上课记录</div>
         </div>
         <div v-else class="attendance-timeline">
@@ -216,13 +215,7 @@ const formatDateShort = (dateString) => {
 /* 上课记录样式 */
 .empty-records {
   text-align: center;
-  padding: 40px 20px;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  opacity: 0.6;
+  padding: 60px 20px;
 }
 
 .empty-text {

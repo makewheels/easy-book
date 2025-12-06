@@ -94,7 +94,7 @@ class MongoDBAttendanceModel(MongoDBBaseModel):
 
 # Pydantic模型类 - 用于API数据验证和序列化
 class StudentModel(BaseModel):
-    id: Optional[str] = Field(alias="_id", default=None)
+    id: Optional[str] = None
     name: str = Field(..., min_length=1, max_length=50, description="姓名")
     learning_item: str = Field(..., description="学习项目")
     package_type: str = Field(..., pattern="^(1v1|1v多)$", description="套餐类型")
@@ -106,8 +106,6 @@ class StudentModel(BaseModel):
     note: Optional[str] = Field(None, max_length=500, description="备注")
     create_time: datetime = Field(default_factory=datetime.now)
     update_time: datetime = Field(default_factory=datetime.now)
-
-    model_config = {"populate_by_name": True}
 
 class StudentCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
@@ -124,11 +122,11 @@ class StudentUpdate(BaseModel):
     note: Optional[str] = Field(None, max_length=500)
 
 class AppointmentModel(BaseModel):
-    id: Optional[str] = Field(alias="_id", default=None)
+    id: Optional[str] = None
     student_id: str = Field(..., description="学员ID")
     start_time: datetime = Field(..., description="课程开始时间")
     end_time: Optional[datetime] = Field(None, description="课程结束时间（由服务端计算）")
-    duration_in_minutes: int = Field(..., gt=0, description="课程时长（分钟）")
+    duration_in_minutes: Optional[int] = Field(None, gt=0, description="课程时长（分钟）")
     status: str = Field(default="scheduled", pattern="^(scheduled|checked|cancel)$", description="预约状态")
     create_time: datetime = Field(default_factory=datetime.now)
     update_time: datetime = Field(default_factory=datetime.now)
@@ -143,8 +141,6 @@ class AppointmentModel(BaseModel):
         """获取课程时长（小时）"""
         return round(self.duration_in_minutes / 60, 2)
 
-    model_config = {"populate_by_name": True}
-
 class AppointmentCreate(BaseModel):
     student_id: str = Field(..., description="学员ID")
     start_time: datetime = Field(..., description="课程开始时间")
@@ -158,7 +154,7 @@ class AppointmentUpdate(BaseModel):
     status: Optional[str] = Field(None, pattern="^(scheduled|checked|cancel)$", description="预约状态")
 
 class AttendanceModel(BaseModel):
-    id: Optional[str] = Field(alias="_id", default=None)
+    id: Optional[str] = None
     student_id: str = Field(..., description="学员ID")
     appointment_id: str = Field(..., description="预约ID")
     attendance_date: date = Field(..., description="上课日期")
@@ -166,8 +162,6 @@ class AttendanceModel(BaseModel):
     lessons_before: int = Field(..., ge=0, description="上课前剩余课程数")
     lessons_after: int = Field(..., ge=0, description="上课后剩余课程数")
     create_time: datetime = Field(default_factory=datetime.now)
-
-    model_config = {"populate_by_name": True}
 
 class AttendanceCreate(BaseModel):
     appointment_id: str = Field(..., description="预约ID")

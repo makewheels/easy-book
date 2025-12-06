@@ -11,7 +11,7 @@
           <div class="time-header-cell"></div>
 
           <!-- 日期列头 -->
-          <div v-for="day in weekDates" :key="day.date" class="date-header-cell">
+          <div v-for="day in weekDates" :key="day.date" class="date-header-cell" :class="{ today: day.isToday }">
             {{ day.weekday }}<br>{{ day.displayDate }}
           </div>
 
@@ -27,6 +27,7 @@
               v-for="day in weekDates"
               :key="`${day.date}-${timeSlot}`"
               class="time-slot"
+              :class="{ today: day.isToday }"
               >
               <span
                 v-if="!hasStudents(day.date, timeSlot)"
@@ -87,20 +88,16 @@ const weekDates = computed(() => {
   const dates = []
   const startDate = new Date(currentWeekStart.value)
 
-  // 从周二开始，只循环6次（周二到周日），跳过周一
-  for (let i = 1; i < 7; i++) {
+  // 从周二开始到周日，共6天（跳过周一）
+  for (let i = 1; i <= 6; i++) {
     const currentDate = addDays(startDate, i)
     const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
-
-    // 如果是周一(dayOfWeek=1)，跳过不显示
-    if (dayOfWeek === 1) continue
 
     const dateStr = format(currentDate, 'yyyy-MM-dd')
     const isToday = isSameDay(currentDate, new Date())
 
     const weekdayNames = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-    let weekdayIndex = dayOfWeek - 1
-    if (weekdayIndex > 0) weekdayIndex--
+    const weekdayIndex = dayOfWeek - 1
 
     dates.push({
       date: dateStr,
@@ -235,7 +232,7 @@ onMounted(() => {
   grid-template-columns: 100px repeat(6, minmax(120px, 1fr));
   grid-auto-rows: 70px;
   background: transparent;
-  min-width: 900px;
+  min-width: 820px;
   width: 100%;
   border-collapse: collapse;
 }
@@ -245,7 +242,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #0050b3;
   border-bottom: 2px solid #e3f2fd;
@@ -258,7 +255,7 @@ onMounted(() => {
 
 .date-header-cell {
   background: #f5f5f5;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #0050b3;
   padding: 12px 8px;
@@ -272,13 +269,20 @@ onMounted(() => {
   border-right: 1px solid #e0e0e0;
 }
 
+.date-header-cell.today {
+  background: #fff7e6 !important;
+  color: #d46b08 !important;
+  border-bottom: 2px solid #ffd591 !important;
+  border-right: 1px solid #ffd591 !important;
+}
+
 
 .time-cell {
   background: #f9f9f9;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   color: #0050b3;
   width: 100px;
@@ -303,6 +307,11 @@ onMounted(() => {
   flex-direction: column;
   border-bottom: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
+}
+
+.time-slot.today {
+  background: #fff7e6;
+  border-right: 1px solid #ffd591;
 }
 
 .students-container {
@@ -376,6 +385,11 @@ onMounted(() => {
   top: 4px;
   left: 4px;
   margin: 0;
+}
+
+.time-slot.today .empty-cell {
+  background: #fff7e6;
+  border: 1px dashed #ffd591;
 }
 
 .loading {
