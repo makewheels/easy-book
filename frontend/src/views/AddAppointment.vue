@@ -159,8 +159,8 @@ const dateOptions = computed(() => {
   const options = []
   const today = new Date()
 
-  // 只提供今天、明天、后天三个选项
-  for (let i = 0; i < 3; i++) {
+  // 提供未来6天的选项（包括今天）
+  for (let i = 0; i < 6; i++) {
     const date = new Date(today)
     date.setDate(today.getDate() + i)
 
@@ -175,6 +175,9 @@ const dateOptions = computed(() => {
       label = `明天 ${dateStr}`
     } else if (i === 2) {
       label = `后天 ${dateStr}`
+    } else {
+      // 第4天及以后只显示日期，去掉星期文字
+      label = dateStr
     }
 
     options.push({
@@ -339,13 +342,15 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px 20px;
+  padding: 8px 20px;
   margin: -20px -20px 20px -20px;
   background: #f8f9fa;
   border-bottom: 1px solid #e8e8e8;
   font-size: 20px;
   font-weight: 700;
   color: #1a1a1a;
+  min-height: 44px;
+  box-sizing: border-box;
 }
 
 .form-group {
@@ -386,8 +391,8 @@ onMounted(async () => {
 }
 
 .date-options {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
@@ -400,6 +405,11 @@ onMounted(async () => {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+  height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .date-btn.active {
@@ -422,6 +432,7 @@ onMounted(async () => {
 .time-group {
   border: none;
   padding: 16px;
+  padding-top: 0px;
   background: #fff;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -466,6 +477,11 @@ onMounted(async () => {
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .time-btn.active {
@@ -487,8 +503,8 @@ onMounted(async () => {
 .duration-btn {
   flex: 1;
   padding: 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   background: #fff;
   color: #1a1a1a;
   font-size: 16px;
@@ -537,7 +553,7 @@ onMounted(async () => {
 .form-actions {
   display: flex;
   gap: 15px;
-  margin: 0 0 20px 0;
+  margin: 0 20px 20px 20px;
 }
 
 .btn-save,
@@ -584,7 +600,7 @@ onMounted(async () => {
 /* 响应式设计 */
 @media (max-width: 480px) {
   .time-grid {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
   }
 

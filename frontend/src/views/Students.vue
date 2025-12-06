@@ -185,12 +185,12 @@ const goToAddStudent = () => {
   border: 2px solid #1989fa;
   padding: 18px 10px;
   text-align: center;
-  margin: 0 0 10px 0;
+  margin: 0 20px 10px 20px;
   cursor: pointer;
   font-size: 22px;
   font-weight: 700;
   transition: all 0.3s ease;
-  width: 100%;
+  width: calc(100% - 40px);
   box-sizing: border-box;
   border-radius: 12px;
 }
