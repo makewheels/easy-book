@@ -28,10 +28,48 @@ class MongoDBStudentModel(MongoDBBaseModel):
         return "students"
 
 
+
+class MongoDBCourseModel(MongoDBBaseModel):
+    """课程MongoDB模型"""
+
+    # 索引配置
+    indexes = [
+        {
+            'fields': [('start_time', ASCENDING)],
+            'name': 'idx_start_time',
+            'background': True,
+        },
+        {
+            'fields': [('end_time', ASCENDING)],
+            'name': 'idx_end_time',
+            'background': True,
+        },
+        {
+            'fields': [('start_time', ASCENDING), ('end_time', ASCENDING)],
+            'name': 'idx_time_range',
+            'background': True,
+        },
+        {
+            'fields': [('status', ASCENDING)],
+            'name': 'idx_status',
+            'background': True,
+        },
+        {
+            'fields': [('title', ASCENDING)],
+            'name': 'idx_title',
+            'background': True,
+        },
+    ]
+
+    @classmethod
+    def get_collection_name(cls) -> str:
+        return "courses"
+
+
 class MongoDBAppointmentModel(MongoDBBaseModel):
     """预约MongoDB模型"""
 
-    # 索引配置 - 仅用于查询优化，不使用唯一约束
+    # 索引配置
     indexes = [
         {
             'fields': [('student_id', ASCENDING)],
@@ -39,13 +77,13 @@ class MongoDBAppointmentModel(MongoDBBaseModel):
             'background': True,
         },
         {
-            'fields': [('start_time', ASCENDING)],
-            'name': 'idx_start_time',
+            'fields': [('course_id', ASCENDING)],
+            'name': 'idx_course_id',
             'background': True,
         },
         {
-            'fields': [('start_time', ASCENDING), ('end_time', ASCENDING)],
-            'name': 'idx_time_range',
+            'fields': [('student_id', ASCENDING), ('course_id', ASCENDING)],
+            'name': 'idx_student_course',
             'background': True,
         },
         {
@@ -117,6 +155,63 @@ class AppointmentCreate(BaseModel):
     duration_in_minutes: int = Field(..., gt=0, description="课程时长（分钟）")
 
     model_config = {"populate_by_name": True}
+
+# 课程相关模型
+class CourseModel(BaseModel):
+    id: Optional[str] = None
+    title: str = Field(..., description="课程标题")
+    start_time: datetime = Field(..., description="课程开始时间")
+    end_time: datetime = Field(..., description="课程结束时间")
+    max_students: int = Field(default=6, gt=0, description="最大学生数")
+    current_students: int = Field(default=0, ge=0, description="当前学生数")
+    status: str = Field(default="scheduled", pattern="^(scheduled|completed|cancelled)$", description="课程状态")
+    create_time: datetime = Field(default_factory=datetime.now)
+    update_time: datetime = Field(default_factory=datetime.now)
+
+    @property
+    def duration_minutes(self) -> int:
+        """获取课程时长（分钟）"""
+        delta = self.end_time - self.start_time
+        return int(delta.total_seconds() / 60)
+
+    @property
+    def duration_hours(self) -> float:
+        """获取课程时长（小时）"""
+        return round(self.duration_minutes / 60, 2)
+
+    @property
+    def is_available(self) -> bool:
+        """检查课程是否可预约"""
+        return self.current_students < self.max_students and self.status == "scheduled"
+
+class CourseCreate(BaseModel):
+    title: str = Field(..., description="课程标题")
+    start_time: datetime = Field(..., description="课程开始时间")
+    end_time: datetime = Field(..., description="课程结束时间")
+    max_students: int = Field(default=6, gt=0, description="最大学生数")
+
+class CourseUpdate(BaseModel):
+    title: Optional[str] = Field(None, description="课程标题")
+    max_students: Optional[int] = Field(None, gt=0, description="最大学生数")
+    status: Optional[str] = Field(None, pattern="^(scheduled|completed|cancelled)$", description="课程状态")
+
+# 学生预约相关模型
+class StudentAppointmentModel(BaseModel):
+    id: Optional[str] = None
+    student_id: str = Field(..., description="学生ID")
+    course_id: str = Field(..., description="课程ID")
+    status: str = Field(default="scheduled", pattern="^(scheduled|completed|cancelled|no_show)$", description="预约状态")
+    lesson_consumed: bool = Field(default=False, description="是否已消耗课程")
+    create_time: datetime = Field(default_factory=datetime.now)
+    update_time: datetime = Field(default_factory=datetime.now)
+
+class StudentAppointmentCreate(BaseModel):
+    student_id: str = Field(..., description="学生ID")
+    course_id: str = Field(..., description="课程ID")
+
+class StudentAppointmentUpdate(BaseModel):
+    status: Optional[str] = Field(None, pattern="^(scheduled|completed|cancelled|no_show)$", description="预约状态")
+    lesson_consumed: Optional[bool] = Field(None, description="是否已消耗课程")
 
 class AppointmentUpdate(BaseModel):
     start_time: Optional[datetime] = Field(None, description="课程开始时间")

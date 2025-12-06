@@ -16,11 +16,6 @@ export const useAppointmentStore = defineStore('appointment', {
       this.error = null
 
       try {
-        // 获取未来30天的预约数据
-        const response = await appointmentApi.getUpcomingAppointments(30)
-        const upcomingData = response.data || []
-
-  
         // 计算一周的日期范围
         const weekStart = startOfWeek(startDate, { weekStartsOn: 1 }) // 周一开始
         const weekEnd = endOfWeek(startDate, { weekStartsOn: 1 }) // 周日结束
@@ -33,22 +28,28 @@ export const useAppointmentStore = defineStore('appointment', {
           const currentDate = format(addDays(weekStart, i), 'yyyy-MM-dd')
           appointmentsByDate[currentDate] = {
             date: currentDate,
+            weekday: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'][(addDays(weekStart, i).getDay() || 7) - 1],
+            is_past: new Date(currentDate) < new Date().setHours(0, 0, 0, 0),
             slots: []
           }
         }
 
-        // 处理API返回的数据（API已经按日期和时间段组织好了）
-        upcomingData.forEach(dayData => {
-          const dateStr = dayData.date
+        // 逐日获取预约数据
+        for (let i = 1; i <= 6; i++) {
+          const currentDate = format(addDays(weekStart, i), 'yyyy-MM-dd')
+          try {
+            const response = await appointmentApi.getDailyAppointments(currentDate)
+            const dayData = response.data || {}
 
-          // 如果预约在这一周内
-          if (appointmentsByDate[dateStr]) {
-            // 直接使用API返回的slots数据
+            // 如果API返回了有效数据，更新slots
             if (dayData.slots && dayData.slots.length > 0) {
-              appointmentsByDate[dateStr].slots = dayData.slots
+              appointmentsByDate[currentDate].slots = dayData.slots
             }
+          } catch (dayError) {
+            console.error(`获取${currentDate}的预约数据失败:`, dayError)
+            // 继续处理其他日期的数据
           }
-        })
+        }
 
         // 对每个时间段按学生数量排序
         Object.values(appointmentsByDate).forEach(dayData => {

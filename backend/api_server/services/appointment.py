@@ -1,43 +1,26 @@
 """
-预约服务模块
-处理预约相关的业务逻辑，包括创建、查询、更新、取消预约等
+学生预约服务模块
+处理学生预约相关的业务逻辑，包括预约创建、取消、签到等
 """
 
-from typing import List, Optional, Union
-from datetime import datetime, date, timedelta
-from api_server.models import StudentModel, AppointmentModel
+from typing import List, Optional
+from datetime import datetime, timedelta
+from api_server.models import StudentAppointmentModel, StudentAppointmentCreate, StudentAppointmentUpdate
 from api_server.database import get_database
-from .utils import calculate_dynamic_status_new
-
-
-def map_mongo_to_api(mongo_doc: dict) -> dict:
-    """将MongoDB文档映射为API响应格式"""
-    api_doc = mongo_doc.copy()
-    if '_id' in api_doc:
-        api_doc['id'] = str(api_doc['_id'])
-        del api_doc['_id']
-    return api_doc
-
-
-def map_api_to_mongo(api_doc: dict) -> dict:
-    """将API请求数据映射为MongoDB格式"""
-    mongo_doc = api_doc.copy()
-    if 'id' in mongo_doc:
-        mongo_doc['_id'] = mongo_doc['id']
-        del mongo_doc['id']
-    return mongo_doc
+from .course import CourseService
+from .student import StudentService
 
 
 class AppointmentService:
-    """预约服务类"""
+    """学生预约服务类"""
 
     @staticmethod
-    async def create(appointment_data: dict) -> AppointmentModel:
+    async def create_appointment(appointment_data: dict) -> StudentAppointmentModel:
         """
-        创建新预约
+        创建学生预约
 
         Args:
-            appointment_data: 预约数据字典，必须包含 start_time 和 duration_in_minutes
+            appointment_data: 预约数据字典，必须包含 student_id, start_time, end_time
 
         Returns:
             创建的预约对象
@@ -45,144 +28,61 @@ class AppointmentService:
         db = get_database()
 
         # 验证必需字段
-        if "start_time" not in appointment_data:
-            raise ValueError("缺少 start_time 字段")
-        if "duration_in_minutes" not in appointment_data:
-            raise ValueError("缺少 duration_in_minutes 字段")
+        required_fields = ["student_id", "start_time", "end_time"]
+        for field in required_fields:
+            if field not in appointment_data:
+                raise ValueError(f"缺少必需字段: {field}")
 
-        # 处理开始时间格式
+        student_id = appointment_data["student_id"]
         start_time = appointment_data["start_time"]
-        if not isinstance(start_time, datetime):
-            if isinstance(start_time, str):
-                start_time = datetime.fromisoformat(start_time)
-                # 确保转换为naive datetime
-                if start_time.tzinfo is not None:
-                    start_time = start_time.replace(tzinfo=None)
-                appointment_data["start_time"] = start_time
-            else:
-                raise ValueError("start_time 格式错误")
-        else:
-            # 确保现有datetime是naive的
-            if start_time.tzinfo is not None:
-                start_time = start_time.replace(tzinfo=None)
-                appointment_data["start_time"] = start_time
+        end_time = appointment_data["end_time"]
 
-        # 验证时长
-        duration = appointment_data["duration_in_minutes"]
-        if not isinstance(duration, int) or duration <= 0:
-            raise ValueError("duration_in_minutes 必须是大于0的整数（分钟）")
-
-        # 计算结束时间
-        from datetime import timedelta
-        end_time = start_time + timedelta(minutes=duration)
-        appointment_data["end_time"] = end_time
-
-        # 验证时间逻辑
-        if start_time >= end_time:
-            raise ValueError("开始时间必须早于结束时间")
-
-        # 检查时间冲突
-        await AppointmentService.check_time_conflict(
-            appointment_data["student_id"],
-            start_time,
-            end_time
-        )
-
-        # 获取学员信息，检查剩余课程
-        student = await db.get_student(appointment_data["student_id"])
+        # 验证学生存在
+        student = await db.get_student(student_id)
         if not student:
-            raise ValueError("学员不存在")
+            raise ValueError("学生不存在")
 
+        # 验证学生剩余课程
         remaining_lessons = student.get("remaining_lessons", 0)
         if remaining_lessons <= 0:
-            raise ValueError("学员剩余课程不足，无法预约")
+            raise ValueError("学生剩余课程不足")
 
-        # 扣减课程次数
-        new_remaining_lessons = remaining_lessons - 1
-        await db.update_student(appointment_data["student_id"], {
-            "remaining_lessons": new_remaining_lessons,
-            "update_time": datetime.now()
-        })
+        # 检查学生时间冲突
+        has_conflict = await db.check_student_time_conflict(student_id, start_time, end_time)
+        if has_conflict:
+            raise ValueError("学生在该时间段已有预约")
 
-        # 设置创建和更新时间
-        appointment_data["create_time"] = datetime.now()
-        appointment_data["update_time"] = datetime.now()
+        # 查找或创建课程
+        course = await CourseService.find_or_create_course(start_time, end_time)
+        if not course:
+            raise ValueError("无法创建或获取课程")
 
-        # 创建预约
-        appointment_id = await db.create_appointment(appointment_data)
-        appointment_data["_id"] = appointment_id
+        # 检查课程是否还有容量
+        if not course.is_available:
+            raise ValueError("课程已满员")
 
-        # 映射为API格式
-        api_data = map_mongo_to_api(appointment_data)
-        return AppointmentModel(**api_data)
+        # 创建学生预约
+        appointment_record = {
+            "student_id": student_id,
+            "course_id": course.id,
+            "status": "scheduled",
+            "lesson_consumed": False
+        }
 
-    @staticmethod
-    async def check_time_conflict(student_id: str, start_time: datetime, end_time: datetime):
-        """
-        检查新格式的时间冲突
+        appointment_id = await db.create_student_appointment(appointment_record)
 
-        Args:
-            student_id: 学员ID
-            start_time: 开始时间
-            end_time: 结束时间
-        """
-        db = get_database()
+        # 将学生添加到课程
+        await CourseService.add_student_to_course(course.id, student_id)
 
-        # 获取学员在该时间段的所有预约
-        appointments = await db.get_student_appointments(student_id)
-
-        for appointment in appointments:
-            if appointment.get("status") == "cancel":
-                continue
-
-            # 获取现有预约的开始和结束时间
-            if "start_time" in appointment and "end_time" in appointment:
-                existing_start = appointment["start_time"]
-                existing_end = appointment["end_time"]
-
-                # 处理字符串格式的时间
-                if isinstance(existing_start, str):
-                    existing_start = datetime.fromisoformat(existing_start)
-                    if existing_start.tzinfo is not None:
-                        existing_start = existing_start.replace(tzinfo=None)
-                if isinstance(existing_end, str):
-                    existing_end = datetime.fromisoformat(existing_end)
-                    if existing_end.tzinfo is not None:
-                        existing_end = existing_end.replace(tzinfo=None)
-
-                # 确保现有时间是naive的
-                if existing_start.tzinfo is not None:
-                    existing_start = existing_start.replace(tzinfo=None)
-                if existing_end.tzinfo is not None:
-                    existing_end = existing_end.replace(tzinfo=None)
-
-                # 检查时间重叠
-                if not (end_time <= existing_start or start_time >= existing_end):
-                    raise ValueError(f"该时间段已存在预约冲突")
+        # 获取创建的预约
+        appointment = await db.get_student_appointment(appointment_id)
+        if appointment:
+            return StudentAppointmentModel(**appointment)
+        else:
+            raise ValueError("预约创建失败")
 
     @staticmethod
-    async def check_conflict(student_id: str, appointment_date: str, time_slot: str):
-        """
-        检查旧格式的时间冲突
-
-        Args:
-            student_id: 学员ID
-            appointment_date: 预约日期
-            time_slot: 时间段
-        """
-        db = get_database()
-
-        # 检查是否已有相同时间的预约
-        existing_appointments = await db.get_appointments_by_date_and_student(
-            appointment_date, student_id
-        )
-
-        for appointment in existing_appointments:
-            if appointment.get("time_slot") == time_slot and appointment.get("status") != "cancel":
-                raise ValueError("该时间段已存在预约")
-
-    @staticmethod
-    async def get_by_id(appointment_id: str) -> Optional[AppointmentModel]:
+    async def get_appointment_by_id(appointment_id: str) -> Optional[StudentAppointmentModel]:
         """
         根据ID获取预约信息
 
@@ -193,50 +93,16 @@ class AppointmentService:
             预约对象，如果不存在则返回None
         """
         db = get_database()
-        appointment = await db.get_appointment(appointment_id)
-        if appointment:
-            # 映射为API格式
-            api_data = map_mongo_to_api(appointment)
-            return AppointmentModel(**api_data)
+        appointments = await db.get_student_appointments(None)  # 获取所有预约来查找特定ID
+        for appointment in appointments:
+            if appointment.get("id") == appointment_id:
+                return StudentAppointmentModel(**appointment)
         return None
 
     @staticmethod
-    async def update(appointment_id: str, update_data: dict) -> Optional[AppointmentModel]:
+    async def cancel_appointment(appointment_id: str) -> bool:
         """
-        更新预约信息
-
-        Args:
-            appointment_id: 预约ID
-            update_data: 更新的数据
-
-        Returns:
-            更新后的预约对象，如果更新失败则返回None
-        """
-        db = get_database()
-        update_data["update_time"] = datetime.now()
-        success = await db.update_appointment(appointment_id, update_data)
-        if success:
-            return await AppointmentService.get_by_id(appointment_id)
-        return None
-
-    @staticmethod
-    async def delete(appointment_id: str) -> bool:
-        """
-        删除预约
-
-        Args:
-            appointment_id: 预约ID
-
-        Returns:
-            删除是否成功
-        """
-        db = get_database()
-        return await db.delete_appointment(appointment_id)
-
-    @staticmethod
-    async def cancel(appointment_id: str) -> bool:
-        """
-        取消预约并恢复课程次数
+        取消预约
 
         Args:
             appointment_id: 预约ID
@@ -247,153 +113,217 @@ class AppointmentService:
         db = get_database()
 
         # 获取预约信息
-        appointment = await db.get_appointment(appointment_id)
-        if not appointment:
+        appointments = await db.get_student_appointments(None)
+        target_appointment = None
+        for appointment in appointments:
+            if appointment.get("id") == appointment_id:
+                target_appointment = appointment
+                break
+
+        if not target_appointment:
             raise ValueError("预约不存在")
 
-        # 获取学员信息
-        student = await db.get_student(appointment.get("student_id"))
-        if not student:
-            raise ValueError("学员不存在")
+        # 检查预约状态
+        if target_appointment.get("status") == "cancelled":
+            raise ValueError("预约已取消")
 
-        # 检查预约状态，只有scheduled状态的预约才能取消
-        if appointment.get("status") != "scheduled":
-            raise ValueError("只能取消待上课的预约")
+        # 如果已消耗课程，恢复学生课程数
+        if target_appointment.get("lesson_consumed", False):
+            student_id = target_appointment.get("student_id")
+            student = await db.get_student(student_id)
+            if student:
+                current_remaining = student.get("remaining_lessons", 0)
+                total_lessons = student.get("total_lessons", 0)
+                new_remaining = min(current_remaining + 1, total_lessons)
 
-        # 恢复课程次数
-        current_remaining = student.get("remaining_lessons", 0)
-        total_lessons = student.get("total_lessons", 0)
-
-        # 确保不超过总课程数
-        new_remaining = min(current_remaining + 1, total_lessons)
-
-        # 更新学员剩余课程
-        await db.update_student(appointment.get("student_id"), {
-            "remaining_lessons": new_remaining,
-            "update_time": datetime.now()
-        })
+                await db.update_student(student_id, {
+                    "remaining_lessons": new_remaining,
+                    "update_time": datetime.utcnow()
+                })
 
         # 更新预约状态为取消
-        success = await db.update_appointment(appointment_id, {
-            "status": "cancel",
-            "update_time": datetime.now()
+        success = await db.update_student_appointment(appointment_id, {
+            "status": "cancelled",
+            "update_time": datetime.utcnow()
+        })
+
+        if success:
+            # 从课程中移除学生
+            course_id = target_appointment.get("course_id")
+            student_id = target_appointment.get("student_id")
+            await CourseService.remove_student_from_course(course_id, student_id)
+
+        return success
+
+    @staticmethod
+    async def checkin_appointment(appointment_id: str) -> bool:
+        """
+        预约签到
+
+        Args:
+            appointment_id: 预约ID
+
+        Returns:
+            签到是否成功
+        """
+        db = get_database()
+
+        # 获取预约信息
+        appointments = await db.get_student_appointments(None)
+        target_appointment = None
+        for appointment in appointments:
+            if appointment.get("id") == appointment_id:
+                target_appointment = appointment
+                break
+
+        if not target_appointment:
+            raise ValueError("预约不存在")
+
+        # 检查预约状态
+        if target_appointment.get("status") != "scheduled":
+            raise ValueError("只能为待上课的预约签到")
+
+        if target_appointment.get("lesson_consumed", False):
+            raise ValueError("该预约已签到")
+
+        # 获取学生信息
+        student_id = target_appointment.get("student_id")
+        student = await db.get_student(student_id)
+        if not student:
+            raise ValueError("学生不存在")
+
+        # 检查剩余课程
+        remaining_lessons = student.get("remaining_lessons", 0)
+        if remaining_lessons <= 0:
+            raise ValueError("剩余课程不足")
+
+        # 扣减课程
+        new_remaining = remaining_lessons - 1
+        await db.update_student(student_id, {
+            "remaining_lessons": new_remaining,
+            "update_time": datetime.utcnow()
+        })
+
+        # 更新预约状态
+        success = await db.update_student_appointment(appointment_id, {
+            "status": "completed",
+            "lesson_consumed": True,
+            "update_time": datetime.utcnow()
         })
 
         return success
 
     @staticmethod
-    async def get_student_appointments(student_id: str, status: Optional[str] = None) -> List[AppointmentModel]:
+    async def get_student_appointments(student_id: str, status: Optional[str] = None) -> List[StudentAppointmentModel]:
         """
-        获取学员的所有预约
+        获取学生的预约列表
 
         Args:
-            student_id: 学员ID
+            student_id: 学生ID
             status: 预约状态过滤
 
         Returns:
             预约对象列表
         """
         db = get_database()
-        appointments = await db.get_student_appointments(student_id)
+        appointments = await db.get_student_appointments(student_id, status)
 
-        if status:
-            appointments = [apt for apt in appointments if apt.get("status") == status]
-
-        # 应用ID映射
-        processed_appointments = []
+        # 为每个预约添加课程信息
+        result_appointments = []
         for apt in appointments:
-            api_data = map_mongo_to_api(apt)
-            processed_appointments.append(AppointmentModel(**api_data))
+            # 获取课程信息
+            course_id = apt.get("course_id")
+            if course_id:
+                course = await db.get_course(course_id)
+                if course:
+                    apt["course"] = course
 
-        return processed_appointments
+            result_appointments.append(StudentAppointmentModel(**apt))
 
-    @staticmethod
-    async def get_upcoming_appointments(days: int = 30) -> List[dict]:
-        """
-        获取未来指定天数内的预约
-
-        Args:
-            days: 未来天数
-
-        Returns:
-            预约数据列表
-        """
-        db = get_database()
-        return await db.get_upcoming_appointments(days)
+        return result_appointments
 
     @staticmethod
-    async def get_week_appointments(start_date: date) -> dict:
+    async def get_course_appointments(course_id: str) -> List[StudentAppointmentModel]:
         """
-        获取一周的预约数据
+        获取课程的所有预约
 
         Args:
-            start_date: 周开始日期
+            course_id: 课程ID
 
         Returns:
-            按日期组织的预约数据字典
+            预约对象列表
         """
         db = get_database()
-        return await db.get_week_appointments(start_date)
+        appointments = await db.get_course_appointments(course_id)
+
+        # 为每个预约添加学生信息
+        result_appointments = []
+        for apt in appointments:
+            # 获取学生信息
+            student_id = apt.get("student_id")
+            if student_id:
+                student = await db.get_student(student_id)
+                if student:
+                    apt["student"] = student
+
+            result_appointments.append(StudentAppointmentModel(**apt))
+
+        return result_appointments
 
     @staticmethod
-    async def checkin(appointment_id: str) -> bool:
+    async def get_daily_appointments(date: datetime) -> List[dict]:
         """
-        学员签到，更新预约状态并扣减课程数
+        获取指定日期的所有预约（用于日历显示）
 
         Args:
-            appointment_id: 预约ID
+            date: 日期
 
         Returns:
-            操作是否成功
+            按时间分组的预约数据
         """
-        db = get_database()
+        # 获取当天的课程
+        courses = await CourseService.get_daily_courses(date)
 
-        # 获取预约信息
-        appointment = await db.get_appointment(appointment_id)
-        if not appointment:
-            raise ValueError("预约不存在")
+        # 为每个课程获取预约
+        time_slots = {}
+        for course in courses:
+            # 格式化时间为 "HH:MM"
+            time_str = course.start_time.strftime("%H:%M")
 
-        # 获取学员信息
-        student = await db.get_student(appointment.get("student_id"))
-        if not student:
-            raise ValueError("学员不存在")
+            # 获取该课程的所有预约
+            appointments = await AppointmentService.get_course_appointments(course.id)
 
-        # 检查剩余课程
-        current_remaining = student.get("remaining_lessons", 0)
-        if current_remaining <= 0:
-            raise ValueError("剩余课程不足")
+            # 筛选活跃预约
+            active_appointments = [
+                apt for apt in appointments
+                if apt.status not in ["cancelled", "no_show"]
+            ]
 
-        # 检查预约状态
-        if appointment.get("status") != "scheduled":
-            raise ValueError("只能为待上课的预约签到")
+            if active_appointments:
+                students = []
+                for apt in active_appointments:
+                    student_info = apt.student
+                    if student_info:
+                        student_data = {
+                            "id": apt.id,
+                            "name": student_info.get("name", ""),
+                            "package_type": student_info.get("package_type", ""),
+                            "learning_item": student_info.get("learning_item", ""),
+                            "appointment_id": apt.id,
+                            "student_id": apt.student_id,
+                            "status": apt.status,
+                            "total_lessons": student_info.get("total_lessons", 0),
+                            "remaining_lessons": student_info.get("remaining_lessons", 0)
+                        }
+                        students.append(student_data)
 
-        # 扣减课程
-        new_remaining = current_remaining - 1
+                time_slots[time_str] = {
+                    "time": time_str,
+                    "course_id": course.id,
+                    "course_title": course.title,
+                    "students": students
+                }
 
-        # 更新学员剩余课程
-        await db.update_student(appointment.get("student_id"), {
-            "remaining_lessons": new_remaining,
-            "update_time": datetime.now()
-        })
-
-        # 更新预约状态为已上课
-        success = await db.update_appointment(appointment_id, {
-            "status": "checked",
-            "update_time": datetime.now()
-        })
-
-        return success
-
-    @staticmethod
-    async def get_daily_appointments(appointment_date: str) -> List[dict]:
-        """
-        获取指定日期的预约
-
-        Args:
-            appointment_date: 预约日期
-
-        Returns:
-            预约数据列表
-        """
-        db = get_database()
-        return await db.get_daily_appointments(appointment_date)
+        # 转换为数组并按时间排序
+        sorted_slots = sorted(time_slots.values(), key=lambda x: x["time"])
+        return sorted_slots
