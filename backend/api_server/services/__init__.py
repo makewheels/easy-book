@@ -9,6 +9,7 @@ from .utils import (
 )
 
 from .student import StudentService
+from .course import CourseService
 from .appointment import AppointmentService
 
 __all__ = [
@@ -19,5 +20,6 @@ __all__ = [
 
     # 服务类
     "StudentService",
+    "CourseService",
     "AppointmentService"
 ]

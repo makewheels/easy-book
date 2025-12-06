@@ -4,17 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="style(student): 统一学生概览卡片中的统计数字颜色样式&#10;&#10;- 将 medium、low 和 empty 状态的统计数字颜色统一为绿色 (#52c41a)&#10;- 将 completed 和 total 状态的统计数字颜色更改为深灰色 (#1a1a1a)&#10;- 移除原有的多种颜色区分，提升视觉一致性">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(appointment): 实现学员签到功能并移除独立考勤模块&#10;&#10;- 在预约服务中新增签到方法，自动扣减课程数并更新预约状态&#10;- 前端API和服务层添加签到接口调用逻辑&#10;- 移除独立的考勤管理模块及相关数据库模型和路由&#10;- 修改学员列表排序规则，简化为按剩余课程和创建时间排序&#10;- 更新预约查询逻辑，过滤掉已取消的预约记录&#10;- 调整数据库删除操作，不再关联删除考勤记录&#10;- 修改前端API基础URL端口号从8003为8004">
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -205,14 +204,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00018" summary="build: 更新Dockerfile，切换到官方镜像的Python、Node.js和nginx">
-      <option name="closed" value="true" />
-      <created>1764588935736</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1764588935736</updated>
     </task>
     <task id="LOCAL-00019" summary="build: 更新Dockerfile，切换到阿里云镜像的Python、Node.js和nginx">
       <option name="closed" value="true" />
@@ -598,7 +589,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765019354681</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="feat(appointment): 实现学员签到功能并移除独立考勤模块&#10;&#10;- 在预约服务中新增签到方法，自动扣减课程数并更新预约状态&#10;- 前端API和服务层添加签到接口调用逻辑&#10;- 移除独立的考勤管理模块及相关数据库模型和路由&#10;- 修改学员列表排序规则，简化为按剩余课程和创建时间排序&#10;- 更新预约查询逻辑，过滤掉已取消的预约记录&#10;- 调整数据库删除操作，不再关联删除考勤记录&#10;- 修改前端API基础URL端口号从8003为8004">
+      <option name="closed" value="true" />
+      <created>1765021309115</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1765021309115</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -626,7 +625,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: update student forms and details display with improved labels and readonly fields" />
     <MESSAGE value="feat: update settings and workspace configuration for improved task management and commit tracking" />
     <MESSAGE value="feat: update settings and workspace configuration for enhanced task management and commit tracking" />
     <MESSAGE value="feat: refactor attendance management with cancellation feature and improve UI components" />
@@ -651,7 +649,8 @@
     <MESSAGE value="feat(appointment): 新增预约管理功能&#10;&#10;- 新增预约创建页面，支持选择日期、时间和课程时长&#10;- 实现预约表单验证和提交逻辑&#10;- 添加预约相关的状态管理和API调用方法&#10;- 重构学生详情页，将预约功能移至独立页面&#10;- 优化按钮组件，统一使用BackButton组件处理返回逻辑&#10;- 调整套餐类型建议列表和输入处理逻辑&#10;- 更新路由配置，添加新增预约页面路由&#10;- 优化UI样式，改进颜色和交互效果" />
     <MESSAGE value="feat(appointment): 更新预约创建页面，支持未来6天日期选择和样式优化" />
     <MESSAGE value="style(student): 统一学生概览卡片中的统计数字颜色样式&#10;&#10;- 将 medium、low 和 empty 状态的统计数字颜色统一为绿色 (#52c41a)&#10;- 将 completed 和 total 状态的统计数字颜色更改为深灰色 (#1a1a1a)&#10;- 移除原有的多种颜色区分，提升视觉一致性" />
-    <option name="LAST_COMMIT_MESSAGE" value="style(student): 统一学生概览卡片中的统计数字颜色样式&#10;&#10;- 将 medium、low 和 empty 状态的统计数字颜色统一为绿色 (#52c41a)&#10;- 将 completed 和 total 状态的统计数字颜色更改为深灰色 (#1a1a1a)&#10;- 移除原有的多种颜色区分，提升视觉一致性" />
+    <MESSAGE value="feat(appointment): 实现学员签到功能并移除独立考勤模块&#10;&#10;- 在预约服务中新增签到方法，自动扣减课程数并更新预约状态&#10;- 前端API和服务层添加签到接口调用逻辑&#10;- 移除独立的考勤管理模块及相关数据库模型和路由&#10;- 修改学员列表排序规则，简化为按剩余课程和创建时间排序&#10;- 更新预约查询逻辑，过滤掉已取消的预约记录&#10;- 调整数据库删除操作，不再关联删除考勤记录&#10;- 修改前端API基础URL端口号从8003为8004" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(appointment): 实现学员签到功能并移除独立考勤模块&#10;&#10;- 在预约服务中新增签到方法，自动扣减课程数并更新预约状态&#10;- 前端API和服务层添加签到接口调用逻辑&#10;- 移除独立的考勤管理模块及相关数据库模型和路由&#10;- 修改学员列表排序规则，简化为按剩余课程和创建时间排序&#10;- 更新预约查询逻辑，过滤掉已取消的预约记录&#10;- 调整数据库删除操作，不再关联删除考勤记录&#10;- 修改前端API基础URL端口号从8003为8004" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

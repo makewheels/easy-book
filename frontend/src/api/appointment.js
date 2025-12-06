@@ -1,17 +1,13 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8004/api'
+const BASE_URL = 'http://localhost:8005/api'
 
 export const appointmentApi = {
   // 获取学员预约列表
-  async getStudentAppointments(studentId, options = {}) {
-    const params = new URLSearchParams()
-    if (options.futureOnly) {
-      params.append('future_only', 'true')
-    }
-
+  async getStudentAppointments(studentId, status = null) {
     try {
-      const response = await axios.get(`${BASE_URL}/appointments/student/${studentId}?${params}`)
+      const params = status ? `?status=${status}` : ''
+      const response = await axios.get(`${BASE_URL}/appointments/student/${studentId}${params}`)
       return response.data
     } catch (error) {
       console.error('获取学员预约失败:', error)
@@ -19,7 +15,7 @@ export const appointmentApi = {
     }
   },
 
-  // 创建预约
+  // 创建学生预约
   async create(appointmentData) {
     try {
       const response = await axios.post(`${BASE_URL}/appointments/`, appointmentData)
@@ -33,32 +29,10 @@ export const appointmentApi = {
   // 取消预约
   async cancel(appointmentId) {
     try {
-      const response = await axios.put(`${BASE_URL}/appointments/${appointmentId}/cancel`)
+      const response = await axios.post(`${BASE_URL}/appointments/${appointmentId}/cancel`)
       return response.data
     } catch (error) {
       console.error('取消预约失败:', error)
-      throw error
-    }
-  },
-
-  // 获取每日预约
-  async getDailyAppointments(date) {
-    try {
-      const response = await axios.get(`${BASE_URL}/appointments/daily/${date}`)
-      return response.data
-    } catch (error) {
-      console.error('获取每日预约失败:', error)
-      throw error
-    }
-  },
-
-  // 获取未来预约
-  async getUpcomingAppointments(days = 30) {
-    try {
-      const response = await axios.get(`${BASE_URL}/appointments/upcoming?days=${days}`)
-      return response.data
-    } catch (error) {
-      console.error('获取未来预约失败:', error)
       throw error
     }
   },
@@ -70,6 +44,28 @@ export const appointmentApi = {
       return response.data
     } catch (error) {
       console.error('签到失败:', error)
+      throw error
+    }
+  },
+
+  // 获取每日预约（用于日历显示）
+  async getDailyAppointments(date) {
+    try {
+      const response = await axios.get(`${BASE_URL}/appointments/daily/${date}`)
+      return response.data
+    } catch (error) {
+      console.error('获取每日预约失败:', error)
+      throw error
+    }
+  },
+
+  // 获取课程的预约列表
+  async getCourseAppointments(courseId) {
+    try {
+      const response = await axios.get(`${BASE_URL}/appointments/course/${courseId}`)
+      return response.data
+    } catch (error) {
+      console.error('获取课程预约失败:', error)
       throw error
     }
   }

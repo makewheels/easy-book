@@ -1,9 +1,10 @@
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING
+from bson import ObjectId
 from typing import List, Dict, Optional
 from datetime import datetime, date
-from api_server.models import MongoDBStudentModel, MongoDBAppointmentModel
+from api_server.models import MongoDBStudentModel, MongoDBCourseModel, MongoDBAppointmentModel
 from api_server.base_model import IndexManager
 
 class MongoDatabase:
@@ -12,6 +13,19 @@ class MongoDatabase:
         self.db = None
         self.mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
         self.db_name = os.getenv("DB_NAME", "easy_book")
+
+    def _convert_id(self, doc: dict) -> dict:
+        """将文档的_id字段转换为id字段"""
+        if doc and "_id" in doc:
+            doc["id"] = str(doc["_id"])
+            del doc["_id"]
+        return doc
+
+    def _convert_objectid_to_string(self, doc: dict) -> dict:
+        """将文档中的ObjectId字段转换为字符串，保持_id字段"""
+        if doc and "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
     
     async def connect(self):
         """连接到MongoDB"""
@@ -38,6 +52,7 @@ class MongoDatabase:
 
             # 注册所有模型
             index_manager.register_model(MongoDBStudentModel)
+            index_manager.register_model(MongoDBCourseModel)
             index_manager.register_model(MongoDBAppointmentModel)
 
             # 创建所有索引
@@ -71,7 +86,6 @@ class MongoDatabase:
         """获取学员"""
         if self.db is None:
             await self.connect()
-        from bson import ObjectId
 
         # 首先尝试字符串查找，因为我们的ID是字符串格式
         student = await self.db.students.find_one({"_id": student_id})
@@ -83,11 +97,8 @@ class MongoDatabase:
             except:
                 pass
 
-        # 保持MongoDB原生格式，只转换ObjectId为字符串
-        if student and "_id" in student:
-            student["_id"] = str(student["_id"])
-
-        return student
+        # 转换_id为id，供Python代码使用
+        return self._convert_id(student) if student else None
     
     async def get_students(self) -> List[dict]:
         """获取所有学员"""
@@ -95,10 +106,8 @@ class MongoDatabase:
             await self.connect()
         students = []
         async for student in self.db.students.find():
-            # 保持MongoDB原生格式，只转换ObjectId为字符串
-            if "_id" in student:
-                student["_id"] = str(student["_id"])
-            students.append(student)
+            # 转换_id为id，供Python代码使用
+            students.append(self._convert_id(dict(student)))
         return students
     
     async def update_student(self, student_id: str, update_data: dict) -> bool:
@@ -134,266 +143,131 @@ class MongoDatabase:
             except:
                 pass
 
-        # 删除相关预约
+        # 删除相关预约（使用新的 student_appointments 表）
         if result.deleted_count > 0:
-            await self.db.appointments.delete_many({"student_id": student_id})
+            await self.db.student_appointments.delete_many({"student_id": student_id})
 
         return result.deleted_count > 0
     
-    # 预约相关操作
-    async def create_appointment(self, appointment_data: dict) -> str:
-        """创建预约"""
-        if self.db is None:
-            await self.connect()
-        appointment_data["_id"] = self._generate_id()
-        appointment_data["id"] = appointment_data["_id"]
-        appointment_data["create_time"] = datetime.now()
-        appointment_data["update_time"] = datetime.now()
-        appointment_data["status"] = "scheduled"
-        
-        result = await self.db.appointments.insert_one(appointment_data)
+  
+    # 课程相关操作
+    async def create_course(self, course_data: dict) -> str:
+        """创建课程"""
+        course_data["_id"] = self._generate_id()
+        course_data["id"] = course_data["_id"]
+        course_data["create_time"] = datetime.utcnow()
+        course_data["update_time"] = datetime.utcnow()
+
+        result = await self.db.courses.insert_one(course_data)
         return str(result.inserted_id)
-    
-    async def get_appointment(self, appointment_id: str) -> Optional[dict]:
-        """获取预约"""
-        from bson import ObjectId
-        # 首先尝试字符串查找，因为我们的ID是字符串格式
-        appointment = await self.db.appointments.find_one({"_id": appointment_id})
-        
-        # 如果字符串查找失败，尝试ObjectId查找
-        if not appointment:
-            try:
-                appointment = await self.db.appointments.find_one({"_id": ObjectId(appointment_id)})
-            except:
-                pass
-        
-        # 保持MongoDB原生格式，只转换ObjectId为字符串
-        if appointment and "_id" in appointment:
-            appointment["_id"] = str(appointment["_id"])
-        return appointment
-    
-    async def get_appointments(self) -> List[dict]:
-        """获取所有预约"""
-        if self.db is None:
-            await self.connect()
-        appointments = []
-        async for appointment in self.db.appointments.find():
-            # 保持MongoDB原生格式，只转换ObjectId为字符串
-            if "_id" in appointment:
-                appointment["_id"] = str(appointment["_id"])
-            appointments.append(appointment)
-        return appointments
-    
-    async def get_student_appointments(self, student_id: str) -> List[dict]:
-        """获取学员的预约"""
-        appointments = []
-        async for appointment in self.db.appointments.find({"student_id": student_id}):
-            # 保持MongoDB原生格式，只转换ObjectId为字符串
-            if "_id" in appointment:
-                appointment["_id"] = str(appointment["_id"])
-            appointments.append(appointment)
-        return appointments
-    
-    async def update_appointment(self, appointment_id: str, update_data: dict) -> bool:
-        """更新预约"""
-        from bson import ObjectId
-        update_data["update_time"] = datetime.now()
-        # 首先尝试字符串查找，与get_appointment保持一致
-        result = await self.db.appointments.update_one(
-            {"_id": appointment_id}, 
+
+    async def get_course(self, course_id: str) -> Optional[dict]:
+        """获取课程信息"""
+        course = await self.db.courses.find_one({"_id": course_id})
+        return self._convert_id(course) if course else None
+
+    async def update_course(self, course_id: str, update_data: dict) -> bool:
+        """更新课程信息"""
+        update_data["update_time"] = datetime.utcnow()
+        result = await self.db.courses.update_one(
+            {"_id": course_id},
             {"$set": update_data}
         )
-        
-        # 如果字符串查找没有更新任何记录，尝试ObjectId查找
-        if result.modified_count == 0:
-            try:
-                result = await self.db.appointments.update_one(
-                    {"_id": ObjectId(appointment_id)}, 
-                    {"$set": update_data}
-                )
-            except:
-                pass
         return result.modified_count > 0
-    
-    async def delete_appointment(self, appointment_id: str) -> bool:
-        """删除预约"""
-        from bson import ObjectId
-        # 首先尝试字符串查找，与get_appointment保持一致
-        result = await self.db.appointments.delete_one({"_id": appointment_id})
 
-        # 如果字符串查找失败，尝试ObjectId查找
-        if result.deleted_count == 0:
-            try:
-                result = await self.db.appointments.delete_one({"_id": ObjectId(appointment_id)})
-            except:
-                pass
+    async def find_course_by_time(self, start_time: datetime, end_time: datetime) -> Optional[dict]:
+        """根据开始和结束时间查找课程"""
+        course = await self.db.courses.find_one({
+            "start_time": start_time,
+            "end_time": end_time,
+            "status": "scheduled"
+        })
+        return self._convert_id(course) if course else None
 
-        
+    async def get_courses_by_date_range(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        """获取指定日期范围内的课程"""
+        courses = []
+        async for course in self.db.courses.find({
+            "start_time": {"$gte": start_date, "$lt": end_date},
+            "status": {"$ne": "cancelled"}
+        }).sort("start_time", 1):
+            courses.append(self._convert_id(dict(course)))
+        return courses
+
+    # 学生预约相关操作
+    async def create_student_appointment(self, appointment_data: dict) -> str:
+        """创建学生预约"""
+        appointment_data["_id"] = self._generate_id()
+        appointment_data["id"] = appointment_data["_id"]
+        appointment_data["create_time"] = datetime.utcnow()
+        appointment_data["update_time"] = datetime.utcnow()
+
+        result = await self.db.student_appointments.insert_one(appointment_data)
+        return str(result.inserted_id)
+
+    async def get_student_appointments(self, student_id: str, status: Optional[str] = None) -> List[dict]:
+        """获取学生的预约列表"""
+        query = {"student_id": student_id}
+        if status:
+            query["status"] = status
+
+        appointments = []
+        async for appointment in self.db.student_appointments.find(query).sort("create_time", -1):
+            appointments.append(self._convert_id(dict(appointment)))
+        return appointments
+
+    async def get_student_appointment(self, appointment_id: str) -> Optional[dict]:
+        """根据ID获取单个学生预约"""
+        appointment = await self.db.student_appointments.find_one({"_id": ObjectId(appointment_id)})
+        return self._convert_id(appointment) if appointment else None
+
+    async def get_course_appointments(self, course_id: str) -> List[dict]:
+        """获取课程的所有预约"""
+        appointments = []
+        async for appointment in self.db.student_appointments.find({"course_id": course_id}).sort("create_time", 1):
+            appointments.append(self._convert_id(dict(appointment)))
+        return appointments
+
+    async def update_student_appointment(self, appointment_id: str, update_data: dict) -> bool:
+        """更新学生预约"""
+        update_data["update_time"] = datetime.utcnow()
+        result = await self.db.student_appointments.update_one(
+            {"_id": appointment_id},
+            {"$set": update_data}
+        )
+        return result.modified_count > 0
+
+    async def delete_student_appointment(self, appointment_id: str) -> bool:
+        """删除学生预约"""
+        result = await self.db.student_appointments.delete_one({"_id": appointment_id})
         return result.deleted_count > 0
 
-    async def get_daily_appointments(self, appointment_date: str) -> dict:
-        """获取指定日期的预约数据"""
-        if self.db is None:
-            await self.connect()
-
-        from datetime import datetime, timedelta
-
-        # 设置日期范围（使用datetime对象查询，因为数据库存储的是datetime对象）
-        start_date = datetime.strptime(appointment_date, "%Y-%m-%d")
-        end_date = datetime.strptime(f"{appointment_date}T23:59:59", "%Y-%m-%dT%H:%M:%S")
-
-        # 只获取指定日期范围内未取消的预约（排除状态为cancel的预约）
-        appointments = []
-        async for appointment in self.db.appointments.find({
-            "start_time": {
-                "$gte": start_date,
-                "$lte": end_date
-            },
-            "status": { "$ne": "cancel" }  # 排除已取消的预约
-        }):
-            appointment["_id"] = str(appointment["_id"])
-            appointment["id"] = appointment["_id"]
-            appointments.append(appointment)
-
-        # 按时间段组织数据
-        time_slots = {}
-
-        # 只包含有预约的时间段
-        for appointment in appointments:
-            time_slot = None
-
-            # 从新格式获取时间
-            if "start_time" in appointment:
-                from datetime import datetime
-                try:
-                    start_time = appointment["start_time"]
-
-                    # 如果已经是datetime对象，直接使用
-                    if isinstance(start_time, datetime):
-                        start_dt = start_time
-                    # 如果是字符串，解析为datetime
-                    elif isinstance(start_time, str):
-                        # 处理可能的时区信息
-                        start_time_str = start_time
-                        if 'Z' in start_time_str:
-                            start_time_str = start_time_str.replace('Z', '+00:00')
-                        start_dt = datetime.fromisoformat(start_time_str)
-                    # 如果是其他格式，尝试转换为字符串再解析
-                    else:
-                        try:
-                            start_dt = datetime.fromisoformat(str(start_time))
-                        except:
-                            continue
-
-                    time_slot = start_dt.strftime("%H:%M")
-                except Exception as e:
-                    print(f"Error parsing start_time: {e}, type: {type(appointment.get('start_time'))}")
-                    continue
-
-            if time_slot:
-                if time_slot not in time_slots:
-                    time_slots[time_slot] = []
-
-                # 查询学生详细信息
-                student_name = ""
-                student_info = None
-                if appointment.get("student_id"):
-                    student_info = await self.get_student(appointment["student_id"])
-                    if student_info:
-                        student_name = student_info.get("name", "")
-
-                # 添加学生信息
-                student_data = {
-                    "id": appointment["_id"],
-                    "name": student_name,
-                    "package_type": appointment.get("package_type", ""),
-                    "learning_item": appointment.get("learning_item", ""),
-                    "appointment_id": appointment["_id"],
-                    "student_id": appointment.get("student_id", ""),
-                    "status": appointment.get("status", "scheduled"),
-                    "dynamic_status": appointment.get("status", "scheduled")
-                }
-
-                # 补充学生统计信息
-                if student_info:
-                    student_data["total_lessons"] = student_info.get("total_lessons", 0)
-                    student_data["attended_lessons"] = student_info.get("attended_lessons", 0)
-
-                time_slots[time_slot].append(student_data)
-
-        # 构建返回数据
-        result = {
-            "date": appointment_date,
-            "weekday": self._get_weekday(appointment_date),
-            "is_past": self._is_past_date(appointment_date),
-            "slots": []
-        }
-
-        # 只添加有学生的时间段
-        for time_slot in sorted(time_slots.keys()):
-            if time_slots[time_slot]:  # 只有当这个时段有学生时才添加
-                result["slots"].append({
-                    "time": time_slot,
-                    "students": time_slots[time_slot]
-                })
-
-        return result
-
-    async def get_upcoming_appointments(self, days: int = 30) -> List[dict]:
-        """获取从今天开始到未来指定天数的预约数据"""
-        if self.db is None:
-            await self.connect()
-
-        from datetime import datetime, timedelta
-
-        # 生成日期列表
-        today = datetime.now()
-        date_list = []
-        for i in range(days):
-            date = today + timedelta(days=i)
-            date_str = date.strftime("%Y-%m-%d")
-            date_list.append(date_str)
-
-        # 获取所有日期的预约数据
-        upcoming_data = []
-        for date_str in date_list:
-            daily_data = await self.get_daily_appointments(date_str)
-            if daily_data and daily_data.get("slots"):
-                upcoming_data.append(daily_data)
-
-        return upcoming_data
-
-    def _get_weekday(self, date_str: str) -> str:
-        """获取星期几"""
-        try:
-            from datetime import datetime
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-            weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
-            return weekdays[date_obj.weekday()]
-        except:
-            return ""
-
-    def _is_past_date(self, date_str: str) -> bool:
-        """判断日期是否已过"""
-        try:
-            from datetime import datetime
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
-            today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            return date_obj < today
-        except:
-            return False
-    
-    async def check_appointment_conflict(self, student_id: str, appointment_date: str, time_slot: str) -> bool:
-        """检查预约冲突"""
-        conflict = await self.db.appointments.find_one({
+    async def check_student_time_conflict(self, student_id: str, start_time: datetime, end_time: datetime) -> bool:
+        """检查学生时间冲突"""
+        # 查找该学生在同一时间段的预约
+        conflict = await self.db.student_appointments.find_one({
             "student_id": student_id,
-            "appointment_date": appointment_date,
-            "time_slot": time_slot,
-            "status": {"$ne": "cancelled"}
+            "status": "scheduled"
         })
-        return conflict is not None
-    
-    
+
+        if conflict:
+            # 获取关联的课程信息
+            course = await self.get_course(conflict.get("course_id"))
+            if course:
+                # 检查时间是否重叠
+                course_start = course.get("start_time")
+                course_end = course.get("end_time")
+                if isinstance(course_start, str):
+                    course_start = datetime.fromisoformat(course_start)
+                if isinstance(course_end, str):
+                    course_end = datetime.fromisoformat(course_end)
+
+                # 检查时间重叠
+                if not (end_time <= course_start or start_time >= course_end):
+                    return True
+        return False
+
+
 # 全局数据库实例
 db = MongoDatabase()
 
