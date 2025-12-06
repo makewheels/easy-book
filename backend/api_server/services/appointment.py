@@ -336,6 +336,55 @@ class AppointmentService:
         return await db.get_week_appointments(start_date)
 
     @staticmethod
+    async def checkin(appointment_id: str) -> bool:
+        """
+        学员签到，更新预约状态并扣减课程数
+
+        Args:
+            appointment_id: 预约ID
+
+        Returns:
+            操作是否成功
+        """
+        db = get_database()
+
+        # 获取预约信息
+        appointment = await db.get_appointment(appointment_id)
+        if not appointment:
+            raise ValueError("预约不存在")
+
+        # 获取学员信息
+        student = await db.get_student(appointment.get("student_id"))
+        if not student:
+            raise ValueError("学员不存在")
+
+        # 检查剩余课程
+        current_remaining = student.get("remaining_lessons", 0)
+        if current_remaining <= 0:
+            raise ValueError("剩余课程不足")
+
+        # 检查预约状态
+        if appointment.get("status") != "scheduled":
+            raise ValueError("只能为待上课的预约签到")
+
+        # 扣减课程
+        new_remaining = current_remaining - 1
+
+        # 更新学员剩余课程
+        await db.update_student(appointment.get("student_id"), {
+            "remaining_lessons": new_remaining,
+            "update_time": datetime.now()
+        })
+
+        # 更新预约状态为已上课
+        success = await db.update_appointment(appointment_id, {
+            "status": "checked",
+            "update_time": datetime.now()
+        })
+
+        return success
+
+    @staticmethod
     async def get_daily_appointments(appointment_date: str) -> List[dict]:
         """
         获取指定日期的预约

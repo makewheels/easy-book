@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8003/api'
+const BASE_URL = 'http://localhost:8004/api'
 
 export const appointmentApi = {
   // 获取学员预约列表
@@ -59,6 +59,17 @@ export const appointmentApi = {
       return response.data
     } catch (error) {
       console.error('获取未来预约失败:', error)
+      throw error
+    }
+  },
+
+  // 学员签到
+  async checkin(appointmentId) {
+    try {
+      const response = await axios.post(`${BASE_URL}/appointments/${appointmentId}/checkin`)
+      return response.data
+    } catch (error) {
+      console.error('签到失败:', error)
       throw error
     }
   }

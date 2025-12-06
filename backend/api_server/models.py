@@ -60,36 +60,6 @@ class MongoDBAppointmentModel(MongoDBBaseModel):
         return "appointments"
 
 
-class MongoDBAttendanceModel(MongoDBBaseModel):
-    """考勤MongoDB模型"""
-
-    # 索引配置 - 仅用于查询优化，不使用唯一约束
-    indexes = [
-        {
-            'fields': [('student_id', ASCENDING)],
-            'name': 'idx_student_id',
-            'background': True,
-        },
-        {
-            'fields': [('attendance_date', DESCENDING)],
-            'name': 'idx_attendance_date_desc',
-            'background': True,
-        },
-        {
-            'fields': [('appointment_id', ASCENDING)],
-            'name': 'idx_appointment_id',
-            'background': True,
-        },
-        {
-            'fields': [('status', ASCENDING)],
-            'name': 'idx_status',
-            'background': True,
-        },
-    ]
-
-    @classmethod
-    def get_collection_name(cls) -> str:
-        return "attendances"
 
 
 # Pydantic模型类 - 用于API数据验证和序列化
@@ -153,19 +123,6 @@ class AppointmentUpdate(BaseModel):
     duration_in_minutes: Optional[int] = Field(None, gt=0, description="课程时长（分钟）")
     status: Optional[str] = Field(None, pattern="^(scheduled|checked|cancel)$", description="预约状态")
 
-class AttendanceModel(BaseModel):
-    id: Optional[str] = None
-    student_id: str = Field(..., description="学员ID")
-    appointment_id: str = Field(..., description="预约ID")
-    attendance_date: date = Field(..., description="上课日期")
-    status: str = Field(..., pattern="^(checked|cancel)$", description="出勤状态")
-    lessons_before: int = Field(..., ge=0, description="上课前剩余课程数")
-    lessons_after: int = Field(..., ge=0, description="上课后剩余课程数")
-    create_time: datetime = Field(default_factory=datetime.now)
-
-class AttendanceCreate(BaseModel):
-    appointment_id: str = Field(..., description="预约ID")
-    student_id: str = Field(..., description="学员ID")
 
 class DailyAppointmentResponse(BaseModel):
     date: str

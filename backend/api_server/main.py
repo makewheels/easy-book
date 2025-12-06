@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from api_server.database import connect_to_mongo, close_mongo_connection
-from api_server.api import students, appointments, attendance
+from api_server.api import students, appointments
 from dotenv import load_dotenv
 import json
 import os
@@ -49,7 +49,6 @@ app.add_middleware(
 # 注册路由
 app.include_router(students.router, prefix="/api/students", tags=["学员管理"])
 app.include_router(appointments.router, prefix="/api/appointments", tags=["预约管理"])
-app.include_router(attendance.router, prefix="/api/attendance", tags=["签到管理"])
 
 @app.get("/")
 async def root():

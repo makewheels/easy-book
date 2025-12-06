@@ -167,3 +167,27 @@ async def delete_appointment(appointment_id: str):
             raise HTTPException(status_code=404, detail="Appointment not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{appointment_id}/checkin")
+async def checkin_appointment(appointment_id: str):
+    """
+    学员签到
+    """
+    try:
+        success = await AppointmentService.checkin(appointment_id)
+        if success:
+            return {
+                "code": 200,
+                "message": "签到成功",
+                "data": None
+            }
+        else:
+            return {
+                "code": 400,
+                "message": "签到失败",
+                "data": None
+            }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

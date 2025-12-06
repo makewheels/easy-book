@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import ASCENDING
 from typing import List, Dict, Optional
 from datetime import datetime, date
-from api_server.models import MongoDBStudentModel, MongoDBAppointmentModel, MongoDBAttendanceModel
+from api_server.models import MongoDBStudentModel, MongoDBAppointmentModel
 from api_server.base_model import IndexManager
 
 class MongoDatabase:
@@ -39,7 +39,6 @@ class MongoDatabase:
             # 注册所有模型
             index_manager.register_model(MongoDBStudentModel)
             index_manager.register_model(MongoDBAppointmentModel)
-            index_manager.register_model(MongoDBAttendanceModel)
 
             # 创建所有索引
             success = index_manager.create_all_indexes()
@@ -135,10 +134,9 @@ class MongoDatabase:
             except:
                 pass
 
-        # 删除相关预约和考勤
+        # 删除相关预约
         if result.deleted_count > 0:
             await self.db.appointments.delete_many({"student_id": student_id})
-            await self.db.attendances.delete_many({"student_id": student_id})
 
         return result.deleted_count > 0
     
@@ -230,10 +228,7 @@ class MongoDatabase:
             except:
                 pass
 
-        # 删除相关考勤
-        if result.deleted_count > 0:
-            await self.db.attendances.delete_many({"appointment_id": appointment_id})
-
+        
         return result.deleted_count > 0
 
     async def get_daily_appointments(self, appointment_date: str) -> dict:
@@ -247,13 +242,14 @@ class MongoDatabase:
         start_date = datetime.strptime(appointment_date, "%Y-%m-%d")
         end_date = datetime.strptime(f"{appointment_date}T23:59:59", "%Y-%m-%dT%H:%M:%S")
 
-        # 获取指定日期范围内的所有预约（包括已取消的预约，但会显示状态）
+        # 只获取指定日期范围内未取消的预约（排除状态为cancel的预约）
         appointments = []
         async for appointment in self.db.appointments.find({
             "start_time": {
                 "$gte": start_date,
                 "$lte": end_date
-            }
+            },
+            "status": { "$ne": "cancel" }  # 排除已取消的预约
         }):
             appointment["_id"] = str(appointment["_id"])
             appointment["id"] = appointment["_id"]
@@ -397,34 +393,7 @@ class MongoDatabase:
         })
         return conflict is not None
     
-    # 考勤相关操作
-    async def create_attendance(self, attendance_data: dict) -> str:
-        """创建考勤记录"""
-        attendance_data["_id"] = self._generate_id()
-        attendance_data["id"] = attendance_data["_id"]
-        attendance_data["create_time"] = datetime.utcnow()
-        
-        result = await self.db.attendances.insert_one(attendance_data)
-        return str(result.inserted_id)
     
-    async def get_attendances(self) -> List[dict]:
-        """获取所有考勤记录"""
-        attendances = []
-        async for attendance in self.db.attendances.find():
-            attendance["_id"] = str(attendance["_id"])
-            attendance["id"] = attendance["_id"]
-            attendances.append(attendance)
-        return attendances
-    
-    async def get_student_attendances(self, student_id: str) -> List[dict]:
-        """获取学员的考勤记录"""
-        attendances = []
-        async for attendance in self.db.attendances.find({"student_id": student_id}):
-            attendance["_id"] = str(attendance["_id"])
-            attendance["id"] = attendance["_id"]
-            attendances.append(attendance)
-        return attendances
-
 # 全局数据库实例
 db = MongoDatabase()
 

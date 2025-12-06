@@ -43,11 +43,11 @@
           </div>
 
           <!-- 已预约学生 -->
-          <div class="existing-section" v-if="existingAppointments.length > 0">
+          <div class="existing-section">
             <h3 class="section-title">
-              已预约学员（总共{{ existingAppointments.length }}人）
+              已预约学员{{ existingAppointments.length > 0 ? `（总共${existingAppointments.length}人）` : '' }}
             </h3>
-            <div class="existing-students">
+            <div v-if="existingAppointments.length > 0" class="existing-students">
               <div
                 v-for="appointment in existingAppointments"
                 :key="appointment.id"
@@ -75,6 +75,9 @@
                   </button>
                 </div>
               </div>
+            </div>
+            <div v-else class="empty-appointments">
+              <div class="empty-text">暂无预约</div>
             </div>
           </div>
 
@@ -156,6 +159,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { useAppointmentStore } from '@/stores/appointment'
+import { appointmentApi } from '@/api/appointment'
 import { toast } from '@/utils/toast'
 import BackButton from '@/components/common/BackButton.vue'
 
@@ -245,18 +249,25 @@ const fetchStudents = async () => {
 
 const fetchExistingAppointments = async () => {
   try {
-    // 使用appointmentStore的方法获取当前时间段的预约
-    const weekDataMap = await appointmentStore.fetchWeekAppointments(new Date(selectedDate.value))
-    const dayData = weekDataMap[selectedDate.value]
+    // 直接调用API获取指定日期的预约数据
+    const response = await appointmentApi.getDailyAppointments(selectedDate.value)
+    const dayData = response.data
 
     if (dayData && dayData.slots) {
       const timeSlot = dayData.slots.find(slot => slot.time === selectedTime.value)
       if (timeSlot && timeSlot.students) {
         existingAppointments.value = timeSlot.students
+      } else {
+        // 如果没有找到对应的时间段，清空列表
+        existingAppointments.value = []
       }
+    } else {
+      // 如果没有当天数据，清空列表
+      existingAppointments.value = []
     }
   } catch (error) {
     console.error('获取已预约学生失败:', error)
+    existingAppointments.value = []
   }
 }
 
@@ -347,6 +358,12 @@ const handleSubmit = async () => {
 
     // 清空选中的学生并重新获取已预约学生列表
     selectedStudents.value = []
+
+    // 重新获取学生数据（更新剩余课程次数）
+    await studentStore.fetchStudents()
+    students.value = studentStore.students
+
+    // 重新获取已预约学生列表
     await fetchExistingAppointments()
   } catch (error) {
     errorMessage.value = error.message || '创建失败'
@@ -757,6 +774,20 @@ const handleSubmit = async () => {
   color: #ff4d4f;
   font-size: 14px;
   margin: 0 0 20px 0;
+}
+
+.empty-appointments {
+  padding: 24px 16px;
+  text-align: center;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px dashed #d9d9d9;
+}
+
+.empty-text {
+  color: #999;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .form-actions {
