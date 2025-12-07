@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): implement package management API for creating, updating, and retrieving packages">
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
-    </list>
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): update package detail views and enhance UI for better user experience" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -199,14 +194,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00028" summary="build: 更新Dockerfile，切换到163镜像的Python 3.10">
-      <option name="closed" value="true" />
-      <created>1764591258529</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1764591258529</updated>
     </task>
     <task id="LOCAL-00029" summary="build: update vite.config.js to specify output directory and assets directory">
       <option name="closed" value="true" />
@@ -592,7 +579,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765115930031</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="feat(package): update package detail views and enhance UI for better user experience">
+      <option name="closed" value="true" />
+      <created>1765117591914</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1765117591914</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -620,7 +615,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
     <MESSAGE value="feat: add health check tests and enhance assertion methods" />
     <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
     <MESSAGE value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
@@ -645,7 +639,8 @@
     <MESSAGE value="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
     <MESSAGE value="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
     <MESSAGE value="feat(package): implement package management API for creating, updating, and retrieving packages" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(package): implement package management API for creating, updating, and retrieving packages" />
+    <MESSAGE value="feat(package): update package detail views and enhance UI for better user experience" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(package): update package detail views and enhance UI for better user experience" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
