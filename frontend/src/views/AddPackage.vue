@@ -23,7 +23,8 @@
               type="number"
               v-model="form.price"
               required
-              min="1"
+              min="0.01"
+              step="0.01"
               placeholder="请输入售价"
             />
           </div>
@@ -35,6 +36,7 @@
               v-model="form.venue_share"
               required
               min="0"
+              step="0.01"
               placeholder="请输入上交俱乐部金额"
             />
             <div class="venue-share-suggestions">
@@ -181,28 +183,10 @@ const handleSubmit = async () => {
       return
     }
   } else {
-    // 验证时长套餐的开始日期
-    if (!packageTypeData.value.package_start_date) {
-      toast.warning('时长套餐必须设置开始日期')
-      return
-    }
-
     // 验证时长套餐的结束日期
     if (!packageTypeData.value.package_end_date) {
       toast.warning('时长套餐必须设置结束日期')
       return
-    }
-
-    if (!packageTypeData.value.unlimited_access && !packageTypeData.value.package_duration_type) {
-      toast.warning('时长套餐必须选择时长类型')
-      return
-    }
-
-    if (packageTypeData.value.package_duration_type === 'custom') {
-      if (!packageTypeData.value.package_duration_days || packageTypeData.value.package_duration_days <= 0) {
-        toast.warning('自定义时长套餐必须设置有效天数')
-        return
-      }
     }
   }
 
@@ -214,31 +198,33 @@ const handleSubmit = async () => {
     const categoryTypeName = packageTypeData.value.package_category === 'count_based' ? '记次套餐' : '时长套餐'
     const generatedName = `${packageTypeName} ${categoryTypeName}`
 
-    // 构建套餐数据
+    // 构建套餐数据 - 使用新的简化结构
     const packageData = {
+      student_id: route.params.studentId,
       name: generatedName,
-      package_category: packageTypeData.value.package_category,
-      package_type: packageTypeData.value.original_package_type,
-      price: parseInt(form.price),
-      venue_share: parseInt(form.venue_share),
-      is_active: form.is_active,
-      sort_order: parseInt(form.sort_order) || 0
+      package_type: packageTypeData.value.package_category === 'count_based'
+        ? packageTypeData.value.original_package_type
+        : 'time_based',
+      price: parseFloat(form.price),
+      venue_share: parseFloat(form.venue_share)
     }
 
-    // 根据套餐类型添加特定字段
+    // 根据套餐类型添加特定的JSON对象
     if (packageTypeData.value.package_category === 'count_based') {
-      packageData.total_lessons = packageTypeData.value.total_lessons
+      packageData.count_based_info = {
+        total_lessons: packageTypeData.value.total_lessons,
+        remaining_lessons: packageTypeData.value.total_lessons // 初始时剩余课程等于总课程
+      }
     } else {
-      packageData.package_duration_type = packageTypeData.value.package_duration_type
-      packageData.package_duration_days = packageTypeData.value.package_duration_days
-      packageData.unlimited_access = packageTypeData.value.unlimited_access
-      packageData.package_start_date = packageTypeData.value.package_start_date
-      packageData.package_end_date = packageTypeData.value.package_end_date
+      packageData.time_based_info = {
+        start_date: packageTypeData.value.package_start_date || new Date().toISOString().split('T')[0],
+        end_date: packageTypeData.value.package_end_date
+      }
     }
 
     await packageApi.createPackage(packageData)
     toast.success('套餐创建成功')
-    router.push('/packages')
+    router.push(`/student/${route.params.studentId}`)
   } catch (error) {
     toast.error(error.message || '创建失败')
   } finally {

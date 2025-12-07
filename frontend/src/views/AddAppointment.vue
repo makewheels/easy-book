@@ -253,14 +253,13 @@ const handleSubmit = async () => {
   errorMessage.value = ''
 
   try {
-    // 构建完整的datetime字符串
+    // 构建完整的datetime字符串，保持本地时间不变
     const timeString = `${form.selectedHour.toString().padStart(2, '0')}:00`
-    const startDateTime = new Date(`${form.selectedDate}T${timeString}`)
-    const isoString = startDateTime.toISOString()
+    const startDateTime = `${form.selectedDate}T${timeString}`
 
     const appointmentData = {
       student_id: studentId,
-      start_time: isoString,
+      start_time: startDateTime,
       duration_in_minutes: form.duration
     }
 

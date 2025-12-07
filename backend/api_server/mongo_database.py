@@ -4,7 +4,7 @@ from pymongo import ASCENDING
 from bson import ObjectId
 from typing import List, Dict, Optional
 from datetime import datetime, date, timezone, timedelta
-from api_server.models import MongoDBStudentModel, MongoDBCourseModel, MongoDBAppointmentModel
+from api_server.models import MongoDBStudentModel, MongoDBCourseModel, MongoDBAppointmentModel, MongoDBPackageModel
 from api_server.base_model import IndexManager
 
 class MongoDatabase:
@@ -54,6 +54,7 @@ class MongoDatabase:
             index_manager.register_model(MongoDBStudentModel)
             index_manager.register_model(MongoDBCourseModel)
             index_manager.register_model(MongoDBAppointmentModel)
+            index_manager.register_model(MongoDBPackageModel)
 
             # 创建所有索引
             success = index_manager.create_all_indexes()

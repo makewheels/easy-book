@@ -37,7 +37,10 @@
           </button>
         </div>
 
-        <div v-if="studentPackages.length === 0" class="empty-packages">
+        <div v-if="packagesLoading" class="empty-packages">
+          <div class="empty-text">加载套餐信息中...</div>
+        </div>
+        <div v-else-if="studentPackages.length === 0" class="empty-packages">
           <div class="empty-icon">📦</div>
           <div class="empty-text">该学员暂无套餐</div>
           <div class="empty-desc">点击上方按钮为学员购买套餐</div>
@@ -130,8 +133,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, toRefs, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { packageApi } from '@/api/package'
 
 const router = useRouter()
 const emit = defineEmits(['add-package', 'edit-package'])
@@ -147,36 +151,39 @@ const props = defineProps({
   }
 })
 
-// Mock package data - in real implementation this would come from API
-const studentPackages = ref([
-  {
-    id: '1',
-    name: '1v1私教课套餐',
-    package_category: 'count_based',
-    package_type: '1v1',
-    status: 'active',
-    remaining_lessons: 8,
-    total_lessons: 10,
-    price: 2000,
-    create_time: '2024-01-01T00:00:00Z',
-    end_date: null
-  },
-  {
-    id: '2',
-    name: '月度畅练套餐',
-    package_category: 'time_based',
-    package_type: '1v多',
-    status: 'active',
-    remaining_lessons: null,
-    total_lessons: null,
-    package_end_date: '2024-02-01T00:00:00Z',
-    price: 1500,
-    create_time: '2024-01-01T00:00:00Z'
-  }
-])
+// Real package data from API
+const studentPackages = ref([])
+const packagesLoading = ref(false)
 
 // 上课记录展开/折叠状态
 const showAllAttendances = ref(false)
+
+// 加载学生套餐数据
+const loadStudentPackages = async () => {
+  if (!props.student?.id) return
+
+  try {
+    packagesLoading.value = true
+    const packages = await packageApi.getStudentPackages(props.student.id)
+    studentPackages.value = packages
+  } catch (error) {
+    console.error('加载学生套餐失败:', error)
+    studentPackages.value = []
+  } finally {
+    packagesLoading.value = false
+  }
+}
+
+// 组件挂载时加载套餐数据
+onMounted(() => {
+  loadStudentPackages()
+})
+
+// 监听学生ID变化，重新加载套餐数据
+const { student } = toRefs(props)
+watch(student, () => {
+  loadStudentPackages()
+}, { deep: true })
 
 // 计算显示的上课记录
 const displayedAttendances = computed(() => {
@@ -207,8 +214,9 @@ const getPackageStatusClass = (pkg) => {
     if (diffDays <= 7) return 'status-expiring'
     return 'status-active'
   } else {
-    if (pkg.remaining_lessons === 0) return 'status-exhausted'
-    if (pkg.remaining_lessons <= 2) return 'status-low'
+    const remainingLessons = pkg.remaining_lessons || 0
+    if (remainingLessons === 0) return 'status-exhausted'
+    if (remainingLessons <= 2) return 'status-low'
     return 'status-active'
   }
 }
@@ -222,20 +230,25 @@ const getPackageStatusText = (pkg) => {
     if (diffDays <= 7) return `即将到期(${diffDays}天)`
     return '有效期内'
   } else {
-    if (pkg.remaining_lessons === 0) return '已用完'
-    if (pkg.remaining_lessons <= 2) return `剩余${pkg.remaining_lessons}次`
-    return `剩余${pkg.remaining_lessons}次`
+    const remainingLessons = pkg.remaining_lessons || 0
+    if (remainingLessons === 0) return '已用完'
+    if (remainingLessons <= 2) return `剩余${remainingLessons}次`
+    return `剩余${remainingLessons}次`
   }
 }
 
 const getPackageTypeText = (pkg) => {
   const typeMap = {
     '1v1': '一对一',
+    '1v2': '一对二',
+    '1v3': '一对三',
+    '1v5': '一对五',
     '1v多': '一对多',
     'group': '团课',
-    'online': '线上课'
+    'online': '线上课',
+    'time_based': '时长套餐'
   }
-  return typeMap[pkg.package_type] || pkg.package_type
+  return typeMap[pkg.package_type] || pkg.package_type || '课程套餐'
 }
 
 const getPackageExpiryText = (pkg) => {

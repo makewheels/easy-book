@@ -103,13 +103,6 @@
             >
               月卡
             </span>
-            <span
-              class="form-suggestion-chip"
-              @click="selectDurationType('quarterly')"
-              :class="{ active: packageData.package_duration_type === 'quarterly' }"
-            >
-              季卡
-            </span>
           </div>
         </div>
       </div>
@@ -120,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { PackageService } from '@/services/package'
 
@@ -149,6 +142,9 @@ const packageData = ref({
   unlimited_access: false
 })
 
+// 控制是否触发外部更新的标志
+const isInternalUpdate = ref(false)
+
 // 课程类型建议列表
 const packageTypeSuggestions = [
   { value: '1v1', display: '1 v 1' },
@@ -172,7 +168,6 @@ const durationTypeText = computed(() => {
 
   const typeMap = {
     'monthly': '月卡',
-    'quarterly': '季卡',
     'yearly': '年卡',
     'custom': `自定义${packageData.value.package_duration_days || 0}天`
   }
@@ -210,12 +205,10 @@ const onStartDateChange = () => {
     calculateEndDate()
   }
   emitUpdate()
-  updateURL()
 }
 
 const onEndDateChange = () => {
   emitUpdate()
-  updateURL()
 }
 
 const calculateEndDate = () => {
@@ -227,8 +220,8 @@ const calculateEndDate = () => {
       case 'monthly':
         endDate.setMonth(endDate.getMonth() + 1)
         break
-      case 'quarterly':
-        endDate.setMonth(endDate.getMonth() + 3)
+      case 'yearly':
+        endDate.setFullYear(endDate.getFullYear() + 1)
         break
     }
 
@@ -249,7 +242,6 @@ const onCategoryChange = () => {
     packageData.value.original_package_type_display = '时长套餐'
   }
   emitUpdate()
-  updateURL()
 }
 
 const onDurationTypeChange = () => {
@@ -258,32 +250,56 @@ const onDurationTypeChange = () => {
     calculateEndDate()
   }
   emitUpdate()
-  updateURL()
 }
 
 const onPackageTypeInput = () => {
   // 当用户手动输入时，同时更新两个字段
   packageData.value.original_package_type = packageData.value.original_package_type_display
   emitUpdate()
-  updateURL()
 }
 
 const selectPackageType = (type) => {
   packageData.value.original_package_type_display = type.display
   packageData.value.original_package_type = type.value
   emitUpdate()
-  updateURL()
 }
 
 const selectPackageCount = (count) => {
   packageData.value.total_lessons = count
   emitUpdate()
-  updateURL()
 }
 
 const selectDurationType = (durationType) => {
-  packageData.value.package_duration_type = durationType
-  onDurationTypeChange()
+  console.log('=== selectDurationType 开始 ===')
+  console.log('点击前 package_duration_type:', packageData.value.package_duration_type)
+
+  // 设置内部更新标志
+  isInternalUpdate.value = true
+
+  // 切换选中状态
+  if (packageData.value.package_duration_type === durationType) {
+    // 如果已经选中，则取消选中
+    console.log('取消选中')
+    packageData.value.package_duration_type = ''
+    packageData.value.package_end_date = ''
+  } else {
+    // 如果未选中，则选中
+    console.log('选中')
+    packageData.value.package_duration_type = durationType
+    calculateEndDate()
+  }
+
+  console.log('点击后 package_duration_type:', packageData.value.package_duration_type)
+  console.log('CSS判断:', packageData.value.package_duration_type === 'monthly')
+
+  // 强制触发更新
+  emit('update:modelValue', JSON.parse(JSON.stringify(packageData.value)))
+
+  // 重置标志
+  setTimeout(() => {
+    isInternalUpdate.value = false
+    console.log('=== selectDurationType 结束 ===')
+  }, 0)
 }
 
 const emitUpdate = () => {
@@ -292,24 +308,8 @@ const emitUpdate = () => {
 
 // 更新URL参数
 const updateURL = () => {
-  const query = { ...route.query }
-
-  // 只保存重要的套餐类型信息
-  if (packageData.value.package_category) {
-    query.category = packageData.value.package_category
-  }
-  if (packageData.value.original_package_type) {
-    query.type = packageData.value.original_package_type
-  }
-
-  // 移除空的参数
-  Object.keys(query).forEach(key => {
-    if (!query[key]) {
-      delete query[key]
-    }
-  })
-
-  router.replace({ query })
+  // 移除所有查询参数，保持URL干净
+  router.replace({ query: {} })
 }
 
 // 从URL参数初始化数据
@@ -329,8 +329,13 @@ const initFromURL = () => {
   }
 }
 
-// 监听变化
-watch(packageData, emitUpdate, { deep: true })
+// 监听变化（但排除 selectDurationType 的操作）
+watch(packageData, (newVal) => {
+  // 只在不是由内部更新触发的情况下才更新
+  if (!isInternalUpdate.value) {
+    emitUpdate()
+  }
+}, { deep: true })
 
 // 初始化
 onMounted(() => {
@@ -363,6 +368,10 @@ onMounted(() => {
 
 .form-group:last-child {
   margin-bottom: 0;
+}
+
+.end-date-group {
+  margin-top: -10px;
 }
 
 .form-label {

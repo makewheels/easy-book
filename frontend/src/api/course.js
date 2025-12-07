@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:8004/api'
+const BASE_URL = '/api'
 
 export const courseApi = {
   // 获取每日课程

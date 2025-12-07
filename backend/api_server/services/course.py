@@ -53,14 +53,13 @@ class CourseService:
             raise ValueError("课程创建失败")
 
     @staticmethod
-    async def find_or_create_course(start_time: datetime, end_time: datetime, max_students: int = 6) -> CourseModel:
+    async def find_or_create_course(start_time: datetime, end_time: datetime) -> CourseModel:
         """
         查找或创建课程（核心业务逻辑）
 
         Args:
             start_time: 课程开始时间
             end_time: 课程结束时间
-            max_students: 最大学生数
 
         Returns:
             课程对象
@@ -71,20 +70,14 @@ class CourseService:
         existing_course = await db.find_course_by_time(start_time, end_time)
 
         if existing_course:
-            # 如果找到课程，检查是否还能容纳更多学生
-            course_obj = CourseModel(**existing_course)
-            if course_obj.is_available:
-                return course_obj
-            else:
-                raise ValueError("该时间段课程已满员")
+            # 如果找到课程，直接返回
+            return CourseModel(**existing_course)
         else:
             # 如果没有找到课程，创建新课程
             course_data = {
                 "title": "新课程",  # 临时标题，会在添加学生时更新
                 "start_time": start_time,
                 "end_time": end_time,
-                "max_students": max_students,
-                "current_students": 0,
                 "status": "scheduled"
             }
 
@@ -205,73 +198,4 @@ class CourseService:
 
         return await CourseService.get_courses_by_date_range(start_of_day, end_of_day)
 
-    @staticmethod
-    async def add_student_to_course(course_id: str, student_id: str) -> bool:
-        """
-        将学生添加到课程
-
-        Args:
-            course_id: 课程ID
-            student_id: 学生ID
-
-        Returns:
-            添加是否成功
-        """
-        db = get_database()
-
-        # 获取课程信息
-        course = await db.get_course(course_id)
-        if not course:
-            raise ValueError("课程不存在")
-
-        # 检查课程是否还有容量
-        current_students = course.get("current_students", 0)
-        max_students = course.get("max_students", 6)
-
-        if current_students >= max_students:
-            raise ValueError("课程已满员")
-
-        # 更新课程学生数量
-        new_student_count = current_students + 1
-        success = await db.update_course(course_id, {
-            "current_students": new_student_count
-        })
-
-        if success:
-            # 更新课程标题
-            await CourseService.update_course_title(course_id)
-
-        return success
-
-    @staticmethod
-    async def remove_student_from_course(course_id: str, student_id: str) -> bool:
-        """
-        从课程中移除学生
-
-        Args:
-            course_id: 课程ID
-            student_id: 学生ID
-
-        Returns:
-            移除是否成功
-        """
-        db = get_database()
-
-        # 获取课程信息
-        course = await db.get_course(course_id)
-        if not course:
-            raise ValueError("课程不存在")
-
-        # 更新课程学生数量
-        current_students = course.get("current_students", 0)
-        new_student_count = max(0, current_students - 1)
-
-        success = await db.update_course(course_id, {
-            "current_students": new_student_count
-        })
-
-        if success:
-            # 更新课程标题
-            await CourseService.update_course_title(course_id)
-
-        return success
+    

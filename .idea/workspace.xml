@@ -5,8 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/course.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/course.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/current-page.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/course.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/course.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/package.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/package.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/homepage-snapshot.txt" beforeDir="false" afterPath="$PROJECT_DIR$/homepage-snapshot.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/updated-students-list.txt" beforeDir="false" afterPath="$PROJECT_DIR$/updated-students-list.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,21 +75,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.Python tests for tests.automation.EasyBookAutomationTest.executor": "Run",
-    "Python tests.Python tests for tests.unit.test_health.TestHealth.executor": "Run",
-    "Python tests.Python tests in automation.py.executor": "Run",
-    "Python.automation.executor": "Run",
-    "Python.main.executor": "Debug",
-    "Python.run.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHELLCHECK.PATH": "C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe",
-    "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests for tests.automation.EasyBookAutomationTest.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for tests.unit.test_health.TestHealth.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in automation.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.automation.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.run.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\miuser\\AppData\\Roaming\\JetBrains\\PyCharmCE2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RunAnythingCache">
     <option name="myCommands">
       <command value="pip install -r requirements.txt" />
@@ -197,14 +215,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00025" summary="build: 更新Dockerfile，切换到阿里云镜像的Python 3.10">
-      <option name="closed" value="true" />
-      <created>1764590372955</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1764590372955</updated>
     </task>
     <task id="LOCAL-00026" summary="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.10">
       <option name="closed" value="true" />
@@ -590,7 +600,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765036829267</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示">
+      <option name="closed" value="true" />
+      <created>1765037636694</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1765037636694</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
