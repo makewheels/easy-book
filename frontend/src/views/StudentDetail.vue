@@ -141,8 +141,8 @@ const fetchAttendanceData = async (studentId) => {
         status: appointment.lesson_consumed ? 'completed' : appointment.status,
         statusText: appointment.lesson_consumed ? '已完成' :
                    appointment.status === 'scheduled' ? '已预约' : appointment.status,
-        lessons_before: appointment.lesson_consumed ? '1' : '0',
-        lessons_after: appointment.lesson_consumed ? '0' : '0',
+        lessons_before: appointment.lesson_consumed ? '-' : '-',
+        lessons_after: appointment.lesson_consumed ? '1' : '0',
         courseTitle: `(课程)`, // 可以后续添加课程标题
         // 保留原始预约创建时间，后端已经按创建时间倒序返回
         createTime: new Date(appointment.create_time)

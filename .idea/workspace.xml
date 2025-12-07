@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): implement package management API for creating, updating, and retrieving packages" />
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): implement package management API for creating, updating, and retrieving packages">
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -194,14 +199,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00027" summary="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12">
-      <option name="closed" value="true" />
-      <created>1764590687376</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1764590687376</updated>
     </task>
     <task id="LOCAL-00028" summary="build: 更新Dockerfile，切换到163镜像的Python 3.10">
       <option name="closed" value="true" />
@@ -587,7 +584,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765115776820</updated>
     </task>
-    <option name="localTasksCounter" value="76" />
+    <task id="LOCAL-00076" summary="feat(package): implement package management API for creating, updating, and retrieving packages">
+      <option name="closed" value="true" />
+      <created>1765115930031</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1765115930031</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
