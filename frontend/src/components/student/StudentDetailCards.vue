@@ -41,9 +41,7 @@
           <div class="empty-text">加载套餐信息中...</div>
         </div>
         <div v-else-if="studentPackages.length === 0" class="empty-packages">
-          <div class="empty-icon">📦</div>
-          <div class="empty-text">该学员暂无套餐</div>
-          <div class="empty-desc">点击上方按钮为学员购买套餐</div>
+          <div class="empty-text">暂无套餐</div>
         </div>
         <div v-else class="package-list">
           <div
@@ -65,11 +63,11 @@
               </div>
               <div class="info-row">
                 <span class="info-label">计费方式:</span>
-                <span class="info-value">{{ pkg.package_category === 'count_based' ? '记次套餐' : '时长套餐' }}</span>
+                <span class="info-value">{{ isCountBasedPackage(pkg) ? '记次套餐' : '时长套餐' }}</span>
               </div>
-              <div v-if="pkg.package_category === 'count_based'" class="info-row">
+              <div v-if="isCountBasedPackage(pkg)" class="info-row">
                 <span class="info-label">课程余量:</span>
-                <span class="info-value">{{ pkg.remaining_lessons || 0 }}/{{ pkg.total_lessons || 0 }}节</span>
+                <span class="info-value">{{ pkg.count_based_info?.remaining_lessons || 0 }}/{{ pkg.count_based_info?.total_lessons || 0 }}节</span>
               </div>
               <div v-else class="info-row">
                 <span class="info-label">有效期至:</span>
@@ -205,35 +203,39 @@ const goToEditPackage = (packageId) => {
   router.push(`/packages/${packageId}/edit`)
 }
 
+const isCountBasedPackage = (pkg) => {
+  return pkg.count_based_info !== null && pkg.count_based_info !== undefined
+}
+
 const getPackageStatusClass = (pkg) => {
-  if (pkg.package_category === 'time_based') {
-    const now = new Date()
-    const endDate = new Date(pkg.package_end_date)
-    if (endDate < now) return 'status-expired'
-    const diffDays = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))
-    if (diffDays <= 7) return 'status-expiring'
-    return 'status-active'
-  } else {
-    const remainingLessons = pkg.remaining_lessons || 0
+  if (isCountBasedPackage(pkg)) {
+    const remainingLessons = pkg.count_based_info?.remaining_lessons || 0
     if (remainingLessons === 0) return 'status-exhausted'
     if (remainingLessons <= 2) return 'status-low'
+    return 'status-active'
+  } else {
+    const now = new Date()
+    const endDate = pkg.time_based_info?.end_date ? new Date(pkg.time_based_info.end_date) : null
+    if (!endDate || endDate < now) return 'status-expired'
+    const diffDays = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))
+    if (diffDays <= 7) return 'status-expiring'
     return 'status-active'
   }
 }
 
 const getPackageStatusText = (pkg) => {
-  if (pkg.package_category === 'time_based') {
-    const now = new Date()
-    const endDate = new Date(pkg.package_end_date)
-    if (endDate < now) return '已过期'
-    const diffDays = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))
-    if (diffDays <= 7) return `即将到期(${diffDays}天)`
-    return '有效期内'
-  } else {
-    const remainingLessons = pkg.remaining_lessons || 0
+  if (isCountBasedPackage(pkg)) {
+    const remainingLessons = pkg.count_based_info?.remaining_lessons || 0
     if (remainingLessons === 0) return '已用完'
     if (remainingLessons <= 2) return `剩余${remainingLessons}次`
     return `剩余${remainingLessons}次`
+  } else {
+    const now = new Date()
+    const endDate = pkg.time_based_info?.end_date ? new Date(pkg.time_based_info.end_date) : null
+    if (!endDate || endDate < now) return '已过期'
+    const diffDays = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))
+    if (diffDays <= 7) return `即将到期(${diffDays}天)`
+    return '有效期内'
   }
 }
 
@@ -252,9 +254,10 @@ const getPackageTypeText = (pkg) => {
 }
 
 const getPackageExpiryText = (pkg) => {
-  if (!pkg.package_end_date) return '永久有效'
-  const endDate = new Date(pkg.package_end_date)
-  return endDate.toLocaleDateString('zh-CN', {
+  const endDate = pkg.time_based_info?.end_date
+  if (!endDate) return '永久有效'
+  const date = new Date(endDate)
+  return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit'
@@ -559,25 +562,13 @@ const formatDateShort = (dateString) => {
 
 .empty-packages {
   text-align: center;
-  padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-  opacity: 0.5;
+  padding: 30px 20px;
 }
 
 .empty-text {
   font-size: 16px;
   color: #666;
   font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.empty-desc {
-  font-size: 14px;
-  color: #999;
 }
 
 .package-list {

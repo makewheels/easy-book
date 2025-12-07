@@ -9,6 +9,7 @@
             v-model="packageData.package_category"
             value="count_based"
             @change="onCategoryChange"
+            :disabled="disabled"
           />
           <span class="radio-label">记次套餐</span>
         </label>
@@ -18,6 +19,7 @@
             v-model="packageData.package_category"
             value="time_based"
             @change="onCategoryChange"
+            :disabled="disabled"
           />
           <span class="radio-label">时长套餐</span>
         </label>
@@ -33,8 +35,10 @@
         @input="onPackageTypeInput"
         class="package-form-input"
         placeholder="请输入课程类型"
+        :disabled="disabled"
+        :readonly="disabled"
       />
-      <div class="package-type-suggestions">
+      <div v-if="!disabled" class="package-type-suggestions">
         <div class="form-suggestion-chips">
           <span
             v-for="type in packageTypeSuggestions"
@@ -58,8 +62,10 @@
           min="1"
           class="package-form-input"
           placeholder="请输入课程总节数"
+          :disabled="disabled"
+          :readonly="disabled"
         />
-        <div class="form-suggestion-chips">
+        <div v-if="!disabled" class="form-suggestion-chips">
           <span
             class="form-suggestion-chip"
             @click="selectPackageCount(12)"
@@ -81,6 +87,8 @@
           @change="onStartDateChange"
           class="package-form-input"
           required
+          :disabled="disabled"
+          :readonly="disabled"
         />
       </div>
 
@@ -93,8 +101,10 @@
           @change="onEndDateChange"
           class="package-form-input"
           required
+          :disabled="disabled"
+          :readonly="disabled"
         />
-        <div class="package-type-suggestions">
+        <div v-if="!disabled" class="package-type-suggestions">
           <div class="form-suggestion-chips">
             <span
               class="form-suggestion-chip"
@@ -121,6 +131,10 @@ const props = defineProps({
   modelValue: {
     type: Object,
     default: () => ({})
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -144,6 +158,12 @@ const packageData = ref({
 
 // 控制是否触发外部更新的标志
 const isInternalUpdate = ref(false)
+
+// 用于保存记次套餐时的课程类型
+const savedCountBasedType = ref({
+  original_package_type: '',
+  original_package_type_display: ''
+})
 
 // 课程类型建议列表
 const packageTypeSuggestions = [
@@ -233,9 +253,26 @@ const calculateEndDate = () => {
 const onCategoryChange = () => {
   // 切换类别时重置相关字段
   if (packageData.value.package_category === 'count_based') {
+    // 切换到记次套餐，恢复之前保存的课程类型
     packageData.value.package_duration_type = ''
     packageData.value.package_duration_days = null
+
+    // 恢复记次套餐的课程类型，如果没有保存的值则使用默认值
+    if (savedCountBasedType.value.original_package_type) {
+      packageData.value.original_package_type = savedCountBasedType.value.original_package_type
+      packageData.value.original_package_type_display = savedCountBasedType.value.original_package_type_display
+    } else {
+      packageData.value.original_package_type = '1v1'
+      packageData.value.original_package_type_display = '1 v 1'
+    }
   } else {
+    // 切换到时长套餐，先保存当前记次套餐的课程类型
+    if (packageData.value.package_category === 'count_based' ||
+        (savedCountBasedType.value.original_package_type === '' && packageData.value.original_package_type !== 'time_based')) {
+      savedCountBasedType.value.original_package_type = packageData.value.original_package_type
+      savedCountBasedType.value.original_package_type_display = packageData.value.original_package_type_display
+    }
+
     packageData.value.total_lessons = null
     // 时长套餐自动设置课程类型为通用的"时长套餐"
     packageData.value.original_package_type = 'time_based'
@@ -255,12 +292,26 @@ const onDurationTypeChange = () => {
 const onPackageTypeInput = () => {
   // 当用户手动输入时，同时更新两个字段
   packageData.value.original_package_type = packageData.value.original_package_type_display
+
+  // 如果当前是记次套餐，同时保存到savedCountBasedType中
+  if (packageData.value.package_category === 'count_based') {
+    savedCountBasedType.value.original_package_type = packageData.value.original_package_type
+    savedCountBasedType.value.original_package_type_display = packageData.value.original_package_type_display
+  }
+
   emitUpdate()
 }
 
 const selectPackageType = (type) => {
   packageData.value.original_package_type_display = type.display
   packageData.value.original_package_type = type.value
+
+  // 如果当前是记次套餐，同时保存到savedCountBasedType中
+  if (packageData.value.package_category === 'count_based') {
+    savedCountBasedType.value.original_package_type = type.value
+    savedCountBasedType.value.original_package_type_display = type.display
+  }
+
   emitUpdate()
 }
 
@@ -342,6 +393,13 @@ onMounted(() => {
   // 先从props初始化
   if (props.modelValue) {
     Object.assign(packageData.value, props.modelValue)
+
+    // 如果初始状态是记次套餐，保存其课程类型
+    if (packageData.value.package_category === 'count_based' &&
+        packageData.value.original_package_type !== 'time_based') {
+      savedCountBasedType.value.original_package_type = packageData.value.original_package_type
+      savedCountBasedType.value.original_package_type_display = packageData.value.original_package_type_display
+    }
   }
   // 设置默认开始日期为今天
   if (!packageData.value.package_start_date) {

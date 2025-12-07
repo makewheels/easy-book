@@ -14,10 +14,10 @@
         <div class="form-section">
           <h3>套餐类型</h3>
 
-          <PackageTypeSelector v-model="packageTypeData" />
+          <PackageTypeSelector v-model="packageTypeData" :disabled="true" />
         </div>
 
-    
+
         <div class="form-section">
           <h3>价格信息</h3>
 
@@ -30,6 +30,8 @@
               min="0.01"
               step="0.01"
               placeholder="请输入售价"
+              disabled
+              readonly
             />
           </div>
 
@@ -42,20 +44,10 @@
               min="0"
               step="0.01"
               placeholder="请输入上交俱乐部金额"
+              disabled
+              readonly
             />
-            <div class="venue-share-suggestions">
-              <div class="suggestion-chips">
-                <span
-                  v-for="amount in venueShareSuggestions"
-                  :key="amount"
-                  class="suggestion-chip"
-                  @click="selectVenueShare(amount)"
-                >
-                  {{ amount }} 元
-                </span>
-              </div>
             </div>
-          </div>
 
           <div class="form-group" v-if="form.price && form.venue_share">
             <label>利润</label>
@@ -65,12 +57,18 @@
           </div>
         </div>
 
+        <div class="creation-time-section">
+          <div class="info-row">
+            <label class="info-label">创建时间</label>
+            <div class="info-display">
+              {{ formatDate(form.create_time) }}
+            </div>
+          </div>
+        </div>
+
         <div class="form-actions">
-          <button type="button" class="btn-cancel" @click="goBack" :disabled="loading">
-            取消
-          </button>
-          <button type="submit" class="btn-save" :disabled="loading">
-            {{ loading ? '保存中...' : '保存' }}
+          <button type="button" class="btn-cancel" @click="goBack">
+            返回
           </button>
         </div>
       </form>
@@ -323,10 +321,11 @@ const calculateEndDate = (durationType, customDays) => {
 
 .form-section {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 0;
   padding: 20px;
-  margin: 0 20px;
-  border: 1px solid #e0e0e0;
+  margin: 0;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
   overflow: hidden;
 }
 
@@ -376,6 +375,28 @@ const calculateEndDate = (durationType, customDays) => {
 .form-group textarea:focus {
   outline: none;
   border-color: #1890ff;
+}
+
+/* 创建时间区域样式 - 无框 */
+.creation-time-section {
+  padding: 20px;
+  margin: 0;
+}
+
+/* 创建时间的横向显示样式 */
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+.info-label {
+  min-width: 120px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex-shrink: 0;
 }
 
 .checkbox-item {
