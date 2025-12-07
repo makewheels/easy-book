@@ -57,10 +57,6 @@ class AppointmentService:
         if not course:
             raise ValueError("无法创建或获取课程")
 
-        # 检查课程是否还有容量
-        if not course.is_available:
-            raise ValueError("课程已满员")
-
         # 创建学生预约
         appointment_record = {
             "student_id": student_id,
@@ -70,9 +66,6 @@ class AppointmentService:
         }
 
         appointment_id = await db.create_student_appointment(appointment_record)
-
-        # 将学生添加到课程
-        await CourseService.add_student_to_course(course.id, student_id)
 
         # 获取创建的预约
         appointment = await db.get_appointment(appointment_id)
@@ -146,10 +139,10 @@ class AppointmentService:
             })
 
             if success:
-                # 从课程中移除学生
+                # 预约已成功取消
                 course_id = target_appointment.get("course_id")
                 student_id = target_appointment.get("student_id")
-                await CourseService.remove_student_from_course(course_id, student_id)
+                # 注意：新系统中不再需要手动管理课程中的学生数量
 
             return success
 
@@ -192,9 +185,10 @@ class AppointmentService:
                         })
 
                         if success:
-                            # 从课程中移除学生
+                            # 预约已成功取消
                             if student_id:
-                                await CourseService.remove_student_from_course(course_id, student_id)
+                                # 注意：新系统中不再需要手动管理课程中的学生数量
+                                pass
                             return True
 
             # 如果在所有课程中都没找到

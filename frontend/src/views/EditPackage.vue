@@ -27,7 +27,8 @@
               type="number"
               v-model="form.price"
               required
-              min="1"
+              min="0.01"
+              step="0.01"
               placeholder="请输入售价"
             />
           </div>
@@ -39,6 +40,7 @@
               v-model="form.venue_share"
               required
               min="0"
+              step="0.01"
               placeholder="请输入上交俱乐部金额"
             />
             <div class="venue-share-suggestions">
@@ -131,7 +133,8 @@ const fetchPackageData = async () => {
   loading.value = true
   try {
     const response = await packageApi.getPackageById(packageId)
-    const packageData = response.data
+    // API 直接返回包数据，不需要 .data
+    const packageData = response
 
     // 填充基本信息
     Object.assign(form, {
@@ -148,10 +151,13 @@ const fetchPackageData = async () => {
     packageTypeData.value = {
       package_category: packageData.package_category || 'count_based',
       original_package_type: packageData.package_type || '1v1',
+      original_package_type_display: packageData.package_type || '',
       total_lessons: packageData.total_lessons,
       package_duration_type: packageData.package_duration_type,
       package_duration_days: packageData.package_duration_days,
-      unlimited_access: packageData.unlimited_access || false
+      unlimited_access: packageData.unlimited_access || false,
+      package_start_date: packageData.package_start_date,
+      package_end_date: packageData.package_end_date
     }
   } catch (error) {
     toast.error(error.message || '获取套餐信息失败')
@@ -196,16 +202,9 @@ const handleSubmit = async () => {
       return
     }
   } else {
-    if (!packageTypeData.value.unlimited_access && !packageTypeData.value.package_duration_type) {
-      toast.warning('时长套餐必须选择时长类型或设置永久有效')
+    if (!packageTypeData.value.package_end_date) {
+      toast.warning('时长套餐必须设置结束日期')
       return
-    }
-
-    if (packageTypeData.value.package_duration_type === 'custom') {
-      if (!packageTypeData.value.package_duration_days || packageTypeData.value.package_duration_days <= 0) {
-        toast.warning('自定义时长套餐必须设置有效天数')
-        return
-      }
     }
   }
 
@@ -217,32 +216,26 @@ const handleSubmit = async () => {
     const categoryTypeName = packageTypeData.value.package_category === 'count_based' ? '记次套餐' : '时长套餐'
     const generatedName = `${packageTypeName} ${categoryTypeName}`
 
-    // 构建套餐数据
+    // 构建套餐数据 - 使用新的简化结构
     const packageData = {
       name: generatedName,
-      package_category: packageTypeData.value.package_category,
-      package_type: packageTypeData.value.original_package_type,
-      price: parseInt(form.price),
-      venue_share: parseInt(form.venue_share),
-      is_active: form.is_active,
-      sort_order: parseInt(form.sort_order) || 0
+      package_type: packageTypeData.value.package_category === 'count_based'
+        ? packageTypeData.value.original_package_type
+        : 'time_based',
+      price: parseFloat(form.price),
+      venue_share: parseFloat(form.venue_share)
     }
 
-    // 根据套餐类型添加特定字段
+    // 根据套餐类型添加特定的JSON对象
     if (packageTypeData.value.package_category === 'count_based') {
-      packageData.total_lessons = packageTypeData.value.total_lessons
+      packageData.count_based_info = {
+        total_lessons: packageTypeData.value.total_lessons,
+        remaining_lessons: packageTypeData.value.total_lessons // 编辑时重置剩余课程
+      }
     } else {
-      packageData.package_duration_type = packageTypeData.value.package_duration_type
-      packageData.package_duration_days = packageTypeData.value.package_duration_days
-      packageData.unlimited_access = packageTypeData.value.unlimited_access
-
-      // 如果不是永久有效且有时长类型，计算结束时间
-      if (!packageTypeData.value.unlimited_access && packageTypeData.value.package_duration_type) {
-        const endDate = calculateEndDate(
-          packageTypeData.value.package_duration_type,
-          packageTypeData.value.package_duration_days
-        )
-        packageData.package_end_date = endDate
+      packageData.time_based_info = {
+        start_date: packageTypeData.value.package_start_date || new Date().toISOString().split('T')[0],
+        end_date: packageTypeData.value.package_end_date
       }
     }
 

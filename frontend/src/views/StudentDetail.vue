@@ -20,7 +20,7 @@
         />
 
         <!-- 详细信息卡片组件 -->
-        <StudentDetailCards :student="student" :attendances="attendances.length > 0 ? attendances : mockAttendances" />
+        <StudentDetailCards :student="student" :attendances="attendances" />
       </div>
     </div>
   </div>
@@ -50,65 +50,6 @@ const referrerUrl = ref('')
 const loading = ref(false)
 const attendances = ref([])
 
-// Mock data for testing - remove this when real data is available
-const mockAttendances = ref([
-  {
-    id: '1',
-    date: '2024-01-15',
-    time: '14:00',
-    status: 'completed',
-    lessons_before: '8',
-    lessons_after: '7'
-  },
-  {
-    id: '2',
-    date: '2024-01-10',
-    time: '10:00',
-    status: 'completed',
-    lessons_before: '9',
-    lessons_after: '8'
-  },
-  {
-    id: '3',
-    date: '2024-01-05',
-    time: '16:00',
-    status: 'completed',
-    lessons_before: '10',
-    lessons_after: '9'
-  },
-  {
-    id: '4',
-    date: '2023-12-28',
-    time: '13:00',
-    status: 'completed',
-    lessons_before: '11',
-    lessons_after: '10'
-  },
-  {
-    id: '5',
-    date: '2023-12-20',
-    time: '15:00',
-    status: 'completed',
-    lessons_before: '12',
-    lessons_after: '11'
-  },
-  {
-    id: '6',
-    date: '2023-12-15',
-    time: '11:00',
-    status: 'completed',
-    lessons_before: '13',
-    lessons_after: '12'
-  },
-  {
-    id: '7',
-    date: '2023-12-10',
-    time: '14:30',
-    status: 'completed',
-    lessons_before: '14',
-    lessons_after: '13'
-  }
-])
 
 const student = computed(() => studentStore.currentStudent)
 
@@ -176,7 +117,7 @@ const fetchAttendanceData = async (studentId) => {
 
       try {
         // 尝试获取课程详情以获取准确的上课时间
-        const courseResponse = await fetch(`http://localhost:8004/api/courses/${appointment.course_id}`)
+        const courseResponse = await fetch(`/api/courses/${appointment.course_id}`)
         if (courseResponse.ok) {
           const courseData = await courseResponse.json()
           if (courseData.start_time) {
@@ -200,8 +141,8 @@ const fetchAttendanceData = async (studentId) => {
         status: appointment.lesson_consumed ? 'completed' : appointment.status,
         statusText: appointment.lesson_consumed ? '已完成' :
                    appointment.status === 'scheduled' ? '已预约' : appointment.status,
-        lessons_before: appointment.lesson_consumed ? '上课前' : '-',
-        lessons_after: appointment.lesson_consumed ? '已消耗' : '-',
+        lessons_before: appointment.lesson_consumed ? '1' : '0',
+        lessons_after: appointment.lesson_consumed ? '0' : '0',
         courseTitle: `(课程)`, // 可以后续添加课程标题
         // 保留原始预约创建时间，后端已经按创建时间倒序返回
         createTime: new Date(appointment.create_time)

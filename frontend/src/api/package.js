@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:8004/api/packages'
+const API_BASE_URL = '/api/packages'
 
 export const packageApi = {
   /**
