@@ -5,16 +5,16 @@
       :class="{ active: activeTab === 'calendar' }"
       @click="$emit('navigate', 'calendar')"
     >
-      <div class="nav-icon">📅</div>
-      <span>课程日历</span>
+      <div class="nav-icon">📋</div>
+      <span>课表</span>
     </div>
     <div
       class="nav-item"
       :class="{ active: activeTab === 'students' }"
       @click="$emit('navigate', 'students')"
     >
-      <div class="nav-icon">👥</div>
-      <span>学员管理</span>
+      <div class="nav-icon">👤</div>
+      <span>学员</span>
     </div>
   </nav>
 </template>
