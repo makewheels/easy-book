@@ -4,28 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/mongo_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/mongo_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/course.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/course.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/current-page.txt" beforeDir="false" afterPath="$PROJECT_DIR$/current-page.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/course.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/course.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/package.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/package.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/PackageTypeSelector.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/student/StudentDetailCards.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddAppointment.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/AddPackage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/EditPackage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/StudentDetail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/homepage-snapshot.txt" beforeDir="false" afterPath="$PROJECT_DIR$/homepage-snapshot.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/updated-students-list.txt" beforeDir="false" afterPath="$PROJECT_DIR$/updated-students-list.txt" afterDir="false" />
-    </list>
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): implement package management API for creating, updating, and retrieving packages" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -215,14 +194,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00026" summary="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.10">
-      <option name="closed" value="true" />
-      <created>1764590415730</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1764590415730</updated>
     </task>
     <task id="LOCAL-00027" summary="build: 更新Dockerfile，切换到Azk8s镜像的Python 3.12">
       <option name="closed" value="true" />
@@ -608,7 +579,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765037636694</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="feat(package): implement package management API for creating, updating, and retrieving packages">
+      <option name="closed" value="true" />
+      <created>1765115776819</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1765115776820</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -636,7 +615,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: add automation testing dependencies and enhance documentation for deployment and API" />
     <MESSAGE value="feat: enhance documentation for testing and add AGENTS.md for AI assistant guidance" />
     <MESSAGE value="feat: add health check tests and enhance assertion methods" />
     <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
@@ -661,7 +639,8 @@
     <MESSAGE value="feat(package): 添加套餐服务模块，支持套餐类型管理及相关业务逻辑" />
     <MESSAGE value="feat(package): 添加套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
     <MESSAGE value="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(package): 更新套餐管理功能，支持套餐的创建、编辑及学生套餐列表展示" />
+    <MESSAGE value="feat(package): implement package management API for creating, updating, and retrieving packages" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(package): implement package management API for creating, updating, and retrieving packages" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
