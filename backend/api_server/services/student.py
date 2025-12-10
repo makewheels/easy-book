@@ -11,9 +11,13 @@ from api_server.database import get_database
 def map_mongo_to_api(mongo_doc: dict) -> dict:
     """将MongoDB文档映射为API响应格式"""
     api_doc = mongo_doc.copy()
+    # 检查_id或id字段，统一转换为id字段
     if '_id' in api_doc:
         api_doc['id'] = str(api_doc['_id'])
         del api_doc['_id']
+    elif 'id' in api_doc:
+        # id字段已经存在，确保是字符串格式
+        api_doc['id'] = str(api_doc['id'])
     return api_doc
 
 
@@ -42,11 +46,6 @@ class StudentService:
         """
         db = get_database()
 
-        # 计算利润
-        profit = student_data["price"] - student_data["venue_share"]
-        student_data["profit"] = profit
-        student_data["remaining_lessons"] = student_data["total_lessons"]
-
         student_id = await db.create_student(student_data)
         student_data["_id"] = student_id
         student_data["id"] = student_id
@@ -55,34 +54,11 @@ class StudentService:
         api_data = map_mongo_to_api(student_data)
         return StudentModel(**api_data)
 
-    @staticmethod
-    def _prepare_student_data(student_data: dict) -> dict:
-        """
-        为学员数据提供默认值
-
-        Args:
-            student_data: 原始学员数据
-
-        Returns:
-            处理后的学员数据
-        """
-        if student_data.get('remaining_lessons') is None:
-            student_data['remaining_lessons'] = student_data.get('total_lessons', 0)
-
-        if student_data.get('profit') is None:
-            student_data['profit'] = student_data.get('price', 0) - student_data.get('venue_share', 0)
-
-        return student_data
-
+    
     @staticmethod
     async def get_all(skip: int = 0, limit: int = 100) -> List[StudentModel]:
         """
-        获取所有学员列表（按优先级排序）
-
-        排序规则：
-        1. 有剩余课程的学生在前（remaining_lessons > 0）
-        2. 新建学生在前（create_time 降序）
-        3. 最近上过课的学生在前（基于考勤记录）
+        获取所有学员列表（按创建时间降序）
 
         Args:
             skip: 跳过的记录数
@@ -96,13 +72,8 @@ class StudentService:
         db = get_database()
         students = await db.get_students()
 
-        # 简化排序逻辑：优先按剩余课程数排序，然后按创建时间排序
+        # 简化排序逻辑：按创建时间降序（新学生在前）
         def get_sort_key(student):
-            # 1. 剩余课程优先级（有剩余课程的学生排在前面）
-            remaining_lessons = student.get("remaining_lessons", 0)
-            has_lessons_priority = 0 if remaining_lessons > 0 else 1000000
-
-            # 2. 创建时间优先级（新学生排在前面）
             create_time_str = student.get("create_time", "")
             try:
                 if create_time_str:
@@ -113,10 +84,7 @@ class StudentService:
             except:
                 create_timestamp = 0
             # 用负数让新学生排在前面
-            create_priority = -create_timestamp
-
-            # 返回排序元组：优先级越小的排在越前面
-            return (has_lessons_priority, create_priority)
+            return -create_timestamp
 
         # 按排序键进行排序
         students.sort(key=get_sort_key)
@@ -126,7 +94,6 @@ class StudentService:
         processed_students = []
         for student in students:
             student_copy = student.copy()
-            student_copy = StudentService._prepare_student_data(student_copy)
             # 映射为API格式
             api_data = map_mongo_to_api(student_copy)
             processed_students.append(StudentModel(**api_data))
@@ -146,7 +113,6 @@ class StudentService:
         db = get_database()
         student = await db.get_student(student_id)
         if student:
-            student = StudentService._prepare_student_data(student)
             # 映射为API格式
             api_data = map_mongo_to_api(student)
             return StudentModel(**api_data)

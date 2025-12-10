@@ -34,22 +34,29 @@ export const useAppointmentStore = defineStore('appointment', {
           }
         }
 
-        // 逐日获取预约数据
+        // 并行获取一周的预约数据
+        const dailyPromises = []
         for (let i = 1; i <= 6; i++) {
           const currentDate = format(addDays(weekStart, i), 'yyyy-MM-dd')
-          try {
-            const response = await appointmentApi.getDailyAppointments(currentDate)
-            const dayData = response.data || {}
-
-            // 如果API返回了有效数据，更新slots
-            if (dayData.slots && dayData.slots.length > 0) {
-              appointmentsByDate[currentDate].slots = dayData.slots
-            }
-          } catch (dayError) {
-            console.error(`获取${currentDate}的预约数据失败:`, dayError)
-            // 继续处理其他日期的数据
-          }
+          dailyPromises.push(
+            appointmentApi.getDailyAppointments(currentDate)
+              .then(response => {
+                const dayData = response.data || {}
+                // 如果API返回了有效数据，更新slots
+                if (dayData.slots && dayData.slots.length > 0) {
+                  appointmentsByDate[currentDate].slots = dayData.slots
+                }
+                return { date: currentDate, success: true, data: dayData }
+              })
+              .catch(dayError => {
+                console.error(`获取${currentDate}的预约数据失败:`, dayError)
+                return { date: currentDate, success: false, error: dayError }
+              })
+          )
         }
+
+        // 等待所有请求完成
+        await Promise.all(dailyPromises)
 
         // 对每个时间段按学生数量排序
         Object.values(appointmentsByDate).forEach(dayData => {

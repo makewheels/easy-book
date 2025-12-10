@@ -8,12 +8,7 @@
       <div v-else class="calendar-wrapper" ref="calendarWrapper">
         <div class="calendar-layout">
           <!-- 左侧时间列 - 固定不动 -->
-          <div class="time-column">
-            <div class="time-header"></div>
-            <div v-for="timeSlot in timeSlots" :key="timeSlot" class="time-cell-fixed">
-              {{ timeSlot }}
-            </div>
-          </div>
+          <TimeColumn :time-slots="timeSlots" />
 
           <!-- 右侧日期列 - 可滚动 -->
           <div
@@ -25,47 +20,13 @@
             @wheel="handleWheel"
             ref="scrollContainer"
           >
-            <table class="calendar-table">
-            <thead>
-              <tr>
-                <!-- 动态生成日期列头 -->
-                <th v-for="day in visibleWeeks.slice(0, 5)" :key="day.date" class="date-header-cell" :class="{ today: day.isToday }" style="width: 75px;">
-                  {{ day.weekday }}<br>{{ day.displayDate }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 时间行和内容 -->
-              <tr v-for="timeSlot in timeSlots" :key="timeSlot">
-                <!-- 动态生成每个日期的时间段单元格 -->
-                <td
-                  v-for="day in visibleWeeks.slice(0, 5)"
-                  :key="`${day.date}-${timeSlot}`"
-                  class="time-slot"
-                  :class="{ today: day.isToday }"
-                  style="width: 75px;"
-                  @click="goToCalendarAppointment(day.date, timeSlot)"
-                  >
-                  <span
-                    v-if="!hasStudents(day.date, timeSlot)"
-                    class="empty-cell"
-                  ></span>
-
-                  <div v-else class="students-container">
-                    <div
-                      v-for="student in getStudents(day.date, timeSlot)"
-                      :key="`${student.appointment_id}-${student.student_id}`"
-                      class="student-card"
-                      :class="getStatusClass(student, day.date, timeSlot)"
-                      @click="goToStudent(student.student_id)"
-                    >
-                      <div class="student-name">{{ student.name }}</div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <CalendarTable
+              :time-slots="timeSlots"
+              :visible-weeks="visibleWeeks"
+              :week-data="weekData"
+              @slot-click="goToCalendarAppointment"
+              @student-click="goToStudent"
+            />
           </div>
         </div>
       </div>
@@ -77,11 +38,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
+import { appointmentApi } from '@/api/appointment'
 import { format, addDays, isSameDay, addWeeks, subWeeks } from 'date-fns'
 import BottomNavigation from '@/components/BottomNavigation.vue'
+import TimeColumn from '@/components/calendar/TimeColumn.vue'
+import CalendarTable from '@/components/calendar/CalendarTable.vue'
 
 const router = useRouter()
 const appointmentStore = useAppointmentStore()
@@ -90,13 +54,20 @@ const loading = ref(false)
 const scrollContainer = ref(null)
 const calendarWrapper = ref(null)
 
-// Infinite scrolling setup
-const weeksBefore = ref(4) // 显示前4周
-const weeksAfter = ref(4)  // 显示后4周
-const currentWeekIndex = ref(4) // 当前周在数组中的索引
+// Infinite scrolling setup - 进一步减少初始加载数量
+const weeksBefore = ref(0) // 显示前0周（不显示过去周）
+const weeksAfter = ref(2)  // 显示后2周（当前周+未来2周）
+const currentWeekIndex = ref(0) // 当前周在数组中的索引
 const dayWidth = 120 // 每天的宽度
 const timeColumnWidth = 60 // 时间列宽度
 const weekDays = 6 // 每周显示6天（周二到周日）
+
+// 时间槽定义
+const timeSlots = [
+  '07:00', '08:00', '09:00', '10:00', '11:00',
+  '12:00', '13:00', '14:00', '15:00', '16:00', '17:00',
+  '18:00', '19:00'
+]
 
 // 计算显示的起始日期（昨天）
 const getDisplayStart = () => {
@@ -108,12 +79,6 @@ const getDisplayStart = () => {
 
 const currentWeekStart = ref(getDisplayStart())
 const weekData = ref({})
-
-const timeSlots = [
-  '07:00', '08:00', '09:00', '10:00', '11:00',
-  '12:00', '14:00', '15:00', '16:00', '17:00',
-  '18:00', '19:00'
-]
 
 // 计算所有可见的日期（从昨天开始连续显示）
 const visibleWeeks = computed(() => {
@@ -147,15 +112,43 @@ const totalWidth = computed(() => {
   return timeColumnWidth + (visibleWeeks.value.length * dayWidth)
 })
 
-
 const todayDate = computed(() => {
   return format(new Date(), 'yyyy-MM-dd')
 })
 
-// 批量获取多周数据
+// 批量获取多周数据 - 使用新的批量接口优化性能
 const fetchWeeksData = async (weekStartDates) => {
   loading.value = true
   try {
+    // 计算日期范围
+    const allDates = []
+    weekStartDates.forEach(startDate => {
+      for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+        const currentDate = format(addDays(startDate, dayOffset), 'yyyy-MM-dd')
+        if (!allDates.includes(currentDate)) {
+          allDates.push(currentDate)
+        }
+      }
+    })
+
+    // 按日期排序
+    allDates.sort()
+
+    // 获取开始和结束日期
+    const startDate = allDates[0]
+    const endDate = allDates[allDates.length - 1]
+
+    console.log(`使用批量接口获取预约数据: ${startDate} 到 ${endDate}`)
+
+    // 调用批量接口
+    const response = await appointmentApi.getBatchAppointments(startDate, endDate)
+    weekData.value = response.data || {}
+
+    console.log(`批量获取完成，共 ${Object.keys(response.data || {}).length} 天的数据`)
+  } catch (error) {
+    console.error('批量获取数据失败，回退到逐周获取:', error)
+
+    // 回退到原来的逐周获取方式
     const weekDataPromises = weekStartDates.map(startDate =>
       appointmentStore.fetchWeekAppointments(startDate)
     )
@@ -168,8 +161,6 @@ const fetchWeeksData = async (weekStartDates) => {
     })
 
     weekData.value = combinedData
-  } catch (error) {
-    console.error('获取周数据失败:', error)
   } finally {
     loading.value = false
   }
@@ -184,11 +175,11 @@ const fetchInitialData = async () => {
 
   // 按周获取数据以确保API兼容性
   const weekDates = []
-  let currentWeekStart = new Date(startDate)
+  let weekStartDate = new Date(startDate)
 
-  while (currentWeekStart <= endDate) {
-    weekDates.push(new Date(currentWeekStart))
-    currentWeekStart = addDays(currentWeekStart, 7) // 移动到下周
+  while (weekStartDate <= endDate) {
+    weekDates.push(new Date(weekStartDate))
+    weekStartDate = addDays(weekStartDate, 7) // 移动到下周
   }
 
   await fetchWeeksData(weekDates)
@@ -199,36 +190,6 @@ const preloadWeekData = async (direction) => {
   // 这里简化处理，因为我们现在使用连续日期显示
   // 在实际滚动时，会通过fetchInitialData获取更多数据
   console.log(`预加载 ${direction} 侧数据`)
-}
-
-const hasStudents = (date, timeSlot) => {
-  const dayData = weekData.value[date]
-  if (!dayData || !dayData.slots) return false
-
-  const slot = dayData.slots.find(s => s.time === timeSlot)
-  return slot && slot.students && slot.students.length > 0
-}
-
-const getStudents = (date, timeSlot) => {
-  const dayData = weekData.value[date]
-  if (!dayData || !dayData.slots) return []
-
-  const slot = dayData.slots.find(s => s.time === timeSlot)
-  return slot ? slot.students : []
-}
-
-const getStatusClass = (student, date, timeSlot) => {
-  // 创建预约时间来与当前时间比较
-  const appointmentDateTime = new Date(`${date}T${timeSlot}:00`)
-  const now = new Date()
-
-  // 如果预约时间还未到，显示蓝色（未上课）
-  if (appointmentDateTime > now) {
-    return 'status-upcoming'   // 未来时间 - 蓝色
-  } else {
-    // 预约时间已过，显示灰色（已完成或已错过）
-    return 'status-during'     // 过去时间 - 灰色
-  }
 }
 
 const goToStudent = (studentId) => {
@@ -377,6 +338,21 @@ const extendCalendarRight = async () => {
   await preloadWeekData('right')
 }
 
+// 简单可靠的高度更新函数
+const updateCalendarHeights = () => {
+  const viewportHeight = window.innerHeight
+  const slotHeight = Math.max(30, Math.floor((viewportHeight - 124) / 13))
+
+  const calendarPage = document.querySelector('.calendar-page')
+  if (calendarPage) {
+    calendarPage.style.setProperty('--time-slot-height', slotHeight + 'px')
+    console.log('Updated height to:', slotHeight + 'px (viewport:', viewportHeight + ')')
+  }
+}
+
+// 保留简单的syncHeights用于初始调用
+const syncHeights = updateCalendarHeights
+
 // 初始化滚动位置到今天（第二列）
 const initializeScrollPosition = () => {
   if (scrollContainer.value) {
@@ -384,6 +360,9 @@ const initializeScrollPosition = () => {
     const todayOffset = 1 * dayWidth // 第二列偏移量
     scrollContainer.value.scrollLeft = todayOffset
   }
+
+  // 同步高度
+  syncHeights()
 }
 
 const navigateTo = (page) => {
@@ -400,9 +379,31 @@ const navigateTo = (page) => {
 }
 
 onMounted(async () => {
+  console.log('Calendar: component mounting...')
+
   await fetchInitialData()
   await nextTick()
   initializeScrollPosition()
+
+  // 立即执行一次高度更新
+  console.log('Calendar: calling updateCalendarHeights')
+  updateCalendarHeights()
+
+  // 添加简单可靠的全局监听器
+  if (!window.calendarHeightListener) {
+    window.calendarHeightListener = true
+    window.addEventListener('resize', updateCalendarHeights)
+    console.log('Calendar: Global resize listener added')
+  }
+
+  // 延迟执行一次确保DOM已完全加载
+  setTimeout(updateCalendarHeights, 500)
+})
+
+// 组件卸载时清理事件监听器
+onUnmounted(() => {
+  console.log('Calendar: component unmounting')
+  // 全局监听器不需要清理，让它保持工作
 })
 </script>
 
@@ -417,6 +418,9 @@ onMounted(async () => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  --header-height: 54px;
+  --footer-height: 70px;
+  --time-slot-height: 54px; /* JavaScript会动态更新这个值 */
 }
 
 .header {
@@ -468,45 +472,6 @@ onMounted(async () => {
   align-items: stretch;
 }
 
-/* 左侧时间列 - 固定 */
-.time-column {
-  width: 60px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  margin-top: 0px;
-}
-
-.time-header {
-  height: 50px;
-  background: #f5f5f5;
-  border-bottom: 2px solid #e3f2fd;
-  border-right: 1px solid #e0e0e0;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.time-cell-fixed {
-  background: #f9f9f9;
-  font-size: 12px;
-  font-weight: 700;
-  color: #0050b3;
-  border-bottom: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
-  padding: 2px 2px;
-  text-align: center;
-  vertical-align: middle;
-  height: calc((100vh - 70px - 50px) / 12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.2;
-  box-sizing: border-box;
-}
-
 /* 右侧滚动容器 */
 .calendar-scroll-container {
   overflow-y: hidden;
@@ -520,212 +485,7 @@ onMounted(async () => {
   display: flex;
   margin-top: 0;
   padding-top: 0;
-}
-
-.calendar-scroll-container::-webkit-scrollbar {
-  height: 6px;
-}
-
-.calendar-scroll-container::-webkit-scrollbar-track {
-  background: #f5f5f5;
-}
-
-.calendar-scroll-container::-webkit-scrollbar-thumb {
-  background: #d9d9d9;
-  border-radius: 3px;
-}
-
-.calendar-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
-}
-
-/* Table 样式 */
-.calendar-table {
-  width: 100%;
-  height: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  table-layout: fixed;
-  display: table !important;
-  margin: 0;
-  padding: 0;
-  border-spacing: 0;
-}
-
-.calendar-table thead,
-.calendar-table tbody,
-.calendar-table tr,
-.calendar-table th,
-.calendar-table td {
-  display: table-cell !important;
-}
-
-.calendar-table thead,
-.calendar-table tbody {
-  display: table-row-group !important;
-}
-
-.calendar-table tr {
-  display: table-row !important;
-}
-
-/* 时间列头 */
-.time-header-cell {
-  background: #f5f5f5;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0050b3;
-  border-bottom: 2px solid #e3f2fd;
-  border-right: 2px solid #e0e0e0;
-  padding: 8px 2px;
-  text-align: center;
-  width: 25px;
-  vertical-align: middle;
-  height: 35px;
-}
-
-/* 时间单元格 */
-.time-cell {
-  background: #f9f9f9;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0050b3;
-  border-bottom: 1px solid #e0e0e0;
-  border-right: 2px solid #e0e0e0;
-  padding: 8px 1px;
-  text-align: center;
-  vertical-align: middle;
-  height: 50px;
-  width: 25px;
-}
-
-/* 日期列头 */
-.date-header-cell {
-  background: #f5f5f5;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0050b3;
-  padding: 8px 2px;
-  line-height: 1.2;
-  text-align: center;
-  border-bottom: 2px solid #e3f2fd;
-  border-right: 1px solid #e0e0e0;
-  vertical-align: middle;
-  height: 50px;
-  width: 75px;
-}
-
-.date-header-cell.today {
-  background: #fff7e6 !important;
-  color: #d46b08 !important;
-  border-bottom: 2px solid #ffd591 !important;
-  border-right: 1px solid #ffd591 !important;
-}
-
-.time-slot {
-  position: relative;
-  padding: 0;
-  height: calc((100vh - 70px - 50px) / 12);
-  font-size: 12px;
-  cursor: pointer;
-  background: #f9f9f9;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  border-right: none;
-  border-left: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
-  vertical-align: top;
-  width: 75px;
-}
-
-/* 第一个时间槽不要左边框 */
-.time-slot:first-child {
-  border-left: none;
-}
-
-.time-slot.today {
-  background: #fff7e6;
-  border-right: 1px solid #ffd591;
-}
-
-.students-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  box-sizing: border-box;
-  padding: 0;
-  height: 100%;
-}
-
-.student-card {
-  background: #fff;
-  color: #1a1a1a;
-  font-weight: 700;
-  padding: 8px 4px;
-  height: 100%;
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-align: center;
-  box-sizing: border-box;
-  line-height: 1.2;
-  margin: 0;
-  border: none;
-}
-
-.student-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: #1a1a1a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 状态颜色 - 填满整个单元格 */
-.status-upcoming {
-  background: #1890ff;
-  color: #fff;
-}
-
-.status-active {
-  background: #faad14;
-  color: #fff;
-}
-
-.status-checked {
-  background: #52c41a;
-  color: #fff;
-}
-
-.status-during {
-  background: #d9d9d9;
-  color: #666;
-}
-
-.status-cancel {
-  background: #f5f5f5;
-  color: #bfbfbf;
-}
-
-.empty-cell {
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  border: 1px dashed #e8e8e8;
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-}
-
-.time-slot.today .empty-cell {
-  background: #fff7e6;
-  border: 1px dashed #ffd591;
+  align-self: flex-start;
 }
 
 .loading {
@@ -756,7 +516,6 @@ onMounted(async () => {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 
 /* 响应式设计 */
 @media (max-width: 480px) {

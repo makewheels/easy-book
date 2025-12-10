@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(package): add detailed documentation for package management functionality">
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(navigation): update icons and labels for bottom navigation items">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/BottomNavigation.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/BottomNavigation.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/course.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/course.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,6 +99,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/automation.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -114,6 +122,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/run.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -139,6 +148,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;tests.automation.EasyBookAutomationTest&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
@@ -154,6 +164,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;tests.unit.test_health.TestHealth&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
@@ -169,6 +180,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/automation.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -187,7 +199,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-7bb8055f9097-cbfc7b97e6b2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.28238.29" />
+        <option value="bundled-python-sdk-0978a7220b69-9867c7d4c0a4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.28294.336" />
       </set>
     </attachedChunks>
   </component>
@@ -198,14 +210,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00030" summary="build: switch to official Python 3.10 slim image in Dockerfile">
-      <option name="closed" value="true" />
-      <created>1764591401312</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1764591401312</updated>
     </task>
     <task id="LOCAL-00031" summary="build: update Dockerfile to install all dependencies and configure nginx">
       <option name="closed" value="true" />
@@ -591,7 +595,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765118002188</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="feat(navigation): update icons and labels for bottom navigation items">
+      <option name="closed" value="true" />
+      <created>1765122005013</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1765122005013</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -619,7 +631,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="feat: update student and appointment API integration to use correct ID fields" />
     <MESSAGE value="feat: refactor appointment model to support optional old format and add duration field in student appointment form" />
     <MESSAGE value="feat(appointment): 实现预约取消和移除功能&#10;&#10;- 添加removeAppointment方法用于从store中移除预约数据&#10;- 实现预约取消后的局部状态更新，避免全量刷新&#10;- 优化预约取消流程，保持页面滚动位置&#10;- 完善预约服务端点，调整方法命名以提高一致性&#10;- 升级数据库查询逻辑，支持新旧时间格式兼容&#10;- 配置JSON响应处理器，确保中文字符正确显示&#10;- 更新测试配置，改进时间槽冲突检测机制&#10;- 重构服务层代码结构，提升模块化程度&#10;- 补充技术文档，完善架构说明和技术栈描述" />
     <MESSAGE value="feat(frontend): 优化套餐类型输入与选择功能&#10;&#10;- 将套餐类型选择器改为文本输入框，支持自定义输入&#10;- 添加套餐类型建议列表，提供常用类型快速选择&#10;- 实现点击建议项自动填充功能&#10;- 更新页面样式，改善用户体验&#10;- 修复头部背景色和阴影效果" />
@@ -644,7 +655,8 @@
     <MESSAGE value="feat(package): implement package management API for creating, updating, and retrieving packages" />
     <MESSAGE value="feat(package): update package detail views and enhance UI for better user experience" />
     <MESSAGE value="feat(package): add detailed documentation for package management functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(package): add detailed documentation for package management functionality" />
+    <MESSAGE value="feat(navigation): update icons and labels for bottom navigation items" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(navigation): update icons and labels for bottom navigation items" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
