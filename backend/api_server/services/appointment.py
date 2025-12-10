@@ -4,7 +4,7 @@
 """
 
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from api_server.models import StudentAppointmentModel, StudentAppointmentCreate, StudentAppointmentUpdate
 from api_server.database import get_database
 from .course import CourseService
@@ -41,11 +41,6 @@ class AppointmentService:
         student = await db.get_student(student_id)
         if not student:
             raise ValueError("学生不存在")
-
-        # 验证学生剩余课程
-        remaining_lessons = student.get("remaining_lessons", 0)
-        if remaining_lessons <= 0:
-            raise ValueError("学生剩余课程不足")
 
         # 检查学生时间冲突
         has_conflict = await db.check_student_time_conflict(student_id, start_time, end_time)
@@ -118,25 +113,10 @@ class AppointmentService:
             if target_appointment.get("status") == "cancelled":
                 raise ValueError("预约已取消")
 
-            # 如果已消耗课程，恢复学生课程数
-            if target_appointment.get("lesson_consumed", False):
-                student_id = target_appointment.get("student_id")
-                student = await db.get_student(student_id)
-                if student:
-                    current_remaining = student.get("remaining_lessons", 0)
-                    total_lessons = student.get("total_lessons", 0)
-                    new_remaining = min(current_remaining + 1, total_lessons)
+            # 注：课程消耗逻辑移至套餐模块处理
 
-                    await db.update_student(student_id, {
-                        "remaining_lessons": new_remaining,
-                        "update_time": datetime.utcnow()
-                    })
-
-            # 更新预约状态为取消
-            success = await db.update_appointment(appointment_id, {
-                "status": "cancelled",
-                "update_time": datetime.utcnow()
-            })
+            # 直接删除预约记录（用户要求取消即删除）
+            success = await db.delete_appointment(appointment_id)
 
             if success:
                 # 预约已成功取消
@@ -165,24 +145,10 @@ class AppointmentService:
                         # 找到匹配的预约，执行取消操作
                         student_id = apt.get("student_id")
 
-                        # 如果已消耗课程，恢复学生课程数
-                        if apt.get("lesson_consumed", False):
-                            student = await db.get_student(student_id)
-                            if student:
-                                current_remaining = student.get("remaining_lessons", 0)
-                                total_lessons = student.get("total_lessons", 0)
-                                new_remaining = min(current_remaining + 1, total_lessons)
+                        # 注：课程消耗逻辑移至套餐模块处理
 
-                                await db.update_student(student_id, {
-                                    "remaining_lessons": new_remaining,
-                                    "update_time": datetime.utcnow()
-                                })
-
-                        # 更新预约状态为取消
-                        success = await db.update_appointment(appointment_id, {
-                            "status": "cancelled",
-                            "update_time": datetime.utcnow()
-                        })
+                        # 直接删除预约记录（用户要求取消即删除）
+                        success = await db.delete_appointment(appointment_id)
 
                         if success:
                             # 预约已成功取消
@@ -234,17 +200,7 @@ class AppointmentService:
         if not student:
             raise ValueError("学生不存在")
 
-        # 检查剩余课程
-        remaining_lessons = student.get("remaining_lessons", 0)
-        if remaining_lessons <= 0:
-            raise ValueError("剩余课程不足")
-
-        # 扣减课程
-        new_remaining = remaining_lessons - 1
-        await db.update_student(student_id, {
-            "remaining_lessons": new_remaining,
-            "update_time": datetime.utcnow()
-        })
+        # 注：课程消耗逻辑移至套餐模块处理
 
         # 更新预约状态
         success = await db.update_appointment(appointment_id, {
@@ -359,9 +315,7 @@ class AppointmentService:
                             "learning_item": student_info.get("learning_item", ""),
                             "appointment_id": apt.id,
                             "student_id": apt.student_id,
-                            "status": apt.status,
-                            "total_lessons": student_info.get("total_lessons", 0),
-                            "remaining_lessons": student_info.get("remaining_lessons", 0)
+                            "status": apt.status
                         }
                         students.append(student_data)
 
@@ -375,3 +329,50 @@ class AppointmentService:
         # 转换为数组并按时间排序
         sorted_slots = sorted(time_slots.values(), key=lambda x: x["time"])
         return sorted_slots
+
+    @staticmethod
+    async def get_batch_appointments(start_date: date, end_date: date) -> dict:
+        """
+        批量获取指定时间范围内的所有预约数据
+
+        Args:
+            start_date: 开始日期
+            end_date: 结束日期
+
+        Returns:
+            按日期分组的预约数据字典，格式与单个get_daily_appointments兼容
+        """
+        batch_data = {}
+        weekday_map = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+        current_date = start_date
+
+        while current_date <= end_date:
+            date_str = current_date.strftime("%Y-%m-%d")
+            weekday = weekday_map[current_date.weekday()]
+            is_past = current_date < datetime.now().date()
+            current_datetime = datetime.combine(current_date, datetime.min.time())
+
+            try:
+                # 获取当天的预约数据
+                time_slots = await AppointmentService.get_daily_appointments(current_datetime)
+
+                # 格式化数据，保持与原有API兼容
+                batch_data[date_str] = {
+                    "date": date_str,
+                    "weekday": weekday,
+                    "is_past": is_past,
+                    "slots": time_slots
+                }
+            except Exception as e:
+                print(f"获取{date_str}的预约数据失败: {e}")
+                # 即使某天数据获取失败，也返回空数据，避免中断整个批量请求
+                batch_data[date_str] = {
+                    "date": date_str,
+                    "weekday": weekday,
+                    "is_past": is_past,
+                    "slots": []
+                }
+
+            current_date += timedelta(days=1)
+
+        return batch_data

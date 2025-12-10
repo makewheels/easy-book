@@ -77,8 +77,7 @@ class CourseService:
             course_data = {
                 "title": "新课程",  # 临时标题，会在添加学生时更新
                 "start_time": start_time,
-                "end_time": end_time,
-                "status": "scheduled"
+                "end_time": end_time
             }
 
             return await CourseService.create_course(course_data)
@@ -99,18 +98,13 @@ class CourseService:
         # 获取课程的所有预约
         appointments = await db.get_course_appointments(course_id)
 
-        # 筛选活跃的预约（未取消的）
-        active_appointments = [
-            apt for apt in appointments
-            if apt.get("status") not in ["cancelled", "no_show"]
-        ]
-
-        if not active_appointments:
+        # 注：取消的预约直接删除，不需要检查status
+        if not appointments:
             # 没有学生，使用默认标题
             return await db.update_course(course_id, {"title": "空闲课程"})
 
         # 获取学生信息
-        student_ids = [apt.get("student_id") for apt in active_appointments]
+        student_ids = [apt.get("student_id") for apt in appointments]
         students = []
 
         for student_id in student_ids:
@@ -121,13 +115,13 @@ class CourseService:
         if not students:
             return await db.update_course(course_id, {"title": "空闲课程"})
 
-        # 生成标题
+        # 生成标题：(人数)学生名
         if len(students) == 1:
-            # 单个学生：使用学生姓名
+            # 单个学生：直接使用学生姓名
             title = students[0].get("name", "未知学生")
         else:
-            # 多个学生：(N)学生姓名
-            title = f"({len(students)}){students[0].get('name', '未知学生')}"
+            # 多个学生：(人数)学生姓名
+            title = f"({len(students)}人){students[0].get('name', '未知学生')}"
 
         return await db.update_course(course_id, {"title": title})
 

@@ -59,6 +59,22 @@ export const appointmentApi = {
     }
   },
 
+  // 批量获取时间范围内的预约数据（用于日历优化）
+  async getBatchAppointments(startDate, endDate) {
+    try {
+      const response = await axios.get(`${BASE_URL}/appointments/batch`, {
+        params: {
+          start_date: startDate,
+          end_date: endDate
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('批量获取预约失败:', error)
+      throw error
+    }
+  },
+
   // 获取课程的预约列表
   async getCourseAppointments(courseId) {
     try {

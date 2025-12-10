@@ -253,12 +253,26 @@ const fetchExistingAppointments = async () => {
     const dayData = response.data
 
     if (dayData && dayData.slots) {
-      const timeSlot = dayData.slots.find(slot => slot.time === selectedTime.value)
+      // 计算选择的时间对应的UTC时间
+      const selectedDateTime = new Date(`${selectedDate.value}T${selectedTime.value}:00`)
+      const utcHour = selectedDateTime.getUTCHours()
+      const utcTimeString = utcHour.toString().padStart(2, '0') + ':00'
+
+      console.log(`查找时间段: 本地 ${selectedTime.value} -> UTC ${utcTimeString}`)
+
+      // 优先查找本地时间，然后查找UTC时间
+      const timeSlot = dayData.slots.find(slot =>
+        slot.time === selectedTime.value || slot.time === utcTimeString
+      )
+
       if (timeSlot && timeSlot.students) {
         existingAppointments.value = timeSlot.students
+        console.log(`找到预约，时间段: ${timeSlot.time}, 学员数: ${timeSlot.students.length}`)
       } else {
         // 如果没有找到对应的时间段，清空列表
         existingAppointments.value = []
+        console.log(`未找到预约，检查的时间段: ${selectedTime.value}, ${utcTimeString}`)
+        console.log(`可用的时间段:`, dayData.slots.map(s => s.time))
       }
     } else {
       // 如果没有当天数据，清空列表

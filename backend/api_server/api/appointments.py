@@ -60,6 +60,42 @@ async def create_student_appointment(appointment: dict):
         traceback.print_exc()  # 保留错误堆栈用于生产环境调试
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/batch")
+async def get_batch_appointments(
+    start_date: str = Query(..., description="开始日期，格式：YYYY-MM-DD"),
+    end_date: str = Query(..., description="结束日期，格式：YYYY-MM-DD")
+):
+    """
+    批量获取指定时间范围内的所有预约数据
+    用于日历页面初始化，减少网络请求次数
+    """
+    try:
+        # 解析日期
+        start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+        if start_date_obj > end_date_obj:
+            raise HTTPException(status_code=400, detail="开始日期不能晚于结束日期")
+
+        # 限制查询范围，避免查询过多数据
+        max_days = 90  # 最多查询90天
+        days_diff = (end_date_obj - start_date_obj).days + 1
+        if days_diff > max_days:
+            raise HTTPException(status_code=400, detail=f"查询范围不能超过{max_days}天")
+
+        # 批量获取数据
+        batch_data = await AppointmentService.get_batch_appointments(start_date_obj, end_date_obj)
+
+        return {
+            "code": 200,
+            "message": "获取成功",
+            "data": batch_data
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"日期格式无效，请使用YYYY-MM-DD格式: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.get("/{appointment_id}", response_model=StudentAppointmentModel)
 async def get_student_appointment(appointment_id: str):
     try:
