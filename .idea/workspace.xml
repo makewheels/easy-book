@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(navigation): update icons and labels for bottom navigation items">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/api/appointments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/api/appointments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/appointment.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/appointment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/course.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/course.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api_server/services/student.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api_server/services/student.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/appointment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/stores/appointment.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/stores/appointment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarAppointment.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/CalendarView.vue" afterDir="false" />
-    </list>
+    <list default="true" id="a2687702-510b-4c83-ad65-741eb3a2fa82" name="Changes" comment="feat(navigation): update icons and labels for bottom navigation items" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,14 +199,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764584917679</updated>
-    </task>
-    <task id="LOCAL-00031" summary="build: update Dockerfile to install all dependencies and configure nginx">
-      <option name="closed" value="true" />
-      <created>1764591798024</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1764591798024</updated>
     </task>
     <task id="LOCAL-00032" summary="build: update Dockerfile to use Node.js 16-alpine as the builder image">
       <option name="closed" value="true" />
@@ -603,7 +584,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765122005013</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="feat(navigation): update icons and labels for bottom navigation items">
+      <option name="closed" value="true" />
+      <created>1765373096358</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1765373096358</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
