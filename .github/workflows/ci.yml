@@ -11,6 +11,17 @@ jobs:
     name: 后端单元测试
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ping:1})'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +38,9 @@ jobs:
 
       - name: Run unit tests
         working-directory: backend
+        env:
+          MONGODB_URL: mongodb://localhost:27017
+          DB_NAME: easy_book_test
         run: pytest tests/unit/ -v --tb=short
 
   backend-integration-tests:
