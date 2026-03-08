@@ -10,17 +10,6 @@ router = APIRouter()
 async def create_student(student: StudentCreate):
     try:
         student_data = student.dict()
-        # 所有字段都不需要额外映射，直接使用原有字段名
-
-        # 调试日志：打印接收到的数据
-        print(f"DEBUG: 收到学生创建数据: {student_data}")
-
-        # 检查必填字段
-        required_fields = ["name", "learning_item", "package_type", "total_lessons", "price", "venue_share"]
-        for field in required_fields:
-            if not student_data.get(field):
-                raise HTTPException(status_code=400, detail=f"Field {field} is required")
-
         created_student = await StudentService.create(student_data)
         return created_student
     except Exception as e:

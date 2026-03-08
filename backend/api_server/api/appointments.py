@@ -55,9 +55,11 @@ async def create_student_appointment(appointment: dict):
         }
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException:
+        raise
     except Exception as e:
         import traceback
-        traceback.print_exc()  # 保留错误堆栈用于生产环境调试
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/batch")
