@@ -19,7 +19,7 @@
 
 **SSH 密钥:** `/Users/mint/Downloads/qcloud_lighthouse_beijing` (RSA, 对应腾讯云密钥 lhkp-83wy0jzi)
 
-**MongoDB Docker 容器:** 名称 `mongodb`, 镜像 `mongo:5.0.5`, root密码 `REDACTED_ROOT_PW`
+**MongoDB Docker 容器:** 名称 `mongodb`, 镜像 `mongo:5.0.5`, root密码 `<ROOT_PASSWORD>`
 
 ---
 
@@ -34,7 +34,7 @@ SSH_KEY="/Users/mint/Downloads/qcloud_lighthouse_beijing"
 SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=no -o PasswordAuthentication=no"
 
 ssh $SSH_OPTS root@101.42.140.207 "
-docker exec mongodb mongosh -u root -p REDACTED_ROOT_PW --authenticationDatabase admin --eval '
+docker exec mongodb mongosh -u root -p <ROOT_PASSWORD> --authenticationDatabase admin --eval '
   use(\"admin\");
   db.dropUser(\"easy-book\");
   print(\"User easy-book dropped\");
@@ -57,7 +57,7 @@ echo "New MongoDB password: $NEW_PASSWORD"
 在 MongoDB 创建用户：
 ```bash
 ssh $SSH_OPTS root@101.42.140.207 "
-docker exec mongodb mongosh -u root -p REDACTED_ROOT_PW --authenticationDatabase admin --eval '
+docker exec mongodb mongosh -u root -p <ROOT_PASSWORD> --authenticationDatabase admin --eval '
   use(\"admin\");
   db.createUser({
     user: \"easy-book\",
@@ -433,7 +433,7 @@ git push origin master
         log_warning ".env文件不存在，使用默认配置"
         cat > .env << EOF
 # 数据库配置
-MONGODB_URL=mongodb://easy-book:REDACTED_APP_PW@10.0.20.14:27017/easy_book?authSource=admin
+MONGODB_URL=mongodb://easy-book:<APP_PASSWORD>@10.0.20.14:27017/easy_book?authSource=admin
 ENVIRONMENT=production
 DEBUG=False
 EOF
