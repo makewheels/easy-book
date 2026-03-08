@@ -1,0 +1,26 @@
+# Easy-Book Backend Service
+# 部署路径: /etc/systemd/system/easy-book.service
+# 管理命令:
+#   sudo systemctl start easy-book
+#   sudo systemctl stop easy-book
+#   sudo systemctl restart easy-book
+#   sudo journalctl -u easy-book -f
+
+[Unit]
+Description=Easy-Book Backend (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/easy-book/backend
+EnvironmentFile=/home/ubuntu/easy-book/backend/.env
+ExecStart=/usr/bin/python3 run.py 8002
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
