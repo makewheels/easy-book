@@ -37,6 +37,10 @@ venv.bak/
 *.swo
 *~
 
+# AI/Tool configs
+.claude/
+.iflow/
+
 # OS
 .DS_Store
 .DS_Store?
