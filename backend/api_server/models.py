@@ -134,6 +134,8 @@ class StudentModel(BaseModel):
     phone: Optional[str] = Field(None, max_length=20, description="电话号码")
     learning_item: str = Field(..., description="学习项目")
     notes: Optional[str] = Field(None, max_length=500, description="备注")
+    remaining_lessons: Optional[int] = Field(None, description="剩余课时(从套餐聚合)")
+    total_lessons: Optional[int] = Field(None, description="总课时(从套餐聚合)")
     create_time: datetime = Field(default_factory=datetime.now)
     update_time: datetime = Field(default_factory=datetime.now)
 
@@ -335,3 +337,20 @@ class PackageUpdate(BaseModel):
     venue_share: Optional[float] = Field(None, ge=0)
     count_based_info: Optional[dict] = Field(None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}")
     time_based_info: Optional[dict] = Field(None, description="时长套餐信息：{start_date: str, end_date: str}")
+
+
+# 考勤相关模型
+class AttendanceModel(BaseModel):
+    id: Optional[str] = None
+    student_id: str = Field(..., description="学员ID")
+    appointment_id: str = Field(..., description="预约ID")
+    attendance_date: Optional[str] = Field(None, description="考勤日期")
+    time_slot: Optional[str] = Field(None, description="时间段")
+    status: str = Field(default="checked", description="状态: checked/cancel")
+    lessons_before: int = Field(default=0, description="签到前剩余课时")
+    lessons_after: int = Field(default=0, description="签到后剩余课时")
+    create_time: Optional[datetime] = Field(default_factory=datetime.now)
+
+class AttendanceCreate(BaseModel):
+    appointment_id: str = Field(..., description="预约ID")
+    student_id: str = Field(..., description="学员ID")

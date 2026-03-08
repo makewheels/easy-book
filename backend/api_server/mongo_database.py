@@ -243,6 +243,37 @@ class MongoDatabase:
         result = await self.db.appointments.delete_one({"id": appointment_id})
         return result.deleted_count > 0
 
+    # 考勤相关操作
+    async def create_attendance(self, attendance_data: dict) -> str:
+        """创建考勤记录"""
+        attendance_data["_id"] = self._generate_id()
+        attendance_data["id"] = attendance_data["_id"]
+        attendance_data["create_time"] = datetime.now()
+        result = await self.db.attendances.insert_one(attendance_data)
+        return str(result.inserted_id)
+
+    async def get_attendances(self) -> list:
+        """获取所有考勤记录"""
+        attendances = []
+        async for att in self.db.attendances.find():
+            attendances.append(self._convert_id(dict(att)))
+        return attendances
+
+    async def get_student_attendances(self, student_id: str) -> list:
+        """获取学员的所有考勤记录"""
+        attendances = []
+        async for att in self.db.attendances.find({"student_id": student_id}).sort("create_time", -1):
+            attendances.append(self._convert_id(dict(att)))
+        return attendances
+
+    # 套餐相关操作
+    async def get_student_packages(self, student_id: str) -> list:
+        """获取学员的所有套餐"""
+        packages = []
+        async for pkg in self.db.packages.find({"student_id": student_id}).sort("create_time", -1):
+            packages.append(self._convert_id(dict(pkg)))
+        return packages
+
     async def check_student_time_conflict(self, student_id: str, start_time: datetime, end_time: datetime) -> bool:
         """检查学生时间冲突"""
         # 确保输入时间都是UTC时区的（数据库标准）

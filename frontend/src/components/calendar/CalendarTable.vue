@@ -40,6 +40,7 @@
                 :date="day.date"
                 :time-slot="timeSlot"
                 @click="$emit('slot-click', day.date, timeSlot)"
+                @checkin-updated="$emit('checkin-updated')"
               />
             </div>
           </td>
@@ -68,7 +69,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['slot-click', 'student-click'])
+const emit = defineEmits(['slot-click', 'student-click', 'checkin-updated'])
 
 const hasStudents = (date, timeSlot) => {
   const dayData = props.weekData[date]
