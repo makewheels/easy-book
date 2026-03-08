@@ -121,10 +121,10 @@ const handleSubmit = async () => {
   }
 
   try {
-    await studentStore.createStudent(studentData)
+    const newStudent = await studentStore.createStudent(studentData)
 
-    toast.success('学员创建成功')
-    router.push('/students')
+    toast.success('学员创建成功，请添加套餐')
+    router.push(`/student/${newStudent.id}/add-package`)
   } catch (error) {
     toast.error(error.message || '创建失败')
   } finally {

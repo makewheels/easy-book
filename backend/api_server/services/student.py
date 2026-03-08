@@ -94,27 +94,45 @@ class StudentService:
         processed_students = []
         for student in students:
             student_copy = student.copy()
-            # 映射为API格式
             api_data = map_mongo_to_api(student_copy)
+            # 聚合套餐课时
+            student_id = api_data.get("id")
+            if student_id:
+                packages = await db.get_student_packages(student_id)
+                total = sum(
+                    (p.get("count_based_info") or {}).get("total_lessons", 0)
+                    for p in packages if p.get("count_based_info")
+                )
+                remaining = sum(
+                    (p.get("count_based_info") or {}).get("remaining_lessons", 0)
+                    for p in packages if p.get("count_based_info")
+                )
+                api_data["total_lessons"] = total
+                api_data["remaining_lessons"] = remaining
             processed_students.append(StudentModel(**api_data))
         return processed_students
 
     @staticmethod
     async def get_by_id(student_id: str) -> Optional[StudentModel]:
         """
-        根据ID获取学员信息
-
-        Args:
-            student_id: 学员ID
-
-        Returns:
-            学员对象，如果不存在则返回None
+        根据ID获取学员信息（含套餐聚合课时）
         """
         db = get_database()
         student = await db.get_student(student_id)
         if student:
-            # 映射为API格式
             api_data = map_mongo_to_api(student)
+            # 聚合套餐课时
+            packages = await db.get_student_packages(student_id)
+            total = sum(
+                (p.get("count_based_info") or {}).get("total_lessons", 0)
+                for p in packages if p.get("count_based_info")
+            )
+            remaining = sum(
+                (p.get("count_based_info") or {}).get("remaining_lessons", 0)
+                for p in packages if p.get("count_based_info")
+            )
+            api_data["total_lessons"] = total
+            api_data["remaining_lessons"] = remaining
             return StudentModel(**api_data)
         return None
 
@@ -155,14 +173,15 @@ class StudentService:
     @staticmethod
     async def update_lessons(student_id: str, new_lessons: int) -> bool:
         """
-        更新学员剩余课程数量
+        更新学员剩余课程数量（通过扣减有效记次套餐的课时）
 
         Args:
             student_id: 学员ID
-            new_lessons: 新的剩余课程数量
+            new_lessons: 已废弃参数，保留向后兼容
 
         Returns:
             更新是否成功
         """
-        db = get_database()
-        return await db.update_student(student_id, {"remaining_lessons": new_lessons})
+        # 不再直接更新student的remaining_lessons
+        # 课时扣减通过 AttendanceService.checkin → package 扣减完成
+        return True

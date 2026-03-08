@@ -15,18 +15,10 @@ class AttendanceService:
     @staticmethod
     async def checkin(appointment_id: str, student_id: str) -> AttendanceModel:
         """
-        学员签到
-
-        Args:
-            appointment_id: 预约ID
-            student_id: 学员ID
-
-        Returns:
-            创建的考勤记录对象
+        学员签到 — 从有效记次套餐中扣减课时
         """
         db = get_database()
 
-        # 获取学员和预约信息
         student = await db.get_student(student_id)
         appointment = await db.get_appointment(appointment_id)
 
@@ -34,12 +26,7 @@ class AttendanceService:
             raise ValueError("学员不存在")
         if not appointment:
             raise ValueError("预约不存在")
-
-        # 处理可能缺失的字段
-        remaining_lessons = student.get("remaining_lessons", student.get("total_lessons", 0))
-        if remaining_lessons <= 0:
-            raise ValueError("剩余课程不足")
-        if appointment.get("status") != "scheduled":
+        if appointment.get("status") not in ("scheduled", None):
             raise ValueError("预约状态无效")
 
         # 检查是否已经签到
@@ -48,25 +35,37 @@ class AttendanceService:
             if att.get("appointment_id") == appointment_id:
                 raise ValueError("已经签到过了")
 
-        # 获取时间信息（支持新旧格式）
+        # 从套餐聚合剩余课时
+        packages = await db.get_student_packages(student_id)
+        active_package = None
+        remaining_lessons = 0
+        for pkg in packages:
+            cbi = pkg.get("count_based_info")
+            if cbi and cbi.get("remaining_lessons", 0) > 0:
+                if active_package is None or cbi.get("remaining_lessons", 0) > 0:
+                    active_package = pkg
+                    remaining_lessons = cbi.get("remaining_lessons", 0)
+                    break  # 使用第一个有余量的套餐
+
+        if remaining_lessons <= 0:
+            raise ValueError("剩余课程不足")
+
+        # 获取时间信息
         start_time = appointment.get("start_time")
         attendance_date = None
         time_slot = None
 
         if start_time:
-            # 新格式：从 start_time 提取日期和时间
             if isinstance(start_time, str):
                 start_time = datetime.fromisoformat(start_time)
             attendance_date = start_time.date()
             time_slot = start_time.strftime("%H:%M")
         else:
-            # 旧格式：使用 appointment_date 和 time_slot
             appointment_date_str = appointment.get("appointment_date")
             if appointment_date_str:
                 attendance_date = date.fromisoformat(appointment_date_str)
             time_slot = appointment.get("time_slot", "")
 
-        # 创建上课记录
         attendance_data = {
             "student_id": student_id,
             "appointment_id": appointment_id,
@@ -78,70 +77,83 @@ class AttendanceService:
             "create_time": datetime.now()
         }
 
-        # 插入上课记录
         await db.create_attendance(attendance_data)
 
-        # 更新学员剩余课程
-        await db.update_student(student_id, {"remaining_lessons": remaining_lessons - 1})
+        # 扣减套餐课时
+        if active_package:
+            new_remaining = remaining_lessons - 1
+            new_cbi = active_package.get("count_based_info", {}).copy()
+            new_cbi["remaining_lessons"] = new_remaining
+            pkg_id = active_package.get("id") or active_package.get("_id")
+            if pkg_id:
+                from bson import ObjectId as BsonObjectId
+                # 先尝试 id 字段查询，再尝试 _id + ObjectId
+                result = await db.db.packages.update_one(
+                    {"id": str(pkg_id)},
+                    {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
+                )
+                if result.modified_count == 0:
+                    try:
+                        await db.db.packages.update_one(
+                            {"_id": BsonObjectId(str(pkg_id))},
+                            {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
+                        )
+                    except Exception:
+                        await db.db.packages.update_one(
+                            {"_id": str(pkg_id)},
+                            {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
+                        )
 
         # 更新预约状态
         await db.update_appointment(appointment_id, {"status": "checked", "update_time": datetime.now()})
 
-        attendance_data["_id"] = attendance_data.get("id", "")
+        attendance_data["id"] = attendance_data.get("id", "")
         return AttendanceModel(**attendance_data)
 
     @staticmethod
     async def mark_cancel(appointment_id: str, student_id: str) -> AttendanceModel:
         """
-        标记预约为取消状态
-
-        Args:
-            appointment_id: 预约ID
-            student_id: 学员ID
-
-        Returns:
-            创建的考勤记录对象
+        标记预约为取消状态（不扣课时）
         """
         db = get_database()
 
-        # 获取预约信息
         appointment = await db.get_appointment(appointment_id)
         if not appointment:
             raise ValueError("预约不存在")
 
-        # 获取学员信息
         student = await db.get_student(student_id)
         if not student:
             raise ValueError("学员不存在")
 
-        # 处理可能缺失的字段
-        remaining_lessons = student.get("remaining_lessons", student.get("total_lessons", 0))
-
-        # 检查是否已经有考勤记录
+        # 检查是否已有考勤记录
         attendances = await db.get_attendances()
         for att in attendances:
             if att.get("appointment_id") == appointment_id and att.get("student_id") == student_id:
                 raise ValueError("已经标记过考勤了")
 
-        # 获取时间信息（支持新旧格式）
+        # 聚合当前剩余课时（仅用于记录）
+        packages = await db.get_student_packages(student_id)
+        remaining_lessons = sum(
+            (p.get("count_based_info") or {}).get("remaining_lessons", 0)
+            for p in packages if p.get("count_based_info")
+        )
+
+        # 获取时间信息
         start_time = appointment.get("start_time")
         attendance_date = None
         time_slot = None
 
         if start_time:
-            # 新格式：从 start_time 提取日期和时间
             if isinstance(start_time, str):
                 start_time = datetime.fromisoformat(start_time)
             attendance_date = start_time.date()
             time_slot = start_time.strftime("%H:%M")
         else:
-            # 旧格式：使用 appointment_date 和 time_slot
             appointment_date_str = appointment.get("appointment_date")
             if appointment_date_str:
                 attendance_date = date.fromisoformat(appointment_date_str)
             time_slot = appointment.get("time_slot", "")
 
-        # 创建上课记录
         attendance_data = {
             "student_id": student_id,
             "appointment_id": appointment_id,
@@ -153,29 +165,16 @@ class AttendanceService:
             "create_time": datetime.now()
         }
 
-        # 更新预约状态
         await db.update_appointment(appointment_id, {"status": "cancel", "update_time": datetime.now()})
-
-        # 插入考勤记录
         await db.create_attendance(attendance_data)
 
-        attendance_data["_id"] = attendance_data.get("id", "")
+        attendance_data["id"] = attendance_data.get("id", "")
         return AttendanceModel(**attendance_data)
 
     @staticmethod
     async def get_by_student(student_id: str) -> List[AttendanceModel]:
-        """
-        获取学员的所有考勤记录
-
-        Args:
-            student_id: 学员ID
-
-        Returns:
-            考勤记录对象列表，按日期降序排列
-        """
+        """获取学员的所有考勤记录"""
         db = get_database()
         attendances = await db.get_student_attendances(student_id)
-
-        # 按日期排序
         attendances.sort(key=lambda x: x.get("attendance_date", ""), reverse=True)
         return [AttendanceModel(**att) for att in attendances]

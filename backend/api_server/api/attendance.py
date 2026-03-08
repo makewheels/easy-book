@@ -63,9 +63,9 @@ async def get_student_attendance(student_id: str):
         attendance_list = []
         for att in attendances:
             attendance_list.append({
-                "id": str(att.id),
-                "date": att.attendance_date.strftime("%Y-%m-%d"),
-                "time": att.time_slot,
+                "id": str(att.id) if att.id else "",
+                "date": att.attendance_date or "",
+                "time": att.time_slot or "",
                 "status": att.status,
                 "lessons_before": att.lessons_before,
                 "lessons_after": att.lessons_after

@@ -26,6 +26,7 @@
               :week-data="weekData"
               @slot-click="goToCalendarAppointment"
               @student-click="goToStudent"
+              @checkin-updated="handleCheckinUpdated"
             />
           </div>
         </div>
@@ -197,6 +198,10 @@ const goToStudent = (studentId) => {
     name: 'StudentDetail',
     params: { id: studentId }
   })
+}
+
+const handleCheckinUpdated = async () => {
+  await fetchInitialData()
 }
 
 const goToCalendarAppointment = (date, time) => {

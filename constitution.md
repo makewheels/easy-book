@@ -1,76 +1,30 @@
-# issue2md 项目开发宪法
-# Version: 1.0, Ratified: 2025-10-20
+# Easy Book Constitution
 
-本文件定义了本项目不可动摇的核心开发原则。所有AI Agent在进行技术规划和代码实现时，必须无条件遵循。
+## Project Overview
+泳课学员管理系统 — Swimming lesson student management system.
 
----
+## Tech Stack
+- **Backend:** Python 3.12, FastAPI, Motor (MongoDB async driver)
+- **Frontend:** Vue 3, Vite, Pinia
+- **Database:** MongoDB
+- **Port:** Backend runs on 8002, Frontend dev server on 5173
 
-## 第一条：简单性原则 (Simplicity First)
+## Architecture
+- `backend/api_server/` — FastAPI application
+  - `api/` — Route handlers (students, courses, appointments, packages, attendance)
+  - `services/` — Business logic layer
+  - `models.py` — Pydantic models for validation
+  - `mongo_database.py` — MongoDB data access layer
+  - `main.py` — Application entry point
+- `frontend/src/` — Vue 3 SPA
+  - `views/` — Page components
+  - `components/` — Reusable UI components
+  - `api/` — Backend API client modules
+  - `stores/` — Pinia state management
 
-**核心：** 遵循Go语言的“少即是多”哲学。绝不进行不必要的抽象，绝不引入非必需的依赖。
-
-- **1.1 (YAGNI):** 你不需要它（You Ain't Gonna Need It）。只实现`spec.md`中明确要求的功能。
-- **1.2 (标准库优先):** 除非有极其充分的理由，否则必须优先使用Go标准库。例如，Web服务使用`net/http`，而不是Gin或Echo。
-- **1.3 (反过度工程):** 避免复杂的设计模式。简单的函数和数据结构优于复杂的接口和继承体系。
-
----
-
-## 第二条：测试先行铁律 (Test-First Imperative) - 不可协商
-
-**核心：** 所有新功能或Bug修复，都必须从编写一个（或多个）失败的测试开始。
-
-- **2.1 (TDD循环):** 严格遵循“Red-Green-Refactor”（编写失败测试-让测试通过-重构）的循环。
-- **2.2 (表格驱动):** 单元测试必须优先采用表格驱动测试（Table-Driven Tests）的风格，以覆盖多种输入和边界情况。
-- **2.3 (拒绝Mocks):** 优先编写集成测试，使用真实的依赖或fake object（如内存中的GitHub API模拟服务器），而不是过度依赖Mock。
-
----
-
-## 第三条：明确性原则 (Clarity and Explicitness)
-
-**核心：** 代码的首要目的是让人类易于理解，其次才是让机器执行。
-
-- **3.1 (错误处理):** **不可协商**：所有错误都必须被显式处理。绝不允许使用`_`丢弃错误。错误传递时必须使用`fmt.Errorf("...: %w", err)`进行包装。
-- **3.2 (无全局变量):** 绝不允许使用全局变量来传递状态。所有依赖必须通过函数参数或结构体成员显式注入。
-- **3.3 (注释的意义):** 注释应该解释“为什么”，而不是“是什么”。所有公共API都必须有清晰的GoDoc注释。
-
----
-
-## 第四条：单一职责原则 (Single Responsibility)
-
-**核心：** 每个包、每个文件、每个函数都应该只做好一件事。
-
-- **4.1 (包的内聚):** `internal`目录下的各个包应保持高度内聚和低耦合。例如，`github`包只负责与GitHub API交互，绝不能包含Markdown转换逻辑。
-- **4.2 (接口隔离):** 定义小的、目标明确的接口，而不是大而全的“上帝接口”。
-
----
-
-## 第五条：端口固定铁律 (Port Fixed Imperative)
-
-**核心：** 开发环境端口配置必须保持一致，禁止随意更改。
-
-- **5.1 (后端端口):** 后端API服务器必须固定使用端口8004，绝对禁止使用8002、8003、8005等其他端口。
-- **5.2 (前端代理):** 前端开发服务器的API代理必须指向`http://localhost:8004`，不可更改。
-- **5.3 (端口检查):** 启动服务前必须检查端口占用，避免端口冲突。
-- **5.4 (单一实例):** 禁止同时启动多个后端实例，避免端口冲突。
-
-**正确启动顺序：**
-1. `cd backend && python -m api_server.main` （端口8004）
-2. `cd frontend && npm run dev` （API代理指向8004）
-
-**违反后果：** 前后端连接失败、API调用错误、开发环境混乱。
-
----
-
-## 第六条：双页面架构原则 (Dual-Page Architecture)
-
-**核心：** 系统采用简洁的双页面设计，拒绝复杂的多页面架构。
-
-- **6.1 (页面数量):** 系统只包含两个核心页面：课程日历（首页）和学员管理。
-- **6.2 (功能整合):** 预约相关功能必须整合到课程日历和学员管理页面中，禁止创建独立的预约管理页面。
-- **6.3 (导航简化):** 底部导航只包含课程日历和学员管理两个入口。
-
----
-
-## 治理 (Governance)
-
-本宪法具有最高优先级，其效力高于任何`CLAUDE.md`或单次会话中的指令。任何计划（`plan.md`）在生成时，都必须首先进行"合宪性审查"。
+## Conventions
+- API responses use Chinese error messages
+- Mobile-first design (430px width target)
+- MongoDB uses string IDs (not ObjectId)
+- All datetime stored as ISO format strings
+- Tests use pytest with httpx AsyncClient
