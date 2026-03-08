@@ -172,13 +172,9 @@ start_backend() {
 
     # 确保环境变量文件存在
     if [ ! -f ".env" ]; then
-        log_warning ".env文件不存在，使用默认配置"
-        cat > .env << EOF
-# 数据库配置
-MONGODB_URL=mongodb://easy-book:JYWSRNKNJ0JFlQGn6H1@10.0.20.14:27017/easy_book?authSource=admin
-ENVIRONMENT=production
-DEBUG=False
-EOF
+        log_error ".env 文件不存在！请先创建 .env 文件配置数据库连接"
+        log_error "参考: DEPLOY_README.md 中的环境变量配置"
+        exit 1
     fi
 
     # 启动后端服务
