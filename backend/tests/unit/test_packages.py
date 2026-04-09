@@ -13,7 +13,8 @@ class TestPackageAPI:
         """辅助方法：创建一个测试学员并返回 ID"""
         resp = await client.post("/api/students/", json={
             "name": "套餐测试学员",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         return resp.json()["id"]
 

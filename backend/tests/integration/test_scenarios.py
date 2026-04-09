@@ -18,9 +18,10 @@ class TestFullWorkflow:
         # 1. 创建学员
         student_resp = await client.post("/api/students/", json={
             "name": "完整流程学员",
-            "learning_item": "自由泳",
+            "gender": "男",
+            "age": 10,
             "phone": "13900139000",
-            "notes": "集成测试"
+            "emergency_contact": "13900000000"
         })
         assert student_resp.status_code == 200
         student = student_resp.json()
@@ -87,7 +88,8 @@ class TestFullWorkflow:
         # 创建学员 + 套餐
         student_resp = await client.post("/api/students/", json={
             "name": "取消测试学员",
-            "learning_item": "蛙泳"
+            "gender": "男",
+            "age": 11
         })
         student_id = student_resp.json()["id"]
 
@@ -124,7 +126,7 @@ class TestFullWorkflow:
         """场景：多学员课时互不影响"""
         # 学员 A
         a_resp = await client.post("/api/students/", json={
-            "name": "学员A", "learning_item": "自由泳"
+            "name": "学员A", "gender": "男", "age": 10
         })
         a_id = a_resp.json()["id"]
         await client.post("/api/packages/", json={
@@ -135,7 +137,7 @@ class TestFullWorkflow:
 
         # 学员 B
         b_resp = await client.post("/api/students/", json={
-            "name": "学员B", "learning_item": "蛙泳"
+            "name": "学员B", "gender": "女", "age": 9
         })
         b_id = b_resp.json()["id"]
         await client.post("/api/packages/", json={
@@ -166,7 +168,7 @@ class TestFullWorkflow:
     async def test_multiple_packages_deduct_first(self, client: AsyncClient, clean_db):
         """场景：多套餐时扣减第一个有余量的套餐"""
         student_resp = await client.post("/api/students/", json={
-            "name": "多套餐学员", "learning_item": "自由泳"
+            "name": "多套餐学员", "gender": "男", "age": 10
         })
         student_id = student_resp.json()["id"]
 
@@ -207,7 +209,7 @@ class TestFullWorkflow:
     async def test_delete_student_cascades(self, client: AsyncClient, clean_db):
         """场景：删除学员后预约也被删除"""
         student_resp = await client.post("/api/students/", json={
-            "name": "待删除学员", "learning_item": "自由泳"
+            "name": "待删除学员", "gender": "男", "age": 10
         })
         student_id = student_resp.json()["id"]
 

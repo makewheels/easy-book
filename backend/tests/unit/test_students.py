@@ -13,12 +13,13 @@ class TestStudentAPI:
         """创建学员 — 正常流程"""
         resp = await client.post("/api/students/", json={
             "name": "张三",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         assert resp.status_code == 200
         data = resp.json()
         assert data["name"] == "张三"
-        assert data["learning_item"] == "自由泳"
+        assert data["gender"] == "男"
         assert data["id"] is not None
         assert data["remaining_lessons"] is None  # 没有套餐时为 None
         assert data["total_lessons"] is None
@@ -27,42 +28,45 @@ class TestStudentAPI:
         """创建学员 — 带电话号码"""
         resp = await client.post("/api/students/", json={
             "name": "李四",
-            "learning_item": "蛙泳",
+            "gender": "女",
+            "age": 8,
             "phone": "13800138000"
         })
         assert resp.status_code == 200
         data = resp.json()
         assert data["phone"] == "13800138000"
 
-    async def test_create_student_with_notes(self, client: AsyncClient, clean_db):
-        """创建学员 — 带备注"""
+    async def test_create_student_with_emergency_contact(self, client: AsyncClient, clean_db):
+        """创建学员 — 带紧急联系人"""
         resp = await client.post("/api/students/", json={
             "name": "王五",
-            "learning_item": "仰泳",
-            "notes": "怕水，需要特别关注"
+            "gender": "男",
+            "age": 9,
+            "emergency_contact": "13700137000"
         })
         assert resp.status_code == 200
-        assert resp.json()["notes"] == "怕水，需要特别关注"
+        assert resp.json()["emergency_contact"] == "13700137000"
 
     async def test_create_student_missing_name(self, client: AsyncClient, clean_db):
         """创建学员 — 缺少必填字段 name"""
         resp = await client.post("/api/students/", json={
-            "learning_item": "自由泳"
+            "gender": "男"
         })
         assert resp.status_code == 422  # Pydantic validation error
 
-    async def test_create_student_missing_learning_item(self, client: AsyncClient, clean_db):
-        """创建学员 — 缺少必填字段 learning_item"""
+    async def test_create_student_only_name(self, client: AsyncClient, clean_db):
+        """创建学员 — 仅提供 name（其他字段均可选）"""
         resp = await client.post("/api/students/", json={
             "name": "赵六"
         })
-        assert resp.status_code == 422
+        assert resp.status_code == 200
+        assert resp.json()["name"] == "赵六"
 
     async def test_create_student_empty_name(self, client: AsyncClient, clean_db):
         """创建学员 — 空名字应该失败"""
         resp = await client.post("/api/students/", json={
             "name": "",
-            "learning_item": "自由泳"
+            "gender": "男"
         })
         assert resp.status_code == 422
 
@@ -76,11 +80,13 @@ class TestStudentAPI:
         """获取学员列表 — 创建后能查到"""
         await client.post("/api/students/", json={
             "name": "测试学员A",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         await client.post("/api/students/", json={
             "name": "测试学员B",
-            "learning_item": "蛙泳"
+            "gender": "女",
+            "age": 9
         })
         resp = await client.get("/api/students/")
         assert resp.status_code == 200
@@ -94,7 +100,8 @@ class TestStudentAPI:
         """根据 ID 获取学员"""
         create_resp = await client.post("/api/students/", json={
             "name": "单查学员",
-            "learning_item": "蝶泳"
+            "gender": "男",
+            "age": 12
         })
         student_id = create_resp.json()["id"]
 
@@ -111,17 +118,18 @@ class TestStudentAPI:
         """更新学员信息"""
         create_resp = await client.post("/api/students/", json={
             "name": "原始名",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         student_id = create_resp.json()["id"]
 
         resp = await client.put(f"/api/students/{student_id}", json={
             "name": "新名字",
-            "notes": "新增备注"
+            "emergency_contact": "13900000000"
         })
         assert resp.status_code == 200
         assert resp.json()["name"] == "新名字"
-        assert resp.json()["notes"] == "新增备注"
+        assert resp.json()["emergency_contact"] == "13900000000"
 
     async def test_update_student_not_found(self, client: AsyncClient, clean_db):
         """更新不存在的学员 — 404"""
@@ -134,7 +142,8 @@ class TestStudentAPI:
         """删除学员"""
         create_resp = await client.post("/api/students/", json={
             "name": "待删学员",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         student_id = create_resp.json()["id"]
 

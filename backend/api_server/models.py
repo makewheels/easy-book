@@ -131,9 +131,11 @@ class MongoDBAppointmentModel(MongoDBBaseModel):
 class StudentModel(BaseModel):
     id: Optional[str] = None
     name: str = Field(..., min_length=1, max_length=50, description="姓名")
+    gender: Optional[str] = Field(None, description="性别")
+    age: Optional[int] = Field(None, description="年龄")
+    id_card: Optional[str] = Field(None, max_length=18, description="身份证号码")
     phone: Optional[str] = Field(None, max_length=20, description="电话号码")
-    learning_item: str = Field(..., description="学习项目")
-    notes: Optional[str] = Field(None, max_length=500, description="备注")
+    emergency_contact: Optional[str] = Field(None, max_length=50, description="紧急联系人")
     remaining_lessons: Optional[int] = Field(None, description="剩余课时(从套餐聚合)")
     total_lessons: Optional[int] = Field(None, description="总课时(从套餐聚合)")
     create_time: datetime = Field(default_factory=datetime.now)
@@ -142,15 +144,19 @@ class StudentModel(BaseModel):
     
 class StudentCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=50)
+    gender: Optional[str] = Field(None)
+    age: Optional[int] = Field(None)
+    id_card: Optional[str] = Field(None, max_length=18)
     phone: Optional[str] = Field(None, max_length=20)
-    learning_item: str = Field(...)
-    notes: Optional[str] = Field(None, max_length=500)
+    emergency_contact: Optional[str] = Field(None, max_length=50)
 
 class StudentUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=50)
+    gender: Optional[str] = Field(None)
+    age: Optional[int] = Field(None)
+    id_card: Optional[str] = Field(None, max_length=18)
     phone: Optional[str] = Field(None, max_length=20)
-    learning_item: Optional[str] = Field(None)
-    notes: Optional[str] = Field(None, max_length=500)
+    emergency_contact: Optional[str] = Field(None, max_length=50)
 
 class AppointmentModel(BaseModel):
     id: Optional[str] = None

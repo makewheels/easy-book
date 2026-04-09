@@ -25,7 +25,8 @@ class TestStudents(TestBase):
 
         student_data = {
             "name": f"Test Student - {datetime.datetime.now().strftime('%H%M%S')}",
-            "learning_item": "自由泳",
+            "gender": "男",
+            "age": 10,
             "package_type": "1v1",
             "total_lessons": 10,
             "price": 1000,
@@ -86,8 +87,9 @@ class TestStudents(TestBase):
         student_id = self.test_data["student_id"]
         update_data = {
             "name": "Updated Name",
-            "learning_item": "蝶泳",
-            "note": "自动化测试更新"
+            "gender": "男",
+            "age": 12,
+            "emergency_contact": "13800000000"
         }
 
         response = requests.put(f"{self.api_url}/api/students/{student_id}", json=update_data)
@@ -95,8 +97,8 @@ class TestStudents(TestBase):
 
         updated_student = response.json()
         self.assert_equal(updated_student.get("name"), update_data["name"], "Name updated")
-        self.assert_equal(updated_student.get("learning_item"), update_data["learning_item"], "Learning item updated")
-        self.assert_equal(updated_student.get("note"), update_data["note"], "Note updated")
+        self.assert_equal(updated_student.get("gender"), update_data["gender"], "Gender updated")
+        self.assert_equal(updated_student.get("emergency_contact"), update_data["emergency_contact"], "Emergency contact updated")
 
         print(f"通过：测试4通过 - 更新学生信息成功 - {updated_student['name']}")
 
@@ -107,7 +109,8 @@ class TestStudents(TestBase):
         # 先创建一个临时学生用于删除测试
         temp_student_data = {
             "name": f"Temp Student - {datetime.datetime.now().strftime('%H%M%S')}",
-            "learning_item": "仰泳",
+            "gender": "女",
+            "age": 9,
             "package_type": "1v1",
             "total_lessons": 5,
             "price": 500,
@@ -152,7 +155,7 @@ class TestStudents(TestBase):
 
             # 填写学生表单
             self.driver.find_element(By.NAME, "name").send_keys("UI Test Student")
-            self.driver.find_element(By.NAME, "learning_item").send_keys("自由泳")
+            self.driver.find_element(By.NAME, "gender").send_keys("男")
 
             # 选择套餐类型
             package_select = self.driver.find_element(By.NAME, "package_type")

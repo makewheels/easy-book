@@ -58,7 +58,7 @@
                     <span class="student-name">{{ appointment.name }}</span>
                   </div>
                   <div class="existing-student-price-row">
-                    <span v-if="appointment.package_type || appointment.learning_item" class="course-type-text">{{ getCourseTypeTextForAppointment(appointment) }}</span>
+                    <span v-if="appointment.package_type" class="course-type-text">{{ getCourseTypeTextForAppointment(appointment) }}</span>
                     <span v-else class="course-type-text">1v1</span>
                     <span class="remaining-text">剩{{ getRemainingLessons(appointment) }}次</span>
                     <span class="price-info">{{ appointment.price || 0 }}元/节</span>
@@ -105,7 +105,7 @@
                     <div class="student-left">
                       <span class="student-name">{{ student.name }}</span>
                       <div class="student-price-row">
-                        <span v-if="student.package_type || student.learning_item" class="course-type-text">{{ getCourseTypeText(student) }}</span>
+                        <span v-if="student.package_type" class="course-type-text">{{ getCourseTypeText(student) }}</span>
                         <span class="remaining-text">剩{{ student.remaining_lessons }}次</span>
                         <span class="price-info">{{ student.price || 0 }}元/节</span>
                       </div>
@@ -304,12 +304,12 @@ const toggleExpand = () => {
 
 // 获取课程类型标签文本
 const getCourseTypeText = (student) => {
-  return student.package_type || student.learning_item || ''
+  return student.package_type || ''
 }
 
 // 获取已预约学员的课程类型文本
 const getCourseTypeTextForAppointment = (appointment) => {
-  return appointment.package_type || appointment.learning_item || ''
+  return appointment.package_type || ''
 }
 
 // 获取已预约学员的剩余次数
@@ -319,7 +319,7 @@ const getRemainingLessons = (appointment) => {
 
 // 获取非标签课程类型的描述
 const getNonOneOnOneText = (student) => {
-  const packageType = student.package_type || student.learning_item || ''
+  const packageType = student.package_type || ''
   // 现在所有课程类型都有标签了，所以右侧不显示课程类型
   return ''
 }

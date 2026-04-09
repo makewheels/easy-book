@@ -13,7 +13,8 @@ class TestAppointmentAPI:
     async def _create_student(self, client: AsyncClient) -> str:
         resp = await client.post("/api/students/", json={
             "name": "预约测试学员",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         return resp.json()["id"]
 
@@ -106,7 +107,8 @@ class TestAttendanceAPI:
         # 创建学员
         student_resp = await client.post("/api/students/", json={
             "name": "考勤测试学员",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         student_id = student_resp.json()["id"]
 
@@ -214,7 +216,8 @@ class TestAttendanceAPI:
         # 创建学员（不创建套餐）
         student_resp = await client.post("/api/students/", json={
             "name": "无套餐学员",
-            "learning_item": "自由泳"
+            "gender": "男",
+            "age": 10
         })
         student_id = student_resp.json()["id"]
 

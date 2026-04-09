@@ -22,34 +22,50 @@
 
   
           <div class="form-group">
-            <label>学习项目 *</label>
+            <label>性别</label>
+            <select v-model="form.gender">
+              <option value="">请选择性别</option>
+              <option value="男">男</option>
+              <option value="女">女</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>年龄</label>
+            <input
+              type="number"
+              v-model.number="form.age"
+              placeholder="请输入年龄"
+              min="0"
+              max="150"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>身份证号码</label>
             <input
               type="text"
-              v-model="form.learning_item"
-              required
-              placeholder="请输入学习项目"
+              v-model="form.id_card"
+              placeholder="请输入身份证号码"
             />
-            <div class="learning-item-suggestions">
-              <div class="suggestion-chips">
-                <span
-                  v-for="item in learningItemSuggestions"
-                  :key="item"
-                  class="suggestion-chip"
-                  @click="selectLearningItem(item)"
-                >
-                  {{ item }}
-                </span>
-              </div>
-            </div>
           </div>
-          
+
           <div class="form-group">
-            <label>备注</label>
-            <textarea 
-              v-model="form.note"
-              placeholder="请输入备注信息（可选）"
-              rows="3"
-            ></textarea>
+            <label>联系电话</label>
+            <input
+              type="tel"
+              v-model="form.phone"
+              placeholder="请输入联系电话"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>紧急联系人</label>
+            <input
+              type="text"
+              v-model="form.emergency_contact"
+              placeholder="请输入紧急联系人"
+            />
           </div>
         </div>
         
@@ -80,25 +96,12 @@ const loading = ref(false)
 
 const form = reactive({
   name: '',
-  learning_item: '',
-  note: ''
+  gender: '',
+  age: null,
+  id_card: '',
+  phone: '',
+  emergency_contact: ''
 })
-
-// 学习项目建议列表
-const learningItemSuggestions = [
-  '蛙泳',
-  '自由泳',
-  '仰泳',
-  '蝶泳',
-  '踩水',
-  '考证',
-  '技术改进',
-  '防溺水'
-]
-
-const selectLearningItem = (item) => {
-  form.learning_item = item
-}
 
 const goBack = () => {
   router.back()
@@ -106,8 +109,8 @@ const goBack = () => {
 
 const handleSubmit = async () => {
   // 验证表单
-  if (!form.name || !form.learning_item) {
-    toast.warning('请填写所有必填字段')
+  if (!form.name) {
+    toast.warning('请填写姓名')
     return
   }
 
@@ -116,8 +119,11 @@ const handleSubmit = async () => {
   // 构建要发送的数据
   const studentData = {
     name: form.name,
-    learning_item: form.learning_item,
-    note: form.note || undefined
+    gender: form.gender || undefined,
+    age: form.age || undefined,
+    id_card: form.id_card || undefined,
+    phone: form.phone || undefined,
+    emergency_contact: form.emergency_contact || undefined
   }
 
   try {
@@ -293,32 +299,4 @@ const handleSubmit = async () => {
   cursor: not-allowed;
 }
 
-.learning-item-suggestions {
-  margin-top: 8px;
-}
-
-.suggestion-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.suggestion-chip {
-  padding: 8px 12px;
-  background: #fff;
-  border: 1px solid #1989fa;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #1989fa;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.suggestion-chip:hover {
-  background: #1989fa;
-  color: #fff;
-  transform: translateY(-1px);
-}
 </style>

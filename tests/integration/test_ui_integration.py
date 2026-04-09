@@ -108,7 +108,8 @@ class TestUIIntegration(TestBase):
             # 1. API创建学生
             student_data = {
                 "name": f"Workflow Test Student - {datetime.datetime.now().strftime('%H%M%S')}",
-                "learning_item": "自由泳",
+                "gender": "男",
+                "age": 10,
                 "package_type": "1v1",
                 "total_lessons": 8,
                 "price": 800,

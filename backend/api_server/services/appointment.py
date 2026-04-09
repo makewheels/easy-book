@@ -312,7 +312,6 @@ class AppointmentService:
                             "id": apt.id,
                             "name": student_info.get("name", ""),
                             "package_type": student_info.get("package_type", ""),
-                            "learning_item": student_info.get("learning_item", ""),
                             "appointment_id": apt.id,
                             "student_id": apt.student_id,
                             "status": apt.status

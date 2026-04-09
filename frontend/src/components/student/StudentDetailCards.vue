@@ -8,12 +8,24 @@
       </div>
       <div class="card-content">
         <div class="detail-row">
-          <span class="detail-label">学习项目</span>
-          <span class="detail-value">{{ student.learning_item || '-' }}</span>
+          <span class="detail-label">性别</span>
+          <span class="detail-value">{{ student.gender || '-' }}</span>
         </div>
         <div class="detail-row">
-          <span class="detail-label">备注</span>
-          <span class="detail-value">{{ student.note || '暂无备注' }}</span>
+          <span class="detail-label">年龄</span>
+          <span class="detail-value">{{ student.age || '-' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">身份证号码</span>
+          <span class="detail-value">{{ student.id_card || '-' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">联系电话</span>
+          <span class="detail-value">{{ student.phone || '-' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">紧急联系人</span>
+          <span class="detail-value">{{ student.emergency_contact || '-' }}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">录入时间</span>

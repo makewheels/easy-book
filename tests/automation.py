@@ -232,7 +232,8 @@ class EasyBookAutomationTest:
         student_data = {
             "name": "Test Student - Auto",
             "nickname": "Auto Test",
-            "learning_item": "蛙泳",
+            "gender": "女",
+            "age": 10,
             "package_type": "1v1",
             "total_lessons": 10,
             "price": 1500,
@@ -249,12 +250,12 @@ class EasyBookAutomationTest:
         nickname_input.clear()
         nickname_input.send_keys(student_data["nickname"])
 
-        # Select learning item
+        # Select gender
         try:
-            learning_select = Select(self.driver.find_element(By.CSS_SELECTOR, "select"))
-            learning_select.select_by_visible_text(student_data["learning_item"])
+            gender_select = Select(self.driver.find_element(By.CSS_SELECTOR, "select"))
+            gender_select.select_by_visible_text(student_data["gender"])
         except Exception as e:
-            print(f"WARN: Learning item selection failed: {e}")
+            print(f"WARN: Gender selection failed: {e}")
 
         # Select package type
         try:

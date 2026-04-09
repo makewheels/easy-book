@@ -195,7 +195,8 @@ class TestAttendance(TestBase):
         # 创建有指定课程数的学生
         test_student_data = {
             "name": f"Logic Test Student - {datetime.datetime.now().strftime('%H%M%S')}",
-            "learning_item": "自由泳",
+            "gender": "男",
+            "age": 10,
             "package_type": "1v1",
             "total_lessons": 5,
             "price": 500,
@@ -252,7 +253,8 @@ class TestAttendance(TestBase):
         # 创建只有1节课的学生
         limited_student_data = {
             "name": f"Limited Lessons Student - {datetime.datetime.now().strftime('%H%M%S')}",
-            "learning_item": "自由泳",
+            "gender": "男",
+            "age": 10,
             "package_type": "1v1",
             "total_lessons": 1,
             "price": 100,
