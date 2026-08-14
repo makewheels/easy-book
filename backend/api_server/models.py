@@ -218,8 +218,11 @@ class StudentAppointmentModel(BaseModel):
     id: Optional[str] = None
     student_id: str = Field(..., description="学生ID")
     course_id: str = Field(..., description="课程ID")
-    status: str = Field(default="scheduled", pattern="^(scheduled|completed|cancelled|no_show)$", description="预约状态")
+    # checked/cancel 为考勤接口写入的状态，与 completed/cancelled 语义相同（历史原因并存）
+    status: str = Field(default="scheduled", pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$", description="预约状态")
     lesson_consumed: bool = Field(default=False, description="是否已消耗课程")
+    course: Optional[dict] = Field(default=None, description="关联课程信息（列表接口附带）")
+    student: Optional[dict] = Field(default=None, description="关联学员信息（列表接口附带）")
     create_time: datetime = Field(default_factory=datetime.now)
     update_time: datetime = Field(default_factory=datetime.now)
 
@@ -228,7 +231,7 @@ class StudentAppointmentCreate(BaseModel):
     course_id: str = Field(..., description="课程ID")
 
 class StudentAppointmentUpdate(BaseModel):
-    status: Optional[str] = Field(None, pattern="^(scheduled|completed|cancelled|no_show)$", description="预约状态")
+    status: Optional[str] = Field(None, pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$", description="预约状态")
     lesson_consumed: Optional[bool] = Field(None, description="是否已消耗课程")
 
 class AppointmentUpdate(BaseModel):
@@ -268,41 +271,46 @@ class PackageModel(BaseModel):
     @property
     def is_package_valid(self) -> bool:
         """检查套餐是否有效"""
-        if not self.is_active:
-            return False
+        if self.package_type == "time_based":
+            info = self.time_based_info or {}
+            end_date_str = info.get("end_date")
+            if not end_date_str:
+                return True
+            try:
+                end_date_obj = date.fromisoformat(str(end_date_str))
+            except ValueError:
+                return True
+            return date.today() <= end_date_obj
 
-        if self.package_category == "count_based":
-            return (self.remaining_lessons or 0) > 0
-        else:  # time_based
-            if self.unlimited_access:
-                return True
-            if not self.package_end_date:
-                return True
-            return date.today() <= self.package_end_date
+        # 记次套餐（1v1/1v2/... 或 count_based）：看剩余课时
+        info = self.count_based_info or {}
+        return (info.get("remaining_lessons") or 0) > 0
 
     @property
     def package_status_text(self) -> str:
         """获取套餐状态文本"""
-        if not self.is_active:
-            return "已停用"
-
-        if self.package_category == "count_based":
-            remaining = self.remaining_lessons or 0
-            total = self.total_lessons or 0
-            return f"{remaining}/{total}节"
-        else:  # time_based
-            if self.unlimited_access:
-                return "永久有效"
-            if not self.package_end_date:
+        if self.package_type == "time_based":
+            info = self.time_based_info or {}
+            start_date_str = info.get("start_date")
+            end_date_str = info.get("end_date")
+            if not end_date_str:
                 return "未设置有效期"
+            try:
+                end_date_obj = date.fromisoformat(str(end_date_str))
+            except ValueError:
+                return "无效有效期"
             today = date.today()
-            if today > self.package_end_date:
+            if today > end_date_obj:
                 return "已过期"
-            days_left = (self.package_end_date - today).days
+            days_left = (end_date_obj - today).days
             if days_left <= 7:
                 return f"{days_left}天后过期"
-            else:
-                return self.package_end_date.strftime("%Y-%m-%d到期")
+            return f"{end_date_obj.strftime('%Y-%m-%d')}到期"
+
+        info = self.count_based_info or {}
+        remaining = info.get("remaining_lessons") or 0
+        total = info.get("total_lessons") or 0
+        return f"{remaining}/{total}节"
 
     @property
     def package_type_display(self) -> str:

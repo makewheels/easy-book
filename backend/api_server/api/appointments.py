@@ -7,6 +7,7 @@ from api_server.models import (
     StudentAppointmentUpdate
 )
 from api_server.services import AppointmentService
+from api_server.database import get_database
 
 router = APIRouter()
 
@@ -105,27 +106,33 @@ async def get_student_appointment(appointment_id: str):
         if appointment:
             return appointment
         else:
-            raise HTTPException(status_code=404, detail="Appointment not found")
+            raise HTTPException(status_code=404, detail="预约不存在")
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/{appointment_id}", response_model=StudentAppointmentModel)
 async def update_student_appointment(appointment_id: str, appointment_update: StudentAppointmentUpdate):
+    """更新预约状态（改约时间请取消后重新预约）"""
     try:
         update_data = appointment_update.dict(exclude_unset=True)
-        # 注意：这里简化了更新逻辑，因为主要的状态更新通过专门的接口处理
+        if not update_data:
+            raise HTTPException(status_code=400, detail="没有提供更新数据")
 
-        # 对于这种API，我们主要支持状态更新
-        if "status" in update_data:
-            # 这里需要调用相应的服务方法来处理状态变更
-            pass
+        db = get_database()
+        existing = await db.get_appointment(appointment_id)
+        if not existing:
+            raise HTTPException(status_code=404, detail="预约不存在")
 
-        # 获取更新后的预约
-        updated_appointment = await AppointmentService.get_appointment_by_id(appointment_id)
-        if updated_appointment:
-            return updated_appointment
-        else:
-            raise HTTPException(status_code=404, detail="Appointment not found")
+        success = await db.update_appointment(appointment_id, update_data)
+        if not success:
+            raise HTTPException(status_code=400, detail="更新预约失败")
+
+        updated = await AppointmentService.get_appointment_by_id(appointment_id)
+        return updated
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

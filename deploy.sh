@@ -113,14 +113,15 @@ install_python_deps() {
 
     cd $PROJECT_DIR/backend
 
-    # 升级pip
-    python3 -m pip install --upgrade pip
+    # 安装 uv（若缺失）
+    if ! command -v uv >/dev/null 2>&1; then
+        log_info "安装 uv..."
+        sudo pip3 install uv --break-system-packages -q
+    fi
 
-    # 安装依赖
-    pip3 install -r requirements.txt
-
-    # 安装可能缺失的依赖
-    pip3 install python-dateutil pymongo fastapi uvicorn python-multipart
+    # uv 按 lockfile 装到独立 .venv（不污染系统 Python；仅用系统 Python，禁止联网下载托管 Python）
+    export UV_PYTHON_DOWNLOADS=never
+    uv sync --frozen --no-dev --python-preference only-system
 
     log_success "Python依赖安装完成"
 }
@@ -131,11 +132,13 @@ build_frontend() {
 
     cd $PROJECT_DIR/frontend
 
-    # 安装npm依赖
-    npm install
-
-    # 构建生产版本
-    npm run build
+    # pnpm 构建（与 pnpm-lock.yaml 保持一致）
+    if ! command -v pnpm >/dev/null 2>&1; then
+        log_info "安装 pnpm..."
+        npm install -g pnpm@10
+    fi
+    pnpm install --frozen-lockfile
+    pnpm run build
 
     log_success "前端构建完成"
 }
@@ -177,8 +180,8 @@ start_backend() {
         exit 1
     fi
 
-    # 启动后端服务
-    nohup python3 run.py 8002 > /tmp/backend.log 2>&1 &
+    # 启动后端服务（用 uv 创建的 .venv 解释器）
+    nohup .venv/bin/python run.py 8002 > /tmp/backend.log 2>&1 &
 
     # 等待服务启动
     sleep 5
@@ -265,7 +268,7 @@ show_deployment_info() {
     echo "🔧 常用命令:"
     echo "   查看后端进程: ps aux | grep python"
     echo "   查看Nginx状态: sudo systemctl status nginx"
-    echo "   重启后端: cd $PROJECT_DIR/backend && pkill -f run.py && nohup python3 run.py 8002 > /tmp/backend.log 2>&1 &"
+    echo "   重启后端: cd $PROJECT_DIR/backend && pkill -f run.py && nohup .venv/bin/python run.py 8002 > /tmp/backend.log 2>&1 &"
     echo "   重启Nginx: sudo systemctl restart nginx"
     echo "========================================="
 }

@@ -35,23 +35,26 @@ class AttendanceService:
             if att.get("appointment_id") == appointment_id:
                 raise ValueError("已经签到过了")
 
-        # 从套餐聚合剩余课时
+        # 从套餐聚合剩余课时，选第一个还有余量的记次套餐扣减
         packages = await db.get_student_packages(student_id)
         active_package = None
         remaining_lessons = 0
         for pkg in packages:
-            cbi = pkg.get("count_based_info")
-            if cbi and cbi.get("remaining_lessons", 0) > 0:
-                if active_package is None or cbi.get("remaining_lessons", 0) > 0:
-                    active_package = pkg
-                    remaining_lessons = cbi.get("remaining_lessons", 0)
-                    break  # 使用第一个有余量的套餐
+            cbi = pkg.get("count_based_info") or {}
+            if cbi.get("remaining_lessons", 0) > 0:
+                active_package = pkg
+                remaining_lessons = cbi.get("remaining_lessons", 0)
+                break
 
-        if remaining_lessons <= 0:
-            raise ValueError("剩余课程不足")
+        if not active_package or remaining_lessons <= 0:
+            raise ValueError("剩余课程不足，请先为学员购买/充值套餐")
 
-        # 获取时间信息
+        # 获取时间信息（优先预约自带，其次从关联课程取）
         start_time = appointment.get("start_time")
+        if not start_time and appointment.get("course_id"):
+            course = await db.get_course(appointment.get("course_id"))
+            if course:
+                start_time = course.get("start_time")
         attendance_date = None
         time_slot = None
 
@@ -80,32 +83,14 @@ class AttendanceService:
         await db.create_attendance(attendance_data)
 
         # 扣减套餐课时
-        if active_package:
-            new_remaining = remaining_lessons - 1
-            new_cbi = active_package.get("count_based_info", {}).copy()
-            new_cbi["remaining_lessons"] = new_remaining
-            pkg_id = active_package.get("id") or active_package.get("_id")
-            if pkg_id:
-                from bson import ObjectId as BsonObjectId
-                # 先尝试 id 字段查询，再尝试 _id + ObjectId
-                result = await db.db.packages.update_one(
-                    {"id": str(pkg_id)},
-                    {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
-                )
-                if result.modified_count == 0:
-                    try:
-                        await db.db.packages.update_one(
-                            {"_id": BsonObjectId(str(pkg_id))},
-                            {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
-                        )
-                    except Exception:
-                        await db.db.packages.update_one(
-                            {"_id": str(pkg_id)},
-                            {"$set": {"count_based_info": new_cbi, "update_time": datetime.now()}}
-                        )
+        new_cbi = (active_package.get("count_based_info") or {}).copy()
+        new_cbi["remaining_lessons"] = remaining_lessons - 1
+        await db.update_package_by_id(active_package["id"], {
+            "count_based_info": new_cbi,
+        })
 
         # 更新预约状态
-        await db.update_appointment(appointment_id, {"status": "checked", "update_time": datetime.now()})
+        await db.update_appointment(appointment_id, {"status": "checked", "lesson_consumed": True})
 
         attendance_data["id"] = attendance_data.get("id", "")
         return AttendanceModel(**attendance_data)
@@ -138,8 +123,12 @@ class AttendanceService:
             for p in packages if p.get("count_based_info")
         )
 
-        # 获取时间信息
+        # 获取时间信息（优先预约自带，其次从关联课程取）
         start_time = appointment.get("start_time")
+        if not start_time and appointment.get("course_id"):
+            course = await db.get_course(appointment.get("course_id"))
+            if course:
+                start_time = course.get("start_time")
         attendance_date = None
         time_slot = None
 

@@ -144,9 +144,11 @@ class MongoDatabase:
             except:
                 pass
 
-        # 删除相关预约（使用新的 appointments 表）
+        # 删除相关数据：预约、套餐、考勤
         if result.deleted_count > 0:
             await self.db.appointments.delete_many({"student_id": student_id})
+            await self.db.packages.delete_many({"student_id": student_id})
+            await self.db.attendances.delete_many({"student_id": student_id})
 
         return result.deleted_count > 0
     
@@ -156,8 +158,9 @@ class MongoDatabase:
         """创建课程"""
         course_data["_id"] = self._generate_id()
         course_data["id"] = course_data["_id"]
-        course_data["create_time"] = datetime.utcnow()
-        course_data["update_time"] = datetime.utcnow()
+        course_data.setdefault("status", "scheduled")
+        course_data["create_time"] = datetime.now()
+        course_data["update_time"] = datetime.now()
 
         result = await self.db.courses.insert_one(course_data)
         return str(result.inserted_id)
@@ -169,7 +172,7 @@ class MongoDatabase:
 
     async def update_course(self, course_id: str, update_data: dict) -> bool:
         """更新课程信息"""
-        update_data["update_time"] = datetime.utcnow()
+        update_data["update_time"] = datetime.now()
         result = await self.db.courses.update_one(
             {"_id": course_id},
             {"$set": update_data}
@@ -177,11 +180,11 @@ class MongoDatabase:
         return result.modified_count > 0
 
     async def find_course_by_time(self, start_time: datetime, end_time: datetime) -> Optional[dict]:
-        """根据开始和结束时间查找课程"""
+        """根据开始和结束时间查找课程（排除已取消的）"""
         course = await self.db.courses.find_one({
             "start_time": start_time,
             "end_time": end_time,
-            "status": "scheduled"
+            "status": {"$ne": "cancelled"}
         })
         return self._convert_id(course) if course else None
 
@@ -200,15 +203,17 @@ class MongoDatabase:
         """创建学生预约"""
         appointment_data["_id"] = self._generate_id()
         appointment_data["id"] = appointment_data["_id"]
-        appointment_data["create_time"] = datetime.utcnow()
-        appointment_data["update_time"] = datetime.utcnow()
+        appointment_data["create_time"] = datetime.now()
+        appointment_data["update_time"] = datetime.now()
 
         result = await self.db.appointments.insert_one(appointment_data)
         return str(result.inserted_id)
 
-    async def get_appointments(self, student_id: str, status: Optional[str] = None) -> List[dict]:
-        """获取学生的预约列表"""
-        query = {"student_id": student_id}
+    async def get_appointments(self, student_id: Optional[str] = None, status: Optional[str] = None) -> List[dict]:
+        """获取预约列表；student_id 为 None 时返回全部预约"""
+        query = {}
+        if student_id:
+            query["student_id"] = student_id
         if status:
             query["status"] = status
 
@@ -231,7 +236,7 @@ class MongoDatabase:
 
     async def update_appointment(self, appointment_id: str, update_data: dict) -> bool:
         """更新学生预约"""
-        update_data["update_time"] = datetime.utcnow()
+        update_data["update_time"] = datetime.now()
         result = await self.db.appointments.update_one(
             {"id": appointment_id},
             {"$set": update_data}
@@ -273,6 +278,29 @@ class MongoDatabase:
         async for pkg in self.db.packages.find({"student_id": student_id}).sort("create_time", -1):
             packages.append(self._convert_id(dict(pkg)))
         return packages
+
+    async def get_package_by_id(self, package_id: str) -> Optional[dict]:
+        """根据ID获取套餐（兼容 ObjectId 与字符串 _id）"""
+        package = await self.db.packages.find_one({"_id": package_id})
+        if not package:
+            try:
+                package = await self.db.packages.find_one({"_id": ObjectId(package_id)})
+            except Exception:
+                pass
+        return self._convert_id(dict(package)) if package else None
+
+    async def update_package_by_id(self, package_id: str, update_data: dict) -> bool:
+        """根据ID更新套餐（兼容 ObjectId 与字符串 _id）"""
+        update_data["update_time"] = datetime.now()
+        result = await self.db.packages.update_one({"_id": package_id}, {"$set": update_data})
+        if result.matched_count == 0:
+            try:
+                result = await self.db.packages.update_one(
+                    {"_id": ObjectId(package_id)}, {"$set": update_data}
+                )
+            except Exception:
+                pass
+        return result.matched_count > 0
 
     async def check_student_time_conflict(self, student_id: str, start_time: datetime, end_time: datetime) -> bool:
         """检查学生时间冲突"""

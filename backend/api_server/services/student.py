@@ -56,13 +56,14 @@ class StudentService:
 
     
     @staticmethod
-    async def get_all(skip: int = 0, limit: int = 100) -> List[StudentModel]:
+    async def get_all(skip: int = 0, limit: int = 100, search: str = None) -> List[StudentModel]:
         """
         获取所有学员列表（按创建时间降序）
 
         Args:
             skip: 跳过的记录数
             limit: 返回的最大记录数
+            search: 按姓名/电话模糊过滤
 
         Returns:
             学员对象列表
@@ -72,19 +73,29 @@ class StudentService:
         db = get_database()
         students = await db.get_students()
 
+        # 按姓名/电话模糊过滤
+        if search:
+            keyword = search.strip().lower()
+            students = [
+                s for s in students
+                if keyword in (s.get("name") or "").lower()
+                or keyword in (s.get("phone") or "").lower()
+            ]
+
         # 简化排序逻辑：按创建时间降序（新学生在前）
         def get_sort_key(student):
-            create_time_str = student.get("create_time", "")
+            create_time = student.get("create_time")
             try:
-                if create_time_str:
-                    create_time = datetime.fromisoformat(create_time_str.replace('Z', '+00:00'))
-                    create_timestamp = create_time.timestamp()
-                else:
-                    create_timestamp = 0
-            except:
-                create_timestamp = 0
-            # 用负数让新学生排在前面
-            return -create_timestamp
+                if isinstance(create_time, str):
+                    create_time = datetime.fromisoformat(create_time.replace('Z', '+00:00'))
+                if create_time:
+                    # 去掉时区信息统一比较
+                    if create_time.tzinfo is not None:
+                        create_time = create_time.replace(tzinfo=None)
+                    return -create_time.timestamp()
+            except (ValueError, TypeError):
+                pass
+            return 0
 
         # 按排序键进行排序
         students.sort(key=get_sort_key)
