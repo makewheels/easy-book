@@ -402,3 +402,18 @@ WRITE_TOOLS: set[str] = {
     "checkin_appointment",
     "set_appointment_status",
 }
+
+# 两步确认协议：写操作统一追加 confirm 参数。
+# 首次调用不带 confirm（或 false）只返回执行计划（requiresConfirmation）；
+# 用户明确同意后，模型带 confirm=true 重调同一工具才真正执行。
+_CONFIRM_PARAM = {
+    "type": "boolean",
+    "description": (
+        "确认标记。首次调用请省略——工具只会返回执行计划供用户确认，不改数据；"
+        "用户明确同意后，带 confirm=true 重新调用本工具才真正执行。"
+    ),
+    "default": False,
+}
+for _tool in ALL_TOOLS:
+    if _tool["function"]["name"] in WRITE_TOOLS:
+        _tool["function"]["parameters"]["properties"]["confirm"] = _CONFIRM_PARAM

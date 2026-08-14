@@ -69,8 +69,9 @@ class BookTools:
         span = lf_trace.start_tool_span(name, args)
         started = time.time()
         try:
-            if name in WRITE_TOOLS and not self.confirm_write:
-                result: Any = {"requiresConfirmation": True, "tool": name, "planned": args}
+            if name in WRITE_TOOLS and not (self.confirm_write or args.get("confirm")):
+                planned = {k: v for k, v in args.items() if k != "confirm"}
+                result: Any = {"requiresConfirmation": True, "tool": name, "planned": planned}
             else:
                 result = method(**args)
         except TypeError as exc:
@@ -143,6 +144,7 @@ class BookTools:
         age: Optional[int] = None,
         phone: Optional[str] = None,
         emergency_contact: Optional[str] = None,
+        confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {"name": name}
         for key, val in (("gender", gender), ("age", age), ("phone", phone),
@@ -159,6 +161,8 @@ class BookTools:
         age: Optional[int] = None,
         phone: Optional[str] = None,
         emergency_contact: Optional[str] = None,
+    
+                                                                                                                                                                                                                                                              confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {}
         for key, val in (("name", name), ("gender", gender), ("age", age),
@@ -169,7 +173,7 @@ class BookTools:
             raise ValueError("没有提供要修改的字段")
         return self._request("PUT", f"/api/students/{student_id}", json_body=body)
 
-    def delete_student(self, student_id: str) -> Any:
+    def delete_student(self, student_id: str, confirm: bool = False) -> Any:
         return self._request("DELETE", f"/api/students/{student_id}")
 
     # ── 写操作：套餐 ────────────────────────────────────────────
@@ -184,6 +188,8 @@ class BookTools:
         total_lessons: Optional[int] = None,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
+    
+                                                                                                                                                                                                                                                                                          confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {
             "student_id": student_id,
@@ -215,6 +221,8 @@ class BookTools:
         package_type: Optional[str] = None,
         price: Optional[float] = None,
         venue_share: Optional[float] = None,
+    
+                                                                                                                                                                                                                               confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {}
         for key, val in (("name", name), ("package_type", package_type),
@@ -231,32 +239,34 @@ class BookTools:
         delta: int,
         adjust_total: bool = False,
         reason: Optional[str] = None,
+    
+                                                                                                                                                                 confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {"delta": delta, "adjust_total": adjust_total}
         if reason:
             body["reason"] = reason
         return self._request("POST", f"/api/packages/{package_id}/adjust-lessons", json_body=body)
 
-    def delete_package(self, package_id: str) -> Any:
+    def delete_package(self, package_id: str, confirm: bool = False) -> Any:
         return self._request("DELETE", f"/api/packages/{package_id}")
 
     # ── 写操作：预约/考勤 ───────────────────────────────────────
 
-    def book_appointment(self, student_id: str, start_time: str, duration_minutes: int = 60) -> Any:
+    def book_appointment(self, student_id: str, start_time: str, duration_minutes: int = 60, confirm: bool = False) -> Any:
         return self._request("POST", "/api/appointments/", json_body={
             "student_id": student_id,
             "start_time": start_time,
             "duration_in_minutes": duration_minutes,
         })
 
-    def cancel_appointment(self, appointment_id: str) -> Any:
+    def cancel_appointment(self, appointment_id: str, confirm: bool = False) -> Any:
         return self._request("POST", f"/api/appointments/{appointment_id}/cancel")
 
-    def checkin_appointment(self, appointment_id: str, student_id: str) -> Any:
+    def checkin_appointment(self, appointment_id: str, student_id: str, confirm: bool = False) -> Any:
         return self._request("POST", "/api/attendance/checkin", json_body={
             "appointment_id": appointment_id,
             "student_id": student_id,
         })
 
-    def set_appointment_status(self, appointment_id: str, status: str) -> Any:
+    def set_appointment_status(self, appointment_id: str, status: str, confirm: bool = False) -> Any:
         return self._request("PUT", f"/api/appointments/{appointment_id}", json_body={"status": status})
