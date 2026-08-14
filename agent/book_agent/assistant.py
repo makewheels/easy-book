@@ -7,8 +7,10 @@ from datetime import datetime
 from typing import Any
 
 from .client import ModelClient
+from .config import get_config
 from .schema import ALL_TOOLS
 from .tools import BookTools
+from . import trace as lf_trace
 
 
 def build_system_prompt(now: datetime | None = None) -> str:
@@ -62,49 +64,67 @@ class BookAssistant:
         self.tools = tools or BookTools()
         self.client = client or ModelClient()
 
-    def answer(self, query: str, history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    def answer(
+        self,
+        query: str,
+        history: list[dict[str, Any]] | None = None,
+        session_id: str | None = None,
+    ) -> dict[str, Any]:
         """单轮/多轮问答，返回 {query, answer, trace, messages}。"""
         self.tools.trace.clear()
+        trace_handle = lf_trace.start_trace(
+            name="book-agent.answer",
+            input=query,
+            session_id=session_id,
+            environment=get_config().environment,
+            metadata={"backend": self.tools.api_url, "max_turns": self.MAX_TURNS},
+        )
         messages: list[dict[str, Any]] = [{"role": "system", "content": build_system_prompt()}]
         if history:
             messages.extend(history)
         messages.append({"role": "user", "content": query})
 
         final_text = ""
-        for _ in range(self.MAX_TURNS):
-            response = self.client.chat(messages, tools=ALL_TOOLS)
+        try:
+            for _ in range(self.MAX_TURNS):
+                response = self.client.chat(messages, tools=ALL_TOOLS)
 
-            if not response.tool_calls:
-                final_text = response.text
-                break
+                if not response.tool_calls:
+                    final_text = response.text
+                    break
 
-            # 带工具调用的一轮：先记录 assistant 消息
-            messages.append({
-                "role": "assistant",
-                "content": response.text or None,
-                "tool_calls": [
-                    {
-                        "id": tc.id,
-                        "type": "function",
-                        "function": {
-                            "name": tc.name,
-                            "arguments": json.dumps(tc.arguments, ensure_ascii=False),
-                        },
-                    }
-                    for tc in response.tool_calls
-                ],
-            })
-
-            # 逐个执行工具，结果塞回 messages
-            for tc in response.tool_calls:
-                result = self.tools.execute(tc.name, tc.arguments)
+                # 带工具调用的一轮：先记录 assistant 消息
                 messages.append({
-                    "role": "tool",
-                    "tool_call_id": tc.id,
-                    "content": json.dumps(result, ensure_ascii=False, default=str),
+                    "role": "assistant",
+                    "content": response.text or None,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": "function",
+                            "function": {
+                                "name": tc.name,
+                                "arguments": json.dumps(tc.arguments, ensure_ascii=False),
+                            },
+                        }
+                        for tc in response.tool_calls
+                    ],
                 })
-        else:
-            final_text = "（已达到最大推理轮数，请简化你的请求）"
+
+                # 逐个执行工具，结果塞回 messages
+                for tc in response.tool_calls:
+                    result = self.tools.execute(tc.name, tc.arguments)
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tc.id,
+                        "content": json.dumps(result, ensure_ascii=False, default=str),
+                    })
+            else:
+                final_text = "（已达到最大推理轮数，请简化你的请求）"
+        except Exception as exc:
+            lf_trace.end_trace(trace_handle, error=exc)
+            raise
+
+        lf_trace.end_trace(trace_handle, output=final_text)
 
         return {
             "query": query,

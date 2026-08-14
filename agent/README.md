@@ -36,6 +36,18 @@ uv run book-agent tools
 | `BOOK_AGENT_LLM_MODEL` | `qwen-plus` | 模型 id |
 | `EASY_BOOK_API_URL` | `http://localhost:8002` | easy-book 后端地址 |
 | `BOOK_AGENT_CONFIRM_WRITE` | `false` | `true` 时写操作免确认（慎用） |
+| `BOOK_AGENT_ENVIRONMENT` | 按后端地址推断 | trace 环境标签（development/production） |
+
+### Langfuse trace（可选）
+
+配置以下三个变量即启用全链路观测（trace → generation → tool span），未配置时整体 no-op：
+
+| 变量 | 说明 |
+|---|---|
+| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` | 项目 API key（自托管 langfuse：easy-book project） |
+| `LANGFUSE_HOST` | 如 `http://101.42.94.17:30030` |
+
+需安装可选依赖：`uv sync --extra langfuse`。上报失败只记 warning，绝不影响主路径。
 
 ## 架构
 
@@ -46,6 +58,7 @@ book_agent/
 ├── client.py     # OpenAI 兼容 LLM 客户端（urllib，零额外依赖）
 ├── assistant.py  # SYSTEM_PROMPT + 手写 agent loop（最多 8 轮）
 ├── config.py     # 环境变量配置
+├── trace.py      # Langfuse 观测层（可选依赖，未配置时 no-op，同 video-2022）
 └── __main__.py   # CLI：ask / chat / tools / health
 
 tests/

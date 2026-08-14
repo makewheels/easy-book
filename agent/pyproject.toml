@@ -7,6 +7,12 @@ dependencies = [
     "requests>=2.31",
 ]
 
+[project.optional-dependencies]
+# Langfuse trace 观测（book_agent/trace.py；未装或未配 LANGFUSE_* 时整体 no-op）
+langfuse = [
+    "langfuse>=4",
+]
+
 [project.scripts]
 book-agent = "book_agent.__main__:main"
 

@@ -68,6 +68,10 @@ class AgentConfig:
     easy_book_api_url: str = "http://localhost:8002"
     confirm_write: bool = False
 
+    # ── 观测 ──
+    # trace 环境标签（langfuse environment）；默认按后端地址推断
+    environment: str = ""
+
     # ── paths ──
     project_root: str = field(default_factory=lambda: str(Path(__file__).resolve().parents[1]))
 
@@ -100,6 +104,10 @@ class AgentConfig:
 
         self.easy_book_api_url = os.getenv("EASY_BOOK_API_URL") or self.easy_book_api_url
         self.confirm_write = os.getenv("BOOK_AGENT_CONFIRM_WRITE", "").lower() in ("1", "true", "yes")
+        self.environment = os.getenv("BOOK_AGENT_ENVIRONMENT") or (
+            "development" if ("localhost" in self.easy_book_api_url or "127.0.0.1" in self.easy_book_api_url)
+            else "production"
+        )
 
         try:
             self.temperature = float(os.getenv("BOOK_AGENT_TEMPERATURE", str(self.temperature)))

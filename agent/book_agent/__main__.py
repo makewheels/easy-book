@@ -16,12 +16,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import uuid
 
 from .assistant import BookAssistant
 from .client import LLMError
 from .config import get_config
 from .schema import ALL_TOOLS
 from .tools import BookTools
+from . import trace as lf_trace
 
 
 def _api_url(args: argparse.Namespace) -> str:
@@ -52,25 +54,29 @@ def cmd_ask(args: argparse.Namespace) -> int:
         return 2
     print(result["answer"])
     _print_trace(result["trace"])
+    lf_trace.flush()
     return 0
 
 
 def cmd_chat(args: argparse.Namespace) -> int:
     assistant = _build_assistant(args)
     history: list = []
+    session_id = f"chat-{uuid.uuid4().hex[:8]}"
     print("Easy-Book 助手（输入 quit 退出）")
     while True:
         try:
             query = input("\n你 > ").strip()
         except (EOFError, KeyboardInterrupt):
             print()
+            lf_trace.flush()
             return 0
         if not query:
             continue
         if query.lower() in ("quit", "exit", "q"):
+            lf_trace.flush()
             return 0
         try:
-            result = assistant.answer(query, history=history)
+            result = assistant.answer(query, history=history, session_id=session_id)
         except LLMError as exc:
             print(f"LLM 错误: {exc}", file=sys.stderr)
             continue

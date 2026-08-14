@@ -16,6 +16,7 @@ from typing import Any, Optional
 import requests
 
 from .schema import WRITE_TOOLS
+from . import trace as lf_trace
 
 
 @dataclass
@@ -65,6 +66,7 @@ class BookTools:
         method = getattr(self, name, None)
         if method is None or name.startswith("_"):
             return {"error": f"Unknown tool: {name}"}
+        span = lf_trace.start_tool_span(name, args)
         started = time.time()
         try:
             if name in WRITE_TOOLS and not self.confirm_write:
@@ -75,6 +77,7 @@ class BookTools:
             result = {"error": f"参数错误: {exc}", "tool": name}
         except Exception as exc:  # noqa: BLE001 — 错误转返回值是约定
             result = {"error": str(exc), "tool": name}
+        lf_trace.finish_tool_span(span, result=result)
         self._record(name, args, result, time.time() - started)
         return result
 

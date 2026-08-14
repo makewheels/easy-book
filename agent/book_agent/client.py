@@ -10,6 +10,7 @@ from typing import Any
 
 from .config import AgentConfig, get_config
 from .schema import ALL_TOOLS
+from . import trace as lf_trace
 
 
 @dataclass
@@ -77,18 +78,27 @@ class ModelClient:
             },
             method="POST",
         )
+        gen = lf_trace.start_generation(
+            name="model.chat",
+            model=self.model,
+            messages=messages,
+            metadata={"n_tools": len(tools) if tools else 0},
+        )
         try:
             with urllib.request.urlopen(req, timeout=self.timeout) as resp:
                 body = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
+            lf_trace.finish_generation(gen, error=f"HTTP {exc.code}: {detail[:300]}")
             raise LLMError(f"LLM HTTP {exc.code}: {detail[:500]}") from exc
         except urllib.error.URLError as exc:
+            lf_trace.finish_generation(gen, error=f"网络错误: {exc.reason}")
             raise LLMError(f"LLM 网络错误: {exc.reason}") from exc
 
         try:
             message = body["choices"][0]["message"]
         except (KeyError, IndexError) as exc:
+            lf_trace.finish_generation(gen, error=f"响应格式异常: {str(body)[:300]}")
             raise LLMError(f"LLM 响应格式异常: {str(body)[:500]}") from exc
 
         text = message.get("content") or ""
@@ -102,4 +112,9 @@ class ModelClient:
                 args = {"_raw_arguments": raw_args}
             tool_calls.append(ToolCall(id=tc.get("id") or "", name=fn.get("name") or "", arguments=args))
 
+        lf_trace.finish_generation(
+            gen,
+            output={"content": text, "tool_calls": [{"name": t.name, "arguments": t.arguments} for t in tool_calls]},
+            usage=body.get("usage"),
+        )
         return AgentResponse(text=text, tool_calls=tool_calls, raw=body)
