@@ -24,12 +24,14 @@
 │ 用户浏览器 │◄──────►│ services 机 (101.42.94.17)  │ ───────────────► │ 数据库服务器    │
 │          │ Caddy  │ Caddy :80/:443             │ 10.0.20.14:27017 │ MongoDB      │
 │          │        │ k3s: backend + frontend    │                  │ (easy_book)  │
-└──────────┘        └────────────────────────────┘                  └──────────────┘
+│          │        │      + agent(Chainlit)     │                  └──────────────┘
+└──────────┘        └────────────────────────────┘
 ```
 
 - 域名：**https://easybook.a4.fit**（Caddy 自动 Let's Encrypt 证书）
-- k3s namespace：`easy-book`（backend Deployment/Service + frontend Deployment/Service）
-- 前端 nginx 容器托管 dist 静态文件，`/api/` 反代到 backend Service
+- **https://easybook.a4.fit/ai** — AI 助手聊天界面（Chainlit，工具调用链可视化）
+- k3s namespace：`easy-book`（backend / frontend / agent 三组 Deployment+Service）
+- 前端 nginx 容器托管 dist 静态文件，`/api/` 反代到 backend Service，`/ai` 反代到 agent Service（含 WebSocket 升级）
 - 镜像无远端仓库：服务器上 docker build 后 `docker save | k3s ctr images import`
 
 ## 🖥️ 服务器信息
@@ -54,8 +56,9 @@
     ├── frontend.Dockerfile      # node 构建阶段（npmmirror）→ nginx:alpine 托管
     ├── frontend-nginx.conf      # 静态托管 + /api 反代 easy-book-backend:8002
     ├── deploy.sh                # 构建 → 导入 k3s → apply → rollout → 健康检查
-    ├── k8s/                     # namespace / backend / frontend / secret 模板
-    └── .mongodb-url             # MongoDB 连接串（chmod 600，不入 Git，deploy.sh 读取后创建 Secret）
+    ├── k8s/                     # namespace / backend / frontend / agent / secret 模板
+    ├── .mongodb-url             # MongoDB 连接串（chmod 600，不入 Git，deploy.sh 读取后创建 Secret）
+    └── .agent-env               # agent 容器凭据：LLM key、Langfuse dev/prod key（chmod 600，不入 Git）
 ```
 
 ## 🔑 密钥管理

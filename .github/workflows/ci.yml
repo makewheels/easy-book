@@ -133,7 +133,7 @@ jobs:
       - name: 同步代码到服务器
         run: |
           rsync -az --delete \
-            --exclude '.git' --exclude '.env' --exclude '.mongodb-url' \
+            --exclude '.git' --exclude '.env' --exclude '.mongodb-url' --exclude '.agent-env' \
             -e "ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
             ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/easy-book/"
 
