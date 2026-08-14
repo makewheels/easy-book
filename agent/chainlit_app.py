@@ -14,29 +14,13 @@ import asyncio
 from typing import Any, Awaitable, Callable
 
 import chainlit as cl
-import requests
-from fastapi import HTTPException
 
 from book_agent.assistant import BookAssistant
-from book_agent.config import get_config
 from book_agent import trace as lf_trace
 
-
-@cl.password_auth_callback
-def auth_callback(username: str, password: str) -> cl.User:
-    """复用后端账号体系：拿用户输入去 backend /api/auth/login 验证。"""
-    api_url = get_config().easy_book_api_url.rstrip("/")
-    try:
-        resp = requests.post(
-            f"{api_url}/api/auth/login",
-            json={"username": username, "password": password},
-            timeout=10,
-        )
-    except requests.RequestException as exc:
-        raise HTTPException(status_code=503, detail=f"认证服务不可用：{exc}") from exc
-    if resp.status_code != 200:
-        raise HTTPException(status_code=401, detail="用户名或密码错误")
-    return cl.User(identifier=username)
+# 登录不在这里做：/ai 由前端 nginx 的 auth_request 统一拦截（未登录跳回
+# easybook.a4.fit/login），登录态是写在 eb_token cookie 里的全站会话。
+# Chainlit 自身保持无认证（仅集群内可达，入口只有 nginx）。
 
 
 async def _tool_hook(

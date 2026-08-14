@@ -19,7 +19,7 @@ import time
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Cookie, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from api_server.database import get_database
@@ -98,50 +98,64 @@ def verify_password(password: str, stored: str) -> bool:
     return hmac.compare_digest(dk.hex(), dk_hex)
 
 
-# ── 用户存取 ─────────────────────────────────────────────────
+# ── 用户存取（手机号为用户标识） ─────────────────────────────
 
 
-async def get_user(username: str) -> Optional[dict]:
+async def get_user(phone: str) -> Optional[dict]:
     db = get_database().db
-    return await db.users.find_one({"username": username})
+    return await db.users.find_one({"phone": phone})
 
 
 async def ensure_admin_user() -> None:
     """启动时按环境变量创建管理员账号（仅首次创建，不覆盖已有账号）。"""
-    username = os.getenv("ADMIN_USERNAME")
+    phone = os.getenv("ADMIN_PHONE")
     password = os.getenv("ADMIN_PASSWORD")
-    if not username or not password:
+    if not phone or not password:
         if auth_enabled():
-            raise RuntimeError("鉴权已启用但未配置 ADMIN_USERNAME / ADMIN_PASSWORD")
+            raise RuntimeError("鉴权已启用但未配置 ADMIN_PHONE / ADMIN_PASSWORD")
         return
-    if await get_user(username) is None:
+    if await get_user(phone) is None:
         db = get_database().db
         await db.users.insert_one({
-            "username": username,
+            "phone": phone,
             "password_hash": hash_password(password),
             "create_time": datetime.now(timezone.utc).isoformat(),
         })
-        print(f"已创建管理员账号: {username}")
+        print(f"已创建管理员账号: {phone}")
 
 
 # ── 登录接口 ─────────────────────────────────────────────────
 
 
 class LoginRequest(BaseModel):
-    username: str = Field(min_length=1, max_length=64)
+    phone: str = Field(min_length=1, max_length=32)
     password: str = Field(min_length=1, max_length=128)
 
 
 @router.post("/login")
 async def login(req: LoginRequest):
-    user = await get_user(req.username)
+    user = await get_user(req.phone)
     if user is None or not verify_password(req.password, user.get("password_hash", "")):
-        raise HTTPException(status_code=401, detail="用户名或密码错误")
+        raise HTTPException(status_code=401, detail="手机号或密码错误")
     return {
-        "token": create_token(req.username),
-        "username": req.username,
+        "token": create_token(req.phone),
+        "phone": req.phone,
         "expires_in": TOKEN_TTL_SECONDS,
     }
+
+
+# Cookie 名：前端登录后写入，nginx auth_request 用它做 /ai 的会话拦截
+TOKEN_COOKIE_NAME = "eb_token"
+
+
+@router.get("/check")
+async def check_session(eb_token: Optional[str] = Cookie(default=None)):
+    """供 nginx auth_request 调用：校验会话 cookie，200=已登录，401=未登录。"""
+    if not auth_enabled():
+        return {"valid": True}
+    if eb_token and verify_token(eb_token):
+        return {"valid": True}
+    raise HTTPException(status_code=401, detail="未登录或凭据无效")
 
 
 # ── 接口保护依赖 ─────────────────────────────────────────────

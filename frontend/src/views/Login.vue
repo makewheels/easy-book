@@ -7,12 +7,13 @@
 
       <form class="login-form" @submit.prevent="handleLogin">
         <div class="form-field">
-          <label>用户名</label>
+          <label>手机号</label>
           <input
-            v-model.trim="username"
-            type="text"
-            autocomplete="username"
-            placeholder="请输入用户名"
+            v-model.trim="phone"
+            type="tel"
+            autocomplete="tel"
+            maxlength="20"
+            placeholder="请输入手机号"
             :disabled="loading"
           />
         </div>
@@ -26,7 +27,7 @@
             :disabled="loading"
           />
         </div>
-        <button type="submit" class="login-btn" :disabled="loading || !username || !password">
+        <button type="submit" class="login-btn" :disabled="loading || !phone || !password">
           {{ loading ? '登录中…' : '登 录' }}
         </button>
       </form>
@@ -41,25 +42,27 @@ import request from '@/api'
 import { toast } from '@/utils/toast'
 
 const router = useRouter()
-const username = ref('')
+const phone = ref('')
 const password = ref('')
 const loading = ref(false)
 
 const handleLogin = async () => {
-  if (!username.value || !password.value) return
+  if (!phone.value || !password.value) return
   loading.value = true
   try {
     const data = await request.post('/auth/login', {
-      username: username.value,
+      phone: phone.value,
       password: password.value
     })
     localStorage.setItem('eb_token', data.token)
-    localStorage.setItem('eb_username', data.username)
+    localStorage.setItem('eb_phone', data.phone)
+    // 会话 cookie：nginx 用它拦截 /ai（未登录跳回本页）
+    document.cookie = `eb_token=${data.token}; path=/; max-age=${data.expires_in || 43200}; SameSite=Lax`
     toast.success('登录成功')
     router.replace('/')
   } catch (e) {
     // 401 等错误提示由拦截器/此处兜底
-    toast.error(e?.response?.data?.detail || '用户名或密码错误')
+    toast.error(e?.response?.data?.detail || '手机号或密码错误')
   } finally {
     loading.value = false
   }

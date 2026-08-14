@@ -8,7 +8,7 @@ from httpx import AsyncClient
 from api_server import auth
 from api_server.database import get_database
 
-TEST_USER = "auth_test_admin"
+TEST_PHONE = "13800000001"
 TEST_PASSWORD = "auth-test-password-123"
 TEST_SERVICE_KEY = "auth-test-service-key"
 
@@ -25,13 +25,13 @@ def force_auth(monkeypatch):
 @pytest_asyncio.fixture
 async def test_user():
     db = get_database().db
-    await db.users.delete_many({"username": TEST_USER})
+    await db.users.delete_many({"phone": TEST_PHONE})
     await db.users.insert_one({
-        "username": TEST_USER,
+        "phone": TEST_PHONE,
         "password_hash": auth.hash_password(TEST_PASSWORD),
     })
-    yield TEST_USER
-    await db.users.delete_many({"username": TEST_USER})
+    yield TEST_PHONE
+    await db.users.delete_many({"phone": TEST_PHONE})
 
 
 class TestToken:
@@ -73,14 +73,14 @@ class TestAuthAPI:
     """开启鉴权（EASY_BOOK_AUTH=1）时的接口行为"""
 
     async def test_login_success(self, client: AsyncClient, force_auth, test_user):
-        resp = await client.post("/api/auth/login", json={"username": TEST_USER, "password": TEST_PASSWORD})
+        resp = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": TEST_PASSWORD})
         assert resp.status_code == 200
         data = resp.json()
-        assert data["username"] == TEST_USER
-        assert auth.verify_token(data["token"]) == TEST_USER
+        assert data["phone"] == TEST_PHONE
+        assert auth.verify_token(data["token"]) == TEST_PHONE
 
     async def test_login_wrong_password(self, client: AsyncClient, force_auth, test_user):
-        resp = await client.post("/api/auth/login", json={"username": TEST_USER, "password": "wrong"})
+        resp = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": "wrong"})
         assert resp.status_code == 401
 
     async def test_protected_requires_auth(self, client: AsyncClient, force_auth):
@@ -88,7 +88,7 @@ class TestAuthAPI:
         assert resp.status_code == 401
 
     async def test_protected_with_token(self, client: AsyncClient, force_auth, test_user):
-        login = await client.post("/api/auth/login", json={"username": TEST_USER, "password": TEST_PASSWORD})
+        login = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": TEST_PASSWORD})
         token = login.json()["token"]
         resp = await client.get("/api/stats/lessons", headers={"Authorization": f"Bearer {token}"})
         assert resp.status_code == 200
@@ -96,6 +96,17 @@ class TestAuthAPI:
     async def test_protected_with_service_key(self, client: AsyncClient, force_auth):
         resp = await client.get("/api/stats/lessons", headers={"X-Service-Key": TEST_SERVICE_KEY})
         assert resp.status_code == 200
+
+    async def test_check_cookie_valid(self, client: AsyncClient, force_auth, test_user):
+        login = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": TEST_PASSWORD})
+        token = login.json()["token"]
+        resp = await client.get("/api/auth/check", cookies={"eb_token": token})
+        assert resp.status_code == 200
+        assert resp.json()["valid"] is True
+
+    async def test_check_cookie_missing_or_invalid(self, client: AsyncClient, force_auth):
+        assert (await client.get("/api/auth/check")).status_code == 401
+        assert (await client.get("/api/auth/check", cookies={"eb_token": "bad"})).status_code == 401
 
     async def test_health_stays_open(self, client: AsyncClient, force_auth):
         resp = await client.get("/health")

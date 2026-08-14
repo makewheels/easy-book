@@ -48,7 +48,8 @@ request.interceptors.response.use(
       // 未登录/令牌失效：清凭据回登录页（登录接口自身除外）
       if (status === 401 && !String(error.config?.url || '').includes('/auth/login')) {
         localStorage.removeItem('eb_token')
-        localStorage.removeItem('eb_username')
+        localStorage.removeItem('eb_phone')
+        document.cookie = 'eb_token=; path=/; max-age=0'
         if (window.location.pathname !== '/login') {
           window.location.href = '/login'
         }
