@@ -174,10 +174,11 @@ default_avatar_file_url = ""
 #     url = "https://github.com/Chainlit/chainlit/issues"
 #     target = "_blank" (default)  # Optional: "_self", "_parent", "_top".
 
-# 返回泳课管理后台（easybook.a4.fit 根路径）
+# 返回泳课管理后台（easybook.a4.fit 根路径）；icon_url 为必填字段，用内联 SVG
 [[UI.header_links]]
     name = "admin"
-    display_name = "📋 管理后台"
+    display_name = "管理后台"
+    icon_url = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>"
     url = "/"
     target = "_self"
 
