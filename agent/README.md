@@ -42,12 +42,17 @@ uv run book-agent tools
 
 ### Langfuse trace（可选）
 
-配置以下三个变量即启用全链路观测（trace → generation → tool span），未配置时整体 no-op：
+配置以下变量即启用全链路观测（trace → generation → tool span），未配置时整体 no-op：
 
 | 变量 | 说明 |
 |---|---|
-| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` | 项目 API key（自托管 langfuse：easy-book project） |
 | `LANGFUSE_HOST` | 如 `http://101.42.94.17:30030` |
+| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` | **easy-book-dev** project 的 key（默认） |
+| `LANGFUSE_PROD_PUBLIC_KEY` / `LANGFUSE_PROD_SECRET_KEY` | **easy-book-prod** project 的 key |
+
+**双 project 分流**：`environment=production`（连生产后端）时 trace 上报 easy-book-prod，
+否则（本地开发）上报 easy-book-dev。environment 由 `BOOK_AGENT_ENVIRONMENT` 显式指定，
+或按后端地址自动推断（localhost → development）。
 
 需安装可选依赖：`uv sync --extra langfuse`。上报失败只记 warning，绝不影响主路径。
 

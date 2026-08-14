@@ -29,7 +29,11 @@ _tried_init = False
 
 
 def _get_client() -> Any | None:
-    """懒加载单例。未配置 env 或 SDK 初始化失败都返回 None（= 关闭）。"""
+    """懒加载单例。未配置 env 或 SDK 初始化失败都返回 None（= 关闭）。
+
+    dev/prod 双 project：environment=production 且配置了 LANGFUSE_PROD_* 时
+    用生产 project 的 key（easy-book-prod），否则用默认 key（easy-book-dev）。
+    """
     global _client, _tried_init
     if _tried_init:
         return _client
@@ -39,8 +43,21 @@ def _get_client() -> Any | None:
     try:
         from langfuse import Langfuse
 
-        _client = Langfuse()  # 读 LANGFUSE_SECRET_KEY / LANGFUSE_PUBLIC_KEY / LANGFUSE_HOST
-        logger.info("langfuse trace 已启用 → %s", os.environ.get("LANGFUSE_HOST", "(cloud)"))
+        from .config import get_config
+
+        if get_config().environment == "production" and os.environ.get("LANGFUSE_PROD_SECRET_KEY"):
+            _client = Langfuse(
+                public_key=os.environ["LANGFUSE_PROD_PUBLIC_KEY"],
+                secret_key=os.environ["LANGFUSE_PROD_SECRET_KEY"],
+                host=os.environ.get("LANGFUSE_HOST"),
+            )
+        else:
+            _client = Langfuse()  # 读 LANGFUSE_SECRET_KEY / LANGFUSE_PUBLIC_KEY / LANGFUSE_HOST
+        logger.info(
+            "langfuse trace 已启用 → %s（%s key）",
+            os.environ.get("LANGFUSE_HOST", "(cloud)"),
+            "prod" if os.environ.get("LANGFUSE_PROD_SECRET_KEY") and get_config().environment == "production" else "dev",
+        )
     except Exception as e:
         logger.warning("langfuse 初始化失败，trace 关闭（不影响主路径）: %s", e)
         _client = None
