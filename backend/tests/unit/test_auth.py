@@ -1,11 +1,12 @@
 """
-认证鉴权测试：令牌/密码哈希 + 登录接口 + 接口保护（EASY_BOOK_AUTH 强制开启）
+认证鉴权测试：令牌/密码哈希 + 登录接口 + 接口保护 + 用户来源标记 sourceType
 """
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
 from api_server import auth
+from api_server.data_source import normalize_source_type
 from api_server.database import get_database
 
 TEST_PHONE = "13800000001"
@@ -78,6 +79,23 @@ class TestAuthAPI:
         data = resp.json()
         assert data["phone"] == TEST_PHONE
         assert auth.verify_token(data["token"]) == TEST_PHONE
+        # 未标记来源的用户默认按真实用户处理
+        assert data["sourceType"] == "human"
+
+    async def test_login_ai_test_source(self, client: AsyncClient, force_auth):
+        db = get_database().db
+        await db.users.delete_many({"phone": TEST_PHONE})
+        await db.users.insert_one({
+            "phone": TEST_PHONE,
+            "password_hash": auth.hash_password(TEST_PASSWORD),
+            "sourceType": "ai_test",
+        })
+        try:
+            resp = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": TEST_PASSWORD})
+            assert resp.status_code == 200
+            assert resp.json()["sourceType"] == "ai_test"
+        finally:
+            await db.users.delete_many({"phone": TEST_PHONE})
 
     async def test_login_wrong_password(self, client: AsyncClient, force_auth, test_user):
         resp = await client.post("/api/auth/login", json={"phone": TEST_PHONE, "password": "wrong"})
@@ -117,3 +135,37 @@ class TestAuthAPI:
         monkeypatch.delenv("ENVIRONMENT", raising=False)
         resp = await client.get("/api/stats/lessons")
         assert resp.status_code == 200
+
+
+class TestSourceType:
+    """用户来源标记（human/ai_test）"""
+
+    def test_normalize_defaults_to_human(self):
+        assert normalize_source_type(None) == "human"
+        assert normalize_source_type("") == "human"
+        assert normalize_source_type("unknown") == "human"
+        assert normalize_source_type("human") == "human"
+
+    def test_normalize_ai_test(self):
+        assert normalize_source_type("ai_test") == "ai_test"
+
+    @pytest.mark.asyncio
+    async def test_ensure_admin_user_marks_source(self, monkeypatch):
+        phone = "13900009999"
+        db = get_database().db
+        await db.users.delete_many({"phone": phone})
+        monkeypatch.setenv("ADMIN_PHONE", phone)
+        monkeypatch.setenv("ADMIN_PASSWORD", "seed-password")
+        monkeypatch.setenv("ADMIN_SOURCE_TYPE", "ai_test")
+        try:
+            await auth.ensure_admin_user()
+            user = await db.users.find_one({"phone": phone})
+            assert user["sourceType"] == "ai_test"
+            # 再次运行不重复创建，且校正来源标记
+            monkeypatch.setenv("ADMIN_SOURCE_TYPE", "human")
+            await auth.ensure_admin_user()
+            assert await db.users.count_documents({"phone": phone}) == 1
+            user = await db.users.find_one({"phone": phone})
+            assert user["sourceType"] == "human"
+        finally:
+            await db.users.delete_many({"phone": phone})

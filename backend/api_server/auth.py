@@ -23,6 +23,7 @@ from fastapi import APIRouter, Cookie, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from api_server.database import get_database
+from api_server.data_source import normalize_source_type
 
 TOKEN_TTL_SECONDS = 12 * 3600
 
@@ -107,21 +108,31 @@ async def get_user(phone: str) -> Optional[dict]:
 
 
 async def ensure_admin_user() -> None:
-    """启动时按环境变量创建管理员账号（仅首次创建，不覆盖已有账号）。"""
+    """启动时按环境变量创建管理员账号；已存在则校正其来源标记（sourceType）。
+
+    来源由 ADMIN_SOURCE_TYPE 指定（human/ai_test，默认 human）。测试账号标成
+    ai_test 后，其名下数据即可被评测识别为测试数据。
+    """
     phone = os.getenv("ADMIN_PHONE")
     password = os.getenv("ADMIN_PASSWORD")
     if not phone or not password:
         if auth_enabled():
             raise RuntimeError("鉴权已启用但未配置 ADMIN_PHONE / ADMIN_PASSWORD")
         return
-    if await get_user(phone) is None:
-        db = get_database().db
+    source_type = normalize_source_type(os.getenv("ADMIN_SOURCE_TYPE"))
+    db = get_database().db
+    existing = await get_user(phone)
+    if existing is None:
         await db.users.insert_one({
             "phone": phone,
             "password_hash": hash_password(password),
+            "sourceType": source_type,
             "create_time": datetime.now(timezone.utc).isoformat(),
         })
-        print(f"已创建管理员账号: {phone}")
+        print(f"已创建管理员账号: {phone} (sourceType={source_type})")
+    elif existing.get("sourceType") != source_type:
+        await db.users.update_one({"phone": phone}, {"$set": {"sourceType": source_type}})
+        print(f"已校正管理员账号来源标记: {phone} -> {source_type}")
 
 
 # ── 登录接口 ─────────────────────────────────────────────────
@@ -140,6 +151,7 @@ async def login(req: LoginRequest):
     return {
         "token": create_token(req.phone),
         "phone": req.phone,
+        "sourceType": normalize_source_type(user.get("sourceType")),
         "expires_in": TOKEN_TTL_SECONDS,
     }
 
