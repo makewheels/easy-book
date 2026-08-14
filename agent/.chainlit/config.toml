@@ -174,5 +174,12 @@ default_avatar_file_url = ""
 #     url = "https://github.com/Chainlit/chainlit/issues"
 #     target = "_blank" (default)  # Optional: "_self", "_parent", "_top".
 
+# 返回泳课管理后台（easybook.a4.fit 根路径）
+[[UI.header_links]]
+    name = "admin"
+    display_name = "📋 管理后台"
+    url = "/"
+    target = "_self"
+
 [meta]
 generated_by = "2.11.1"

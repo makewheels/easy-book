@@ -380,6 +380,9 @@ const navigateTo = (page) => {
     case 'students':
       router.push('/students')
       break
+    case 'ai':
+      window.location.href = '/ai'
+      break
   }
 }
 

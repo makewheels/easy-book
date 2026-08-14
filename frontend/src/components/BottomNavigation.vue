@@ -16,6 +16,14 @@
       <div class="nav-icon">👤</div>
       <span>学员</span>
     </div>
+    <div
+      class="nav-item"
+      :class="{ active: activeTab === 'ai' }"
+      @click="$emit('navigate', 'ai')"
+    >
+      <div class="nav-icon">🤖</div>
+      <span>AI 助手</span>
+    </div>
   </nav>
 </template>
 
