@@ -13,6 +13,9 @@ dependencies = [
 langfuse = [
     "langfuse>=4",
 ]
+web = [
+    "chainlit>=2.11.1",
+]
 
 [project.scripts]
 book-agent = "book_agent.__main__:main"

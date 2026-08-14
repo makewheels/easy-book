@@ -112,6 +112,12 @@ jspm_packages/
 # 部署用 MongoDB 连接串（含密码），由 deploy/deploy.sh 读取
 deploy/.mongodb-url
 
+# 部署用 agent 凭据（LLM/Langfuse key），由 deploy/deploy.sh 读取
+deploy/.agent-env
+
+# Chainlit 自动生成的翻译副本（包内自带），仓库只保留 config.toml
+agent/.chainlit/translations/
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

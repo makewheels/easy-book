@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easy-book-agent
+  namespace: easy-book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: easy-book-agent
+  template:
+    metadata:
+      labels:
+        app: easy-book-agent
+    spec:
+      containers:
+        - name: agent
+          image: easy-book-agent:latest
+          # 镜像在节点本地构建后经 ctr 导入，无远端仓库
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8003
+          env:
+            # 集群内直连 backend Service（environment=production → Langfuse prod project）
+            - name: EASY_BOOK_API_URL
+              value: http://easy-book-backend:8002
+          envFrom:
+            - secretRef:
+                name: easy-book-config
+          readinessProbe:
+            httpGet:
+              # Chainlit 挂载在 /ai 前缀下
+              path: /ai/
+              port: 8003
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: easy-book-agent
+  namespace: easy-book
+spec:
+  selector:
+    app: easy-book-agent
+  ports:
+    - port: 8003
+      targetPort: 8003

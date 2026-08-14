@@ -9,6 +9,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 from datetime import datetime
 from typing import Any
@@ -68,8 +69,15 @@ def build_system_prompt(now: datetime | None = None) -> str:
 - 签到（扣课时）→ checkin_appointment"""
 
 
-def build_agent_tools(book_tools: BookTools) -> list[FunctionTool]:
-    """ALL_TOOLS schema → SDK FunctionTool；执行统一走 BookTools.execute（保留写确认/错误转返回值）。"""
+def build_agent_tools(
+    book_tools: BookTools,
+    tool_hook: Any = None,
+) -> list[FunctionTool]:
+    """ALL_TOOLS schema → SDK FunctionTool；执行统一走 BookTools.execute（保留写确认/错误转返回值）。
+
+    tool_hook：可选异步钩子 `async hook(name, args, run) -> result`（run 为执行函数），
+    供 UI 层（如 Chainlit）在工具执行前后渲染调用链；不传则直接执行。
+    """
 
     def _make(name: str):
         async def on_invoke(_ctx: Any, args_json: str) -> str:
@@ -77,7 +85,10 @@ def build_agent_tools(book_tools: BookTools) -> list[FunctionTool]:
                 args = json.loads(args_json) if args_json else {}
             except json.JSONDecodeError:
                 args = {"_raw_arguments": args_json}
-            result = book_tools.execute(name, args)
+            if tool_hook is not None:
+                result = await tool_hook(name, args, lambda: book_tools.execute(name, args))
+            else:
+                result = book_tools.execute(name, args)
             return json.dumps(result, ensure_ascii=False, default=str)
 
         return on_invoke
@@ -162,8 +173,9 @@ class BookAssistant:
 
     MAX_TURNS = 8
 
-    def __init__(self, tools: BookTools | None = None) -> None:
+    def __init__(self, tools: BookTools | None = None, tool_hook: Any = None) -> None:
         self.tools = tools or BookTools(api_url=get_config().easy_book_api_url)
+        self.tool_hook = tool_hook
         # SDK input items 历史（chat 多轮用；ask 单轮不用）
         self.history: list[Any] = []
 
@@ -183,11 +195,13 @@ class BookAssistant:
             instructions=build_system_prompt(),
             model=model,
             model_settings=ModelSettings(temperature=cfg.temperature, max_tokens=cfg.max_tokens),
-            tools=build_agent_tools(self.tools),
+            tools=build_agent_tools(self.tools, self.tool_hook),
         )
 
-    def answer(self, query: str, session_id: str | None = None, use_history: bool = False) -> dict[str, Any]:
-        """单轮（ask）或多轮（chat, use_history=True）问答，返回 {query, answer, trace}。"""
+    async def answer_async(
+        self, query: str, session_id: str | None = None, use_history: bool = False
+    ) -> dict[str, Any]:
+        """异步版：单轮（ask）或多轮（chat, use_history=True）问答，返回 {query, answer, trace}。"""
         cfg = get_config()
         self.tools.trace.clear()
         trace_handle = lf_trace.start_trace(
@@ -206,7 +220,7 @@ class BookAssistant:
         input_items.append({"role": "user", "content": query})
 
         try:
-            result = Runner.run_sync(
+            result = await Runner.run(
                 agent,
                 input=input_items,
                 max_turns=self.MAX_TURNS,
@@ -225,3 +239,7 @@ class BookAssistant:
             "answer": final_text,
             "trace": list(self.tools.trace),
         }
+
+    def answer(self, query: str, session_id: str | None = None, use_history: bool = False) -> dict[str, Any]:
+        """同步入口（CLI 用）：包一层事件循环调 answer_async。"""
+        return asyncio.run(self.answer_async(query, session_id=session_id, use_history=use_history))
