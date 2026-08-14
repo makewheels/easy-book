@@ -19,12 +19,18 @@ import sys
 
 from .assistant import BookAssistant
 from .client import LLMError
+from .config import get_config
 from .schema import ALL_TOOLS
 from .tools import BookTools
 
 
+def _api_url(args: argparse.Namespace) -> str:
+    # 未显式传 --api-url 时取配置（agent/.env 的 EASY_BOOK_API_URL）
+    return args.api_url or get_config().easy_book_api_url
+
+
 def _build_assistant(args: argparse.Namespace) -> BookAssistant:
-    tools = BookTools(api_url=args.api_url, confirm_write=args.confirm_write)
+    tools = BookTools(api_url=_api_url(args), confirm_write=args.confirm_write)
     return BookAssistant(tools=tools)
 
 
@@ -80,19 +86,20 @@ def cmd_tools(args: argparse.Namespace) -> int:
 
 
 def cmd_health(args: argparse.Namespace) -> int:
-    tools = BookTools(api_url=args.api_url)
+    api_url = _api_url(args)
+    tools = BookTools(api_url=api_url)
     try:
         result = tools._request("GET", "/health")
-        print(f"后端正常: {result}")
+        print(f"后端正常 ({api_url}): {result}")
         return 0
     except Exception as exc:  # noqa: BLE001
-        print(f"后端不可达 ({args.api_url}): {exc}", file=sys.stderr)
+        print(f"后端不可达 ({api_url}): {exc}", file=sys.stderr)
         return 1
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="book-agent", description="Easy-Book 自然语言助手")
-    parser.add_argument("--api-url", default="http://localhost:8002", help="easy-book 后端地址")
+    parser.add_argument("--api-url", default=None, help="easy-book 后端地址（默认取 EASY_BOOK_API_URL 配置）")
     parser.add_argument("--confirm-write", action="store_true", help="写操作免确认直接执行（慎用）")
     sub = parser.add_subparsers(dest="command", required=True)
 
