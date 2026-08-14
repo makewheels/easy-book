@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easy-book-frontend
+  namespace: easy-book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: easy-book-frontend
+  template:
+    metadata:
+      labels:
+        app: easy-book-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: easy-book-frontend:latest
+          # 镜像在节点本地构建后经 ctr 导入，无远端仓库
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: easy-book-frontend
+  namespace: easy-book
+spec:
+  selector:
+    app: easy-book-frontend
+  ports:
+    - port: 80
+      targetPort: 80

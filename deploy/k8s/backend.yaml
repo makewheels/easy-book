@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easy-book-backend
+  namespace: easy-book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: easy-book-backend
+  template:
+    metadata:
+      labels:
+        app: easy-book-backend
+    spec:
+      containers:
+        - name: backend
+          image: easy-book-backend:latest
+          # 镜像在节点本地构建后经 ctr 导入，无远端仓库
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - secretRef:
+                name: easy-book-config
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: easy-book-backend
+  namespace: easy-book
+spec:
+  selector:
+    app: easy-book-backend
+  ports:
+    - port: 8002
+      targetPort: 8002

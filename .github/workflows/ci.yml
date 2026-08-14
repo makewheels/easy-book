@@ -115,47 +115,30 @@ jobs:
     needs: [backend-unit-tests, backend-integration-tests, frontend-tests]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
 
+    # 部署目标：services 机（101.42.94.17）k3s，入口 easybook.a4.fit（Caddy）
+    # 流程：runner rsync 代码到服务器 → deploy/deploy.sh 构建镜像、导入 k3s、apply、健康检查
+    env:
+      DEPLOY_HOST: ${{ secrets.SERVER_HOST }}
+      DEPLOY_USER: ${{ secrets.SERVER_USER }}
+
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            cd /home/ubuntu/easy-book
+      - uses: actions/checkout@v4
 
-            # 拉取最新代码
-            git pull origin master
+      - name: 写入 SSH 密钥
+        run: |
+          mkdir -p ~/.ssh-tmp
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh-tmp/key
+          chmod 600 ~/.ssh-tmp/key
 
-            # 安装 uv（走 pip，服务器可访问 PyPI；装到系统路径）
-            if ! command -v uv >/dev/null 2>&1; then
-              sudo pip3 install uv --break-system-packages -q
-            fi
+      - name: 同步代码到服务器
+        run: |
+          rsync -az --delete \
+            --exclude '.git' --exclude '.env' --exclude '.mongodb-url' \
+            -e "ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
+            ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/easy-book/"
 
-            # 后端：uv 按 lockfile 装到独立 .venv（不再污染系统 Python）
-            # 只用系统 Python 3.12，禁止联网下载托管 Python
-            cd backend
-            export UV_PYTHON_DOWNLOADS=never
-            uv sync --frozen --no-dev --python-preference only-system
-
-            # 同步 systemd 单元（ExecStart 指向 .venv/bin/python）并 reload
-            sudo cp easy-book.service /etc/systemd/system/easy-book.service
-            sudo systemctl daemon-reload
-
-            # 构建前端（pnpm，与 lockfile 保持一致）
-            cd ../frontend
-            if ! command -v pnpm >/dev/null 2>&1; then
-              npm install -g pnpm@10 --silent
-            fi
-            pnpm install --frozen-lockfile --silent
-            pnpm run build
-
-            # 重启后端服务
-            sudo systemctl restart easy-book
-
-            # 健康检查
-            sleep 3
-            curl -sf http://localhost:8002/health > /dev/null && echo "✅ Backend healthy" || exit 1
-            curl -sf http://localhost/api/students/ > /dev/null && echo "✅ Nginx proxy OK" || exit 1
+      - name: 执行部署
+        run: |
+          ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
+            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+            "cd /home/ubuntu/easy-book && ./deploy/deploy.sh"

@@ -1,6 +1,7 @@
 # Easy-Book 部署指南
 
 > **目标读者:** 未来的 AI 和人类开发者。本文档包含完整部署信息，可以从零重建生产环境。
+> 2026-08-14 起部署在 services 机的 k3s 上（旧方案——49.233.60.29 裸机 + nginx——已废弃，该机器现为 Mac 出网隧道机，见 `~/workspace/infra/tencent-cloud`）。
 
 ## 📋 架构概览
 
@@ -14,238 +15,138 @@
                     │ unit+integ  │
                     └──────┬──────┘
                            │ pass
-                    ┌──────▼──────┐        内网
-┌──────────┐  SSH   │  应用服务器  │  ──────────────  ┌──────────┐
-│  用户浏览器 │◄─────►│  Nginx:80   │   10.0.20.14    │ 数据库服务器│
-│           │  :80  │  FastAPI:8002│   :27017        │ MongoDB   │
-└──────────┘       └─────────────┘                  └──────────┘
+                    ┌──────▼──────────────┐
+                    │ runner rsync 代码    │
+                    │ → SSH 跑 deploy.sh   │
+                    └──────┬──────────────┘
+                           │
+┌──────────┐ HTTPS  ┌──────▼─────────────────────┐      内网        ┌──────────────┐
+│ 用户浏览器 │◄──────►│ services 机 (101.42.94.17)  │ ───────────────► │ 数据库服务器    │
+│          │ Caddy  │ Caddy :80/:443             │ 10.0.20.14:27017 │ MongoDB      │
+│          │        │ k3s: backend + frontend    │                  │ (easy_book)  │
+└──────────┘        └────────────────────────────┘                  └──────────────┘
 ```
+
+- 域名：**https://easybook.a4.fit**（Caddy 自动 Let's Encrypt 证书）
+- k3s namespace：`easy-book`（backend Deployment/Service + frontend Deployment/Service）
+- 前端 nginx 容器托管 dist 静态文件，`/api/` 反代到 backend Service
+- 镜像无远端仓库：服务器上 docker build 后 `docker save | k3s ctr images import`
 
 ## 🖥️ 服务器信息
 
-| 角色 | 实例ID | 公网IP | 内网IP | 系统 | SSH用户 |
-|------|--------|--------|--------|------|---------|
-| 应用服务器 | lhins-lit8a092 | 49.233.60.29 | 10.0.16.16 | Ubuntu 24.04 LTS | ubuntu |
-| 数据库服务器 | lhins-hrxqte80 | 101.42.140.207 | 10.0.20.14 | CentOS 7.6 | root |
+| 角色 | 公网IP | 内网IP | 系统 | SSH用户 |
+|------|--------|--------|------|---------|
+| 应用服务器 (services) | 101.42.94.17 | 10.0.16.4 | Ubuntu 24.04 | ubuntu |
+| 数据库服务器 | 101.42.140.207 | 10.0.20.14 | CentOS 7.9 | root（仅腾讯云 TAT） |
 
-**SSH 密钥:** 腾讯云密钥 `lhkp-83wy0jzi`，名称 `qcloud_lighthouse_beijing`
-**腾讯云 Region:** ap-beijing
+**SSH 密钥:** 仓库 GitHub Secret `SSH_PRIVATE_KEY`（easy-book CI 专用 ed25519 key，公钥在 services 机 `~/.ssh/authorized_keys`）。本机手动登录可用 `~/.ssh/video_deploy_key`。
+**数据库机维护:** 无 SSH，用腾讯云 TAT（参考 `~/workspace/infra/tencent-cloud/scripts/lib/tat.sh`）。
 
 ## 📁 服务器目录结构
 
 ```
-/home/ubuntu/
-└── easy-book/                    # git clone from GitHub (SSH deploy key)
-    ├── backend/
-    │   ├── api_server/           # FastAPI 应用代码
-    │   ├── run.py                # 入口脚本 (uvicorn, port 8002)
-    │   ├── pyproject.toml        # Python 依赖声明（uv 管理）
-    │   ├── .env                  # 环境变量 (不在 git 中)
-    │   └── easy-book.service     # systemd 服务配置 (源文件)
-    ├── frontend/
-    │   ├── src/                  # Vue 3 源代码
-    │   ├── dist/                 # npm run build 产物 (Nginx 托管)
-    │   ├── nginx-site.conf       # Nginx 站点配置 (源文件)
-    │   └── nginx.conf            # Docker 版 Nginx 配置 (不在裸金属部署中使用)
-    └── .github/workflows/ci.yml  # CI/CD 工作流
+/home/ubuntu/easy-book/          # CI rsync 同步（无 .git）
+├── backend/                     # FastAPI 源码
+├── frontend/                    # Vue 3 源码
+├── agent/                       # book-agent（自然语言助手，不参与部署）
+└── deploy/
+    ├── backend.Dockerfile       # python:3.12-slim，依赖经 uv.lock 导出后走阿里云 PyPI 镜像
+    ├── frontend.Dockerfile      # node 构建阶段（npmmirror）→ nginx:alpine 托管
+    ├── frontend-nginx.conf      # 静态托管 + /api 反代 easy-book-backend:8002
+    ├── deploy.sh                # 构建 → 导入 k3s → apply → rollout → 健康检查
+    ├── k8s/                     # namespace / backend / frontend / secret 模板
+    └── .mongodb-url             # MongoDB 连接串（chmod 600，不入 Git，deploy.sh 读取后创建 Secret）
 ```
 
 ## 🔑 密钥管理
 
-### GitHub Secrets (仓库设置 → Secrets and variables → Actions)
+### GitHub Secrets
 
 | Secret | 说明 |
 |--------|------|
-| `SERVER_HOST` | 应用服务器公网 IP |
-| `SERVER_USER` | SSH 用户名 (ubuntu) |
-| `SSH_PRIVATE_KEY` | SSH 登录私钥 (qcloud_lighthouse_beijing) |
-| `MONGODB_URL` | MongoDB 连接字符串 (含密码) |
+| `SERVER_HOST` | services 机公网 IP（101.42.94.17） |
+| `SERVER_USER` | SSH 用户名（ubuntu） |
+| `SSH_PRIVATE_KEY` | easy-book CI 专用 SSH 私钥 |
+| `MONGODB_URL` | MongoDB 连接串（备份用途；部署实际读服务器上的 deploy/.mongodb-url） |
 
-### 环境变量文件 (backend/.env)
+### k8s Secret（easy-book namespace）
 
-```env
-MONGODB_URL=mongodb://easy-book:<password>@10.0.20.14:27017/easy_book?authSource=admin
-DB_NAME=easy_book
-ENVIRONMENT=production
-```
-
-密码从 GitHub Secrets 中的 `MONGODB_URL` 获取。模板见 `backend/.env.example`。
+`easy-book-config`：`MONGODB_URL` / `DB_NAME=easy_book` / `ENVIRONMENT=production`。
+由 deploy.sh 从 `deploy/.mongodb-url` 生成；密码曾于 2026-08-14 轮换。
 
 ### MongoDB
 
-- Docker 容器 `mongodb` 运行在数据库服务器上
-- Root: `root` (密码在容器环境变量 `MONGO_INITDB_ROOT_PASSWORD` 中)
+- Docker 容器 `mongodb` 运行在数据库服务器上（10.0.20.14:27017）
 - 应用用户: `easy-book`，权限 `readWrite` on `easy_book`，认证库 `admin`
+- 创建/轮换密码（经 TAT 在数据库机执行）：
+  ```js
+  db.getSiblingDB('admin').updateUser('easy-book', {pwd: '<new_password>'})
+  ```
+  随后同步更新服务器 `deploy/.mongodb-url`、GitHub Secret 并重跑部署。
 
 ## 🚀 GitHub Actions 自动部署
 
 **触发条件:** push 到 master 分支 + 所有 CI 测试通过
 
 **部署流程:**
-1. `backend-unit-tests` — Python pytest 单元测试
-2. `backend-integration-tests` — Python pytest 集成测试 (带 MongoDB 服务)
-3. `frontend-tests` — Vue TypeScript 检查 + 构建
-4. `deploy` — 通过 SSH 连接服务器执行部署
+1. `backend-unit-tests` / `backend-integration-tests` / `frontend-tests`
+2. `deploy`：runner 用 CI 密钥 rsync 代码到 `/home/ubuntu/easy-book/`（`--exclude .mongodb-url`，不会删掉凭据文件），然后 SSH 执行 `deploy/deploy.sh`：
+   - `docker build` 后端/前端镜像（国内镜像源：PyPI→阿里云、npm→npmmirror、Docker Hub→daocloud 等加速）
+   - `docker save | sudo k3s ctr -n k8s.io images import`
+   - `kubectl apply` namespace/secret/backend/frontend
+   - `rollout restart` + 等待就绪 + ClusterIP 健康检查（30 秒重试）
 
-**deploy 步骤:**
-```bash
-cd /home/ubuntu/easy-book
-git pull origin master
-command -v uv >/dev/null 2>&1 || sudo pip3 install uv --break-system-packages -q
-cd backend
-export UV_PYTHON_DOWNLOADS=never
-uv sync --frozen --no-dev --python-preference only-system
-sudo cp easy-book.service /etc/systemd/system/easy-book.service && sudo systemctl daemon-reload
-cd ../frontend && pnpm install --frozen-lockfile --silent && pnpm run build
-sudo systemctl restart easy-book
-# 健康检查
-curl -sf http://localhost:8002/health
-curl -sf http://localhost/api/health
-```
+## 🛠️ 首次部署 (从零重建)
 
-## 🛠️ 首次部署 (从零开始)
-
-### 1. 数据库服务器 — 创建 MongoDB 用户
-
-```bash
-SSH_KEY="/path/to/qcloud_lighthouse_beijing"
-ssh -i $SSH_KEY root@101.42.140.207 "
-docker exec mongodb mongosh -u root -p <root_password> --authenticationDatabase admin --eval '
-  use(\"admin\");
-  db.createUser({
-    user: \"easy-book\",
-    pwd: \"<new_password>\",
-    roles: [{role: \"readWrite\", db: \"easy_book\"}]
-  });
-'
-"
-```
-
-### 2. 应用服务器 — 安装软件
-
-```bash
-ssh -i $SSH_KEY ubuntu@49.233.60.29 "
-sudo apt-get update -qq
-sudo apt-get install -y nginx
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt-get install -y nodejs python3-pip
-"
-```
-
-### 3. 应用服务器 — 部署代码
-
-```bash
-ssh -i $SSH_KEY ubuntu@49.233.60.29 "
-# 配置 deploy key (需要先在 GitHub 仓库添加)
-ssh-keygen -t ed25519 -C 'easy-book-deploy' -f ~/.ssh/easy-book-deploy -N ''
-cat > ~/.ssh/config << 'EOF'
-Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/easy-book-deploy
-  StrictHostKeyChecking no
-EOF
-
-# 克隆并构建
-git clone git@github.com:makewheels/easy-book.git
-sudo pip3 install uv --break-system-packages -q
-cd easy-book/backend
-export UV_PYTHON_DOWNLOADS=never
-uv sync --frozen --no-dev --python-preference only-system
-cd ../frontend && npm install -g pnpm@10 && pnpm install --frozen-lockfile && pnpm run build
-"
-```
-
-### 4. 应用服务器 — 上传环境变量
-
-```bash
-scp -i $SSH_KEY .env ubuntu@49.233.60.29:/home/ubuntu/easy-book/backend/.env
-```
-
-### 5. 应用服务器 — 配置 Nginx
-
-```bash
-ssh -i $SSH_KEY ubuntu@49.233.60.29 "
-sudo cp /home/ubuntu/easy-book/frontend/nginx-site.conf /etc/nginx/sites-available/easy-book
-sudo ln -sf /etc/nginx/sites-available/easy-book /etc/nginx/sites-enabled/easy-book
-sudo rm -f /etc/nginx/sites-enabled/default
-chmod 755 /home/ubuntu
-sudo nginx -t && sudo systemctl restart nginx && sudo systemctl enable nginx
-"
-```
-
-### 6. 应用服务器 — 配置 systemd
-
-```bash
-ssh -i $SSH_KEY ubuntu@49.233.60.29 "
-sudo cp /home/ubuntu/easy-book/backend/easy-book.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable easy-book
-sudo systemctl start easy-book
-"
-```
-
-### 7. 验证
-
-```bash
-curl http://49.233.60.29/           # 前端页面 → 200
-curl http://49.233.60.29/api/health # 后端 API → {"status":"healthy"}
-```
+1. **数据库用户**：经 TAT 在数据库机 MongoDB 里 createUser `easy-book`（readWrite on easy_book）
+2. **服务器凭据文件**：把连接串写入 services 机 `/home/ubuntu/easy-book/deploy/.mongodb-url`（chmod 600）
+3. **k8s manifests / Dockerfile**：已在仓库 `deploy/` 中
+4. **DNS**：阿里云 a4.fit 加 A 记录 `easybook` → 101.42.94.17
+5. **Caddy**：`/opt/caddy/Caddyfile` 加站点（见下）并 `docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile`
+   ```
+   easybook.a4.fit {
+       encode zstd gzip
+       reverse_proxy <easy-book-frontend ClusterIP>:80
+   }
+   ```
+   ClusterIP 查法：`sudo k3s kubectl get svc -n easy-book`（infra 仓库 `hosts/services/caddy/Caddyfile` 是编辑源）
+6. **GitHub Secrets**：按上表配置；CI 密钥的公钥追加到 services 机 `authorized_keys`
+7. push master 触发部署，或服务器上手动 `./deploy/deploy.sh`
 
 ## 🔧 常用运维命令
 
 ```bash
-# SSH 连接
-SSH_KEY="/path/to/qcloud_lighthouse_beijing"
-ssh -i $SSH_KEY ubuntu@49.233.60.29
+# SSH 连接（本机）
+ssh -i ~/.ssh/video_deploy_key ubuntu@101.42.94.17
 
-# 后端服务
-sudo systemctl status easy-book    # 查看状态
-sudo systemctl restart easy-book   # 重启
-sudo journalctl -u easy-book -f    # 查看日志 (实时)
-sudo journalctl -u easy-book -n 50 # 最近50行日志
+# Pod / 日志
+sudo k3s kubectl get pods -n easy-book
+sudo k3s kubectl logs -n easy-book deploy/easy-book-backend -f
+sudo k3s kubectl describe pod -n easy-book <pod>
 
-# Nginx
-sudo systemctl status nginx
-sudo systemctl restart nginx
-sudo nginx -t                      # 测试配置
-sudo tail -f /var/log/nginx/error.log
+# 手动部署（服务器 /home/ubuntu/easy-book 下）
+./deploy/deploy.sh
 
-# 手动部署 (不通过 GitHub Actions)
-cd /home/ubuntu/easy-book
-git pull origin master
-cd backend
-export UV_PYTHON_DOWNLOADS=never
-uv sync --frozen --no-dev --python-preference only-system
-cd ../frontend && pnpm install --frozen-lockfile && pnpm run build
-sudo systemctl restart easy-book
-
-# MongoDB (在数据库服务器上)
-ssh -i $SSH_KEY root@101.42.140.207
-docker exec -it mongodb mongosh -u root -p <password> --authenticationDatabase admin
+# Caddy
+docker exec caddy-caddy-1 caddy validate --config /etc/caddy/Caddyfile
+docker logs caddy-caddy-1 --tail 50
 ```
 
 ## 🔄 回滚
 
+镜像只有 `:latest` 标签，回滚 = 检出旧 commit 重新部署：
+
 ```bash
-# 回滚到指定 commit
-cd /home/ubuntu/easy-book
-git log --oneline -10               # 找到目标 commit
 git checkout <commit-sha>
-cd backend
-export UV_PYTHON_DOWNLOADS=never
-uv sync --frozen --no-dev --python-preference only-system
-cd ../frontend && pnpm install --frozen-lockfile && pnpm run build
-sudo systemctl restart easy-book
+# 本地 rsync 到服务器后执行 ./deploy/deploy.sh，或等 CI
 ```
 
 ## 🛡️ 故障排查
 
 | 问题 | 检查命令 |
 |------|----------|
-| 后端启动失败 | `sudo journalctl -u easy-book -n 50` |
-| Nginx 502 | `curl localhost:8002/health` (后端是否在运行) |
-| Nginx 403/500 | `sudo tail /var/log/nginx/error.log` (权限问题检查 `chmod 755 /home/ubuntu`) |
-| MongoDB 连接失败 | 检查 `.env` 中 `MONGODB_URL` 是否正确；从应用服务器 `telnet 10.0.20.14 27017` |
-| 前端白屏 | `ls /home/ubuntu/easy-book/frontend/dist/` (是否有构建产物) |
-| deploy key 失效 | `ssh -T git@github.com` (在应用服务器上测试) |
+| 后端 Pod 起不来 | `sudo k3s kubectl logs -n easy-book deploy/easy-book-backend`（常见：MongoDB 连接串失效） |
+| 502/白屏 | `sudo k3s kubectl get pods -n easy-book`；Caddy 日志 |
+| MongoDB 连接失败 | 从 services 机 `timeout 3 bash -c '</dev/tcp/10.0.20.14/27017'`；核对 deploy/.mongodb-url |
+| 构建拉包慢/失败 | 服务器在国内：Dockerfile 已配阿里云 PyPI / npmmirror；Docker Hub 走 /etc/docker/daemon.json 里的镜像加速 |
+| 证书问题 | `docker logs caddy-caddy-1` 看 ACME 日志；确认 DNS A 记录指向 101.42.94.17 |
