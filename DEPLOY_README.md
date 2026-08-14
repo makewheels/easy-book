@@ -39,7 +39,7 @@
     ├── backend/
     │   ├── api_server/           # FastAPI 应用代码
     │   ├── run.py                # 入口脚本 (uvicorn, port 8002)
-    │   ├── requirements.txt      # Python 依赖
+    │   ├── pyproject.toml        # Python 依赖声明（uv 管理）
     │   ├── .env                  # 环境变量 (不在 git 中)
     │   └── easy-book.service     # systemd 服务配置 (源文件)
     ├── frontend/
@@ -91,8 +91,12 @@ ENVIRONMENT=production
 ```bash
 cd /home/ubuntu/easy-book
 git pull origin master
-cd backend && pip3 install -r requirements.txt --break-system-packages -q
-cd ../frontend && npm ci --silent && npm run build
+command -v uv >/dev/null 2>&1 || sudo pip3 install uv --break-system-packages -q
+cd backend
+export UV_PYTHON_DOWNLOADS=never
+uv sync --frozen --no-dev --python-preference only-system
+sudo cp easy-book.service /etc/systemd/system/easy-book.service && sudo systemctl daemon-reload
+cd ../frontend && pnpm install --frozen-lockfile --silent && pnpm run build
 sudo systemctl restart easy-book
 # 健康检查
 curl -sf http://localhost:8002/health
@@ -144,8 +148,11 @@ EOF
 
 # 克隆并构建
 git clone git@github.com:makewheels/easy-book.git
-cd easy-book/backend && pip3 install -r requirements.txt --break-system-packages
-cd ../frontend && npm ci && npm run build
+sudo pip3 install uv --break-system-packages -q
+cd easy-book/backend
+export UV_PYTHON_DOWNLOADS=never
+uv sync --frozen --no-dev --python-preference only-system
+cd ../frontend && npm install -g pnpm@10 && pnpm install --frozen-lockfile && pnpm run build
 "
 ```
 
@@ -207,8 +214,10 @@ sudo tail -f /var/log/nginx/error.log
 # 手动部署 (不通过 GitHub Actions)
 cd /home/ubuntu/easy-book
 git pull origin master
-cd backend && pip3 install -r requirements.txt --break-system-packages -q
-cd ../frontend && npm ci && npm run build
+cd backend
+export UV_PYTHON_DOWNLOADS=never
+uv sync --frozen --no-dev --python-preference only-system
+cd ../frontend && pnpm install --frozen-lockfile && pnpm run build
 sudo systemctl restart easy-book
 
 # MongoDB (在数据库服务器上)
@@ -223,8 +232,10 @@ docker exec -it mongodb mongosh -u root -p <password> --authenticationDatabase a
 cd /home/ubuntu/easy-book
 git log --oneline -10               # 找到目标 commit
 git checkout <commit-sha>
-cd backend && pip3 install -r requirements.txt --break-system-packages -q
-cd ../frontend && npm ci && npm run build
+cd backend
+export UV_PYTHON_DOWNLOADS=never
+uv sync --frozen --no-dev --python-preference only-system
+cd ../frontend && pnpm install --frozen-lockfile && pnpm run build
 sudo systemctl restart easy-book
 ```
 

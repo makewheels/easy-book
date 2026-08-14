@@ -15,8 +15,8 @@ easy-book/
 ├── backend/              # FastAPI 后端 (Python 3.12, port 8002)
 │   ├── api_server/       # 业务代码 (models, services, api)
 │   ├── tests/            # pytest 测试 (unit + integration)
-│   ├── pyproject.toml    # uv 管理依赖
-│   └── requirements.txt  # 由 uv export 生成，供 CI/生产 pip 使用
+│   ├── pyproject.toml    # 依赖声明（uv 管理）
+│   └── uv.lock           # uv 锁文件（CI/生产依赖唯一来源）
 ├── frontend/             # Vue 3 前端 (Vite, port 5173 dev, pnpm)
 │   ├── src/
 │   └── nginx-site.conf   # 生产 Nginx 配置
