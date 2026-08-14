@@ -67,6 +67,8 @@ class AgentConfig:
     # ── easy-book 后端 ──
     easy_book_api_url: str = "http://localhost:8002"
     confirm_write: bool = False
+    # 服务间调用密钥（生产后端鉴权）
+    service_key: str = ""
 
     # ── 观测 ──
     # trace 环境标签（langfuse environment）；默认按后端地址推断
@@ -104,6 +106,7 @@ class AgentConfig:
 
         self.easy_book_api_url = os.getenv("EASY_BOOK_API_URL") or self.easy_book_api_url
         self.confirm_write = os.getenv("BOOK_AGENT_CONFIRM_WRITE", "").lower() in ("1", "true", "yes")
+        self.service_key = os.getenv("EASY_BOOK_SERVICE_KEY") or ""
         self.environment = os.getenv("BOOK_AGENT_ENVIRONMENT") or (
             "development" if ("localhost" in self.easy_book_api_url or "127.0.0.1" in self.easy_book_api_url)
             else "production"

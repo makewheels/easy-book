@@ -31,7 +31,8 @@ def _api_url(args: argparse.Namespace) -> str:
 
 
 def _build_assistant(args: argparse.Namespace) -> BookAssistant:
-    tools = BookTools(api_url=_api_url(args), confirm_write=args.confirm_write)
+    cfg = get_config()
+    tools = BookTools(api_url=_api_url(args), confirm_write=args.confirm_write, service_key=cfg.service_key)
     return BookAssistant(tools=tools)
 
 

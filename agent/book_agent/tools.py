@@ -26,6 +26,8 @@ class BookTools:
     api_url: str = "http://localhost:8002"
     confirm_write: bool = False
     timeout: float = 15.0
+    # 服务间调用密钥（生产后端鉴权；对应后端 EASY_BOOK_SERVICE_KEY）
+    service_key: str = ""
 
     # 每次 execute 的记录，便于 agent 输出调用轨迹
     trace: list[dict[str, Any]] = field(default_factory=list)
@@ -37,11 +39,13 @@ class BookTools:
 
     def _request(self, method: str, path: str, *, json_body: Any = None, params: Optional[dict] = None) -> Any:
         """发请求并统一拆信封：{code,message,data} → data；裸对象原样返回。"""
+        headers = {"X-Service-Key": self.service_key} if self.service_key else None
         resp = requests.request(
             method,
             self._url(path),
             json=json_body,
             params=params,
+            headers=headers,
             timeout=self.timeout,
         )
         if resp.status_code == 204:

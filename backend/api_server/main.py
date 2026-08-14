@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from api_server.database import connect_to_mongo, close_mongo_connection
 from api_server.api import students, courses, appointments, packages, attendance, stats
+from api_server import auth
 from dotenv import load_dotenv
 import json
 import os
@@ -14,6 +15,7 @@ load_dotenv()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_to_mongo()
+    await auth.ensure_admin_user()
     yield
     await close_mongo_connection()
 
@@ -46,13 +48,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 注册路由
-app.include_router(students.router, prefix="/api/students", tags=["学员管理"])
-app.include_router(courses.router, prefix="/api/courses", tags=["课程管理"])
-app.include_router(appointments.router, prefix="/api/appointments", tags=["预约管理"])
-app.include_router(packages.router, prefix="/api/packages", tags=["套餐管理"])
-app.include_router(attendance.router, prefix="/api/attendance", tags=["考勤管理"])
-app.include_router(stats.router, prefix="/api/stats", tags=["统计分析"])
+# 注册路由（业务接口统一挂 require_auth：生产强制，dev 直通）
+_protected = [Depends(auth.require_auth)]
+app.include_router(auth.router, prefix="/api/auth")
+app.include_router(students.router, prefix="/api/students", tags=["学员管理"], dependencies=_protected)
+app.include_router(courses.router, prefix="/api/courses", tags=["课程管理"], dependencies=_protected)
+app.include_router(appointments.router, prefix="/api/appointments", tags=["预约管理"], dependencies=_protected)
+app.include_router(packages.router, prefix="/api/packages", tags=["套餐管理"], dependencies=_protected)
+app.include_router(attendance.router, prefix="/api/attendance", tags=["考勤管理"], dependencies=_protected)
+app.include_router(stats.router, prefix="/api/stats", tags=["统计分析"], dependencies=_protected)
 
 @app.get("/")
 async def root():

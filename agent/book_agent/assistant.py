@@ -174,7 +174,8 @@ class BookAssistant:
     MAX_TURNS = 8
 
     def __init__(self, tools: BookTools | None = None, tool_hook: Any = None) -> None:
-        self.tools = tools or BookTools(api_url=get_config().easy_book_api_url)
+        cfg = get_config()
+        self.tools = tools or BookTools(api_url=cfg.easy_book_api_url, service_key=cfg.service_key)
         self.tool_hook = tool_hook
         # SDK input items 历史（chat 多轮用；ask 单轮不用）
         self.history: list[Any] = []

@@ -8,6 +8,7 @@ import AddAppointment from '@/views/AddAppointment.vue'
 import CalendarAppointment from '@/views/CalendarAppointment.vue'
 import AddPackage from '@/views/AddPackage.vue'
 import EditPackage from '@/views/EditPackage.vue'
+import Login from '@/views/Login.vue'
 
 const routes = [
   {
@@ -59,6 +60,11 @@ const routes = [
     path: '/packages/:id/edit',
     name: 'EditPackage',
     component: EditPackage
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 
@@ -68,6 +74,17 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     // 总是滚动到页面顶部
     return { top: 0 }
+  }
+})
+
+// 登录守卫：无令牌一律先回登录页（后端生产环境强制鉴权）
+router.beforeEach((to) => {
+  const token = localStorage.getItem('eb_token')
+  if (!token && to.path !== '/login') {
+    return '/login'
+  }
+  if (token && to.path === '/login') {
+    return '/'
   }
 })
 

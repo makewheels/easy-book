@@ -97,11 +97,18 @@ reaction_on_message_received = false
 # Name of the assistant.
 name = "泳课 AI 助手"
 
-# default_theme = "dark"
+# 默认浅色主题（该版本仅支持 light/dark，无跟随系统选项；用户可在界面手动切换）
+default_theme = "light"
 
 # Force a specific language for all users (e.g., "en-US", "he-IL", "fr-FR")
 # If not set, the browser's language will be used
 language = "zh-CN"
+
+# 主题跟随浏览器：Chainlit 配置只允许 light/dark 默认值，而前端实际优先读
+# localStorage["vite-ui-theme"]。此内联脚本（data: URI，避免 /public 路由的
+# anyio/FileResponse 兼容问题）在应用初始化前按系统偏好写入初值；
+# 用户手动切换后以其选择为准。default_theme 仅作脚本未执行时的兜底。
+custom_js = "data:text/javascript,(function(){try{var K='vite-ui-theme';if(!localStorage.getItem(K)){var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;localStorage.setItem(K,d?'dark':'light');}}catch(e){}})();"
 
 # layout = "wide"
 

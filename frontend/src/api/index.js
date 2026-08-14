@@ -9,9 +9,13 @@ const request = axios.create({
   }
 })
 
-// 请求拦截器
+// 请求拦截器：自动携带登录令牌
 request.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('eb_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {
@@ -40,6 +44,16 @@ request.interceptors.response.use(
 
     if (error.response) {
       const { status, data } = error.response
+
+      // 未登录/令牌失效：清凭据回登录页（登录接口自身除外）
+      if (status === 401 && !String(error.config?.url || '').includes('/auth/login')) {
+        localStorage.removeItem('eb_token')
+        localStorage.removeItem('eb_username')
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login'
+        }
+        return Promise.reject(error)
+      }
 
       // 优先使用新的错误格式
       if (data.code !== undefined && data.message) {
