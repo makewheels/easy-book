@@ -18,8 +18,7 @@ import json
 import sys
 import uuid
 
-from .assistant import BookAssistant
-from .client import LLMError
+from .assistant import BookAssistant, LLMError
 from .config import get_config
 from .schema import ALL_TOOLS
 from .tools import BookTools
@@ -60,7 +59,6 @@ def cmd_ask(args: argparse.Namespace) -> int:
 
 def cmd_chat(args: argparse.Namespace) -> int:
     assistant = _build_assistant(args)
-    history: list = []
     session_id = f"chat-{uuid.uuid4().hex[:8]}"
     print("Easy-Book 助手（输入 quit 退出）")
     while True:
@@ -76,14 +74,12 @@ def cmd_chat(args: argparse.Namespace) -> int:
             lf_trace.flush()
             return 0
         try:
-            result = assistant.answer(query, history=history, session_id=session_id)
+            result = assistant.answer(query, session_id=session_id, use_history=True)
         except LLMError as exc:
             print(f"LLM 错误: {exc}", file=sys.stderr)
             continue
         print(f"助手 > {result['answer']}")
         _print_trace(result["trace"])
-        # 保留本轮对话（去掉 system，下轮重建以刷新日期）
-        history = [m for m in result["messages"] if m["role"] != "system"]
 
 
 def cmd_tools(args: argparse.Namespace) -> int:

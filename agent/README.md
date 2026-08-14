@@ -2,8 +2,10 @@
 
 用自然语言操作泳课管理系统：查明天的课、给学员加课时、买课包、约课、签到、统计利润。
 
-工具层与 agent loop 的组织方式参考 [video-2022](https://github.com/makewheels/video-2022) 的
+工具层组织方式参考 [video-2022](https://github.com/makewheels/video-2022) 的
 `ai-agent/` 包：schema 与执行分离、方法名即工具名、写确认协议、错误转返回值。
+agent loop 由 [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) 驱动
+（2026-08-14 从手写 loop 迁移）；工具经 FunctionTool 适配层接回 BookTools。
 
 ## 快速开始
 
@@ -55,8 +57,7 @@ uv run book-agent tools
 book_agent/
 ├── schema.py     # ALL_TOOLS：20 个工具的 OpenAI function schema（description 是操作手册）
 ├── tools.py      # BookTools：方法名即工具名，execute() getattr 分发
-├── client.py     # OpenAI 兼容 LLM 客户端（urllib，零额外依赖）
-├── assistant.py  # SYSTEM_PROMPT + 手写 agent loop（最多 8 轮）
+├── assistant.py  # SYSTEM_PROMPT + OpenAI Agents SDK（FunctionTool 适配 + TracedModel 埋点）
 ├── config.py     # 环境变量配置
 ├── trace.py      # Langfuse 观测层（可选依赖，未配置时 no-op，同 video-2022）
 └── __main__.py   # CLI：ask / chat / tools / health
@@ -64,6 +65,7 @@ book_agent/
 tests/
 ├── test_contract.py      # 契约测试：schema ↔ 方法签名逐工具对齐（离线）
 ├── test_tools_offline.py # 写确认协议、未知工具、错误转返回值（离线）
+├── test_sdk_adapter.py   # Agents SDK FunctionTool 适配层（离线）
 └── test_tools_live.py    # 全流程 live 测试（后端不在线自动 skip）
 ```
 

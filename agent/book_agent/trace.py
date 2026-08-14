@@ -7,7 +7,7 @@
 
 埋点：
 - `BookAssistant.answer` → 每次问答一个 trace（根 span）
-- `ModelClient.chat` → generation（model / messages / usage / 延迟）
+- `_TracedModel.get_response`（assistant.py，包 Agents SDK 模型）→ generation（model / messages / usage / 延迟）
 - `BookTools.execute` → tool span
 
 trace 结构：一次问答 = 一个 trace，期间产生的 generation 和 tool span 通过

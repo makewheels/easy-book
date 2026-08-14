@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Easy-Book 泳课管理系统的自然语言 agent（工具层 + agent loop）"
 requires-python = ">=3.10"
 dependencies = [
+    "openai-agents>=0.20.0",
     "requests>=2.31",
 ]
 
