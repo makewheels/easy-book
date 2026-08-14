@@ -1,0 +1,10 @@
+# pnpm 构建脚本白名单：批准需要执行 postinstall 的依赖
+# esbuild 需要构建脚本落地平台二进制，vue-demi 需要它切换 Vue2/3 入口
+allowBuilds:
+  esbuild: true
+  vue-demi: true
+
+# pnpm 10 等价写法（CI/服务器若用 pnpm 10 时生效）
+onlyBuiltDependencies:
+  - esbuild
+  - vue-demi

@@ -30,6 +30,7 @@ jobs:
         with:
           python-version: '3.12'
 
+      # requirements.txt 由 uv export 生成（见 backend/requirements.txt 头部注释）
       - name: Install backend dependencies
         working-directory: backend
         run: |
@@ -86,22 +87,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
-
-      - name: Type check
-        working-directory: frontend
-        run: npx vue-tsc --noEmit || true
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: frontend
-        run: npm run build
+        run: pnpm run build
 
   deploy:
     name: 部署到生产环境
@@ -123,14 +127,17 @@ jobs:
             # 拉取最新代码
             git pull origin master
 
-            # 安装后端依赖
+            # 安装后端依赖（requirements.txt 由 uv export 生成）
             cd backend
             pip3 install -r requirements.txt --break-system-packages -q
 
-            # 构建前端
+            # 构建前端（pnpm，与 lockfile 保持一致）
             cd ../frontend
-            npm ci --silent
-            npm run build
+            if ! command -v pnpm >/dev/null 2>&1; then
+              npm install -g pnpm@10 --silent
+            fi
+            pnpm install --frozen-lockfile --silent
+            pnpm run build
 
             # 重启后端服务
             sudo systemctl restart easy-book

@@ -131,11 +131,13 @@ build_frontend() {
 
     cd $PROJECT_DIR/frontend
 
-    # 安装npm依赖
-    npm install
-
-    # 构建生产版本
-    npm run build
+    # pnpm 构建（与 pnpm-lock.yaml 保持一致）
+    if ! command -v pnpm >/dev/null 2>&1; then
+        log_info "安装 pnpm..."
+        npm install -g pnpm@10
+    fi
+    pnpm install --frozen-lockfile
+    pnpm run build
 
     log_success "前端构建完成"
 }
