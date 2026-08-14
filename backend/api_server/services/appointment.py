@@ -64,10 +64,13 @@ class AppointmentService:
 
         # 获取创建的预约
         appointment = await db.get_appointment(appointment_id)
-        if appointment:
-            return StudentAppointmentModel(**appointment)
-        else:
+        if not appointment:
             raise ValueError("预约创建失败")
+
+        # 更新课程标题（(人数)学生名）
+        await CourseService.update_course_title(course.id)
+
+        return StudentAppointmentModel(**appointment)
 
     @staticmethod
     async def get_appointment_by_id(appointment_id: str) -> Optional[StudentAppointmentModel]:
@@ -81,16 +84,21 @@ class AppointmentService:
             预约对象，如果不存在则返回None
         """
         db = get_database()
-        appointments = await db.get_appointments(None)  # 获取所有预约来查找特定ID
-        for appointment in appointments:
-            if appointment.get("id") == appointment_id:
-                return StudentAppointmentModel(**appointment)
-        return None
+        appointment = await db.get_appointment(appointment_id)
+        if not appointment:
+            return None
+        # 附带课程信息
+        course_id = appointment.get("course_id")
+        if course_id:
+            course = await db.get_course(course_id)
+            if course:
+                appointment["course"] = course
+        return StudentAppointmentModel(**appointment)
 
     @staticmethod
     async def cancel_appointment(appointment_id: str) -> bool:
         """
-        取消预约 - 处理虚拟预约数据
+        取消预约（直接删除预约记录）
 
         Args:
             appointment_id: 预约ID
@@ -100,73 +108,27 @@ class AppointmentService:
         """
         db = get_database()
 
-        # 首先尝试从真实预约表中查找
-        appointments = await db.get_appointments(None)
-        target_appointment = None
-        for appointment in appointments:
-            if appointment.get("id") == appointment_id:
-                target_appointment = appointment
-                break
-
-        if target_appointment:
-            # 处理真实预约记录的取消
-            if target_appointment.get("status") == "cancelled":
-                raise ValueError("预约已取消")
-
-            # 注：课程消耗逻辑移至套餐模块处理
-
-            # 直接删除预约记录（用户要求取消即删除）
-            success = await db.delete_appointment(appointment_id)
-
-            if success:
-                # 预约已成功取消
-                course_id = target_appointment.get("course_id")
-                student_id = target_appointment.get("student_id")
-                # 注意：新系统中不再需要手动管理课程中的学生数量
-
-            return success
-
-        # 如果没有找到真实预约，尝试通过课程查找对应预约
-        try:
-            # 获取所有课程来查找该预约
-            from datetime import date
-            start_date = datetime(2020, 1, 1)
-            end_date = datetime(2030, 12, 31)
-            courses = await db.get_courses_by_date_range(start_date, end_date)
-
-            for course in courses:
-                course_id = course.get("_id") or course.get("id")
-                # 获取该课程的所有预约
-                course_appointments = await db.get_course_appointments(course_id)
-
-                for apt in course_appointments:
-                    apt_id = apt.get("_id") or apt.get("id")
-                    if apt_id == appointment_id:
-                        # 找到匹配的预约，执行取消操作
-                        student_id = apt.get("student_id")
-
-                        # 注：课程消耗逻辑移至套餐模块处理
-
-                        # 直接删除预约记录（用户要求取消即删除）
-                        success = await db.delete_appointment(appointment_id)
-
-                        if success:
-                            # 预约已成功取消
-                            if student_id:
-                                # 注意：新系统中不再需要手动管理课程中的学生数量
-                                pass
-                            return True
-
-            # 如果在所有课程中都没找到
+        target_appointment = await db.get_appointment(appointment_id)
+        if not target_appointment:
             raise ValueError("预约不存在")
 
-        except Exception as e:
-            raise ValueError(f"取消预约失败: {str(e)}")
+        if target_appointment.get("status") in ("cancelled", "cancel"):
+            raise ValueError("预约已取消")
+
+        success = await db.delete_appointment(appointment_id)
+
+        if success:
+            # 课程标题随学员变化刷新
+            course_id = target_appointment.get("course_id")
+            if course_id:
+                await CourseService.update_course_title(course_id)
+
+        return success
 
     @staticmethod
     async def checkin_appointment(appointment_id: str) -> bool:
         """
-        预约签到
+        预约签到（仅改状态，课时扣减在考勤模块完成）
 
         Args:
             appointment_id: 预约ID
@@ -176,14 +138,7 @@ class AppointmentService:
         """
         db = get_database()
 
-        # 获取预约信息
-        appointments = await db.get_appointments(None)
-        target_appointment = None
-        for appointment in appointments:
-            if appointment.get("id") == appointment_id:
-                target_appointment = appointment
-                break
-
+        target_appointment = await db.get_appointment(appointment_id)
         if not target_appointment:
             raise ValueError("预约不存在")
 
@@ -200,13 +155,11 @@ class AppointmentService:
         if not student:
             raise ValueError("学生不存在")
 
-        # 注：课程消耗逻辑移至套餐模块处理
-
         # 更新预约状态
         success = await db.update_appointment(appointment_id, {
             "status": "completed",
             "lesson_consumed": True,
-            "update_time": datetime.utcnow()
+            "update_time": datetime.now()
         })
 
         return success
@@ -238,9 +191,18 @@ class AppointmentService:
 
             result_appointments.append(StudentAppointmentModel(**apt))
 
-        # 按创建时间倒序排序（最新的在最上面）
-        # 使用 create_time 或创建时间相关的字段进行排序
-        result_appointments.sort(key=lambda apt: apt.create_time or apt.create_time, reverse=True)
+        # 按课程开始时间倒序（没有课程信息时退回创建时间）
+        def _sort_key(apt: StudentAppointmentModel):
+            course = apt.course or {}
+            start = course.get("start_time") or apt.create_time
+            if isinstance(start, str):
+                try:
+                    start = datetime.fromisoformat(start)
+                except ValueError:
+                    start = apt.create_time
+            return start
+
+        result_appointments.sort(key=_sort_key, reverse=True)
 
         return result_appointments
 
@@ -308,10 +270,21 @@ class AppointmentService:
                     # 通过 student_id 获取学生信息
                     student_info = await db.get_student(apt.student_id)
                     if student_info:
+                        # 从套餐聚合课时与类型（学员文档本身不存课时）
+                        packages = await db.get_student_packages(apt.student_id)
+                        remaining = sum(
+                            (p.get("count_based_info") or {}).get("remaining_lessons", 0)
+                            for p in packages
+                        )
+                        package_types = [
+                            p.get("package_type") for p in packages
+                            if p.get("package_type") and p.get("package_type") != "time_based"
+                        ]
                         student_data = {
                             "id": apt.id,
                             "name": student_info.get("name", ""),
-                            "package_type": student_info.get("package_type", ""),
+                            "package_type": package_types[0] if package_types else "",
+                            "remaining_lessons": remaining,
                             "appointment_id": apt.id,
                             "student_id": apt.student_id,
                             "status": apt.status

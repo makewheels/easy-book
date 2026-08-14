@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from typing import List
+from typing import List, Optional
 from api_server.models import StudentModel, StudentCreate, StudentUpdate
 from api_server.services import StudentService
 from api_server.database import get_database
@@ -18,10 +18,11 @@ async def create_student(student: StudentCreate):
 @router.get("/", response_model=List[StudentModel])
 async def get_students(
     skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100)
+    limit: int = Query(20, ge=1, le=100),
+    search: Optional[str] = Query(None, description="按姓名/电话模糊搜索")
 ):
     try:
-        students = await StudentService.get_all(skip=skip, limit=limit)
+        students = await StudentService.get_all(skip=skip, limit=limit, search=search)
         return students
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
