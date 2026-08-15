@@ -148,7 +148,15 @@ class _TracedModel(Model):
         self._model_name = model_name
 
     async def get_response(self, *args: Any, **kwargs: Any) -> Any:
+        # SDK 签名 get_response(system_instructions, input, ...)：系统提示词单独传、
+        # 不在消息列表里，不显式记录则 Langfuse trace 看不到它
+        system_instructions = args[0] if len(args) > 0 else kwargs.get("system_instructions")
         messages = args[1] if len(args) > 1 else kwargs.get("input")
+        if system_instructions:
+            history = messages or []
+            if not isinstance(history, list):
+                history = [history]
+            messages = [{"role": "system", "content": system_instructions}, *history]
         gen = lf_trace.start_generation(name="model.chat", model=self._model_name, messages=messages)
         try:
             resp = await self._inner.get_response(*args, **kwargs)
