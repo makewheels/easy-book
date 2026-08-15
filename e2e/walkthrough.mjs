@@ -19,6 +19,9 @@ page.on('console', (m) => {
 });
 page.on('pageerror', (e) => problems.push(`[pageerror] ${String(e).slice(0, 200)}`));
 page.on('requestfailed', (r) => problems.push(`[net-fail] ${r.url().slice(0, 120)} :: ${r.failure()?.errorText}`));
+page.on('response', (r) => {
+  if (r.status() >= 400) problems.push(`[http-${r.status()}] ${r.url().slice(0, 150)}`);
+});
 
 const shot = async (name, full = true) => {
   await page.screenshot({ path: `${SHOT_DIR}${name}.png`, fullPage: full });
