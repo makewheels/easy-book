@@ -131,6 +131,9 @@ agent/.chainlit/translations/
 # Gatsby files
 .cache/
 public
+# Chainlit 公共静态资源（custom_css 等）需入库，豁免上面的 public 规则
+!agent/public/
+!agent/public/**
 
 # Storybook build outputs
 .out

@@ -1,0 +1,4 @@
+/* 隐藏 Chainlit 默认免责声明水印（"大语言模型可能会犯错…"） */
+.watermark {
+  display: none !important;
+}

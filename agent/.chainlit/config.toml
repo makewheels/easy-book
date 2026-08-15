@@ -131,7 +131,8 @@ cot = "full"
 
 # Specify a CSS file that can be used to customize the user interface.
 # The CSS file can be served from the public directory or via an external link.
-# custom_css = "/public/test.css"
+# 隐藏 Chainlit 默认免责声明水印（见 public/hide-watermark.css；root-path 为 /ai）
+custom_css = "/ai/public/hide-watermark.css"
 
 # Specify additional attributes for a custom CSS file
 # custom_css_attributes = "media=\"print\""
