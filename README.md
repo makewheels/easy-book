@@ -34,12 +34,13 @@ easy-book/
 
 ### 本地开发
 
+敏感配置由自托管 Infisical 管理，仓库中的 `.infisical.json` 只包含非敏感项目定位。首次使用先执行 `infisical login --domain https://secrets.a4.fit`。后端只加载应用项目；Agent 再从 common 加载共享 LLM key，common 后加载，因此它是共享值的唯一真相源。
+
 ```bash
 # 后端
 cd backend
-cp .env.example .env              # 配置环境变量
 uv sync                           # 安装依赖
-uv run python run.py 8002
+infisical run --project-config-dir .. --recursive -- uv run python run.py 8002
 
 # 前端
 cd frontend
@@ -52,9 +53,13 @@ pnpm run dev                      # http://localhost:5173
 ```bash
 cd agent
 uv sync
-copy .env.example .env            # 填入 LLM API key
-uv run book-agent ask "明天有什么课程？"
+infisical run --project-config-dir .. --recursive -- \
+  infisical run --projectId 944d9216-7c11-4174-a39c-d0b339147a99 \
+    --env dev --path /llm/easy-book -- \
+    env BOOK_AGENT_ENVIRONMENT=development uv run book-agent ask "明天有什么课程？"
 ```
+
+本地 Agent 验证必须显式设置 `BOOK_AGENT_ENVIRONMENT=development`，避免把测试 traces 写入生产项目。
 
 详见 [agent/README.md](./agent/README.md)。
 

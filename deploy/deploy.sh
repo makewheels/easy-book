@@ -18,18 +18,32 @@ docker save easy-book-agent:latest | sudo k3s ctr -n k8s.io images import -
 echo "==> 应用 manifests"
 sudo k3s kubectl apply -f deploy/k8s/namespace.yaml
 
-# Secret：合并 deploy/.mongodb-url（MONGODB_URL）与 deploy/.agent-env（LLM/Langfuse 等 KEY=VALUE 行），
-# 两个文件均 chmod 600、不入 Git；都不存在则沿用集群中已有 Secret
-if [ -f deploy/.mongodb-url ] || [ -f deploy/.agent-env ]; then
-  SECRET_ARGS=(--from-literal=DB_NAME=easy_book --from-literal=ENVIRONMENT=production)
-  if [ -f deploy/.mongodb-url ]; then
-    SECRET_ARGS+=(--from-literal="MONGODB_URL=$(tr -d '\n' < deploy/.mongodb-url)")
-  fi
-  if [ -f deploy/.agent-env ]; then
+# Secret：CI 优先通过 INFISICAL_ENV_FILE 传入一次性 KEY=VALUE 文件。
+# deploy/.mongodb-url 与 deploy/.agent-env 仅作为迁移期兼容入口；都不存在则沿用集群中已有 Secret。
+RUNTIME_ENV_FILE=${INFISICAL_ENV_FILE:-}
+if [ -n "$RUNTIME_ENV_FILE" ] && { [ ! -f "$RUNTIME_ENV_FILE" ] || [ ! -r "$RUNTIME_ENV_FILE" ]; }; then
+  echo "INFISICAL_ENV_FILE 必须是可读普通文件" >&2
+  exit 1
+fi
+
+if [ -n "$RUNTIME_ENV_FILE" ] || [ -f deploy/.mongodb-url ] || [ -f deploy/.agent-env ]; then
+  if [ -n "$RUNTIME_ENV_FILE" ]; then
+    SECRET_ARGS=()
     while IFS= read -r line || [ -n "$line" ]; do
       case "$line" in '' | \#*) continue ;; esac
       [ "${line%%=*}" != "$line" ] && SECRET_ARGS+=(--from-literal="$line")
-    done < deploy/.agent-env
+    done < "$RUNTIME_ENV_FILE"
+  else
+    SECRET_ARGS=(--from-literal=DB_NAME=easy_book --from-literal=ENVIRONMENT=production)
+    if [ -f deploy/.mongodb-url ]; then
+      SECRET_ARGS+=(--from-literal="MONGODB_URL=$(tr -d '\n' < deploy/.mongodb-url)")
+    fi
+    if [ -f deploy/.agent-env ]; then
+      while IFS= read -r line || [ -n "$line" ]; do
+        case "$line" in '' | \#*) continue ;; esac
+        [ "${line%%=*}" != "$line" ] && SECRET_ARGS+=(--from-literal="$line")
+      done < deploy/.agent-env
+    fi
   fi
   sudo k3s kubectl create secret generic easy-book-config -n easy-book "${SECRET_ARGS[@]}" \
     --dry-run=client -o yaml | sudo k3s kubectl apply -f -

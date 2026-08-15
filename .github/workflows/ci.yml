@@ -114,61 +114,129 @@ jobs:
     runs-on: ubuntu-latest
     needs: [backend-unit-tests, backend-integration-tests, frontend-tests]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
 
     # 部署目标：services 机（101.42.94.17）k3s，入口 easybook.a4.fit（Caddy）
     # 流程：runner rsync 代码到服务器 → deploy/deploy.sh 构建镜像、导入 k3s、apply、健康检查
-    env:
-      DEPLOY_HOST: ${{ secrets.SERVER_HOST }}
-      DEPLOY_USER: ${{ secrets.SERVER_USER }}
-
     steps:
       - uses: actions/checkout@v4
+
+      - name: 从 Infisical 读取生产配置
+        uses: Infisical/secrets-action@v1.0.16
+        with:
+          method: oidc
+          identity-id: 2fcb7439-3d9d-4a03-868d-091f5d8aea35
+          oidc-audience: infisical://secrets.a4.fit/makewheels/easy-book
+          domain: https://secrets.a4.fit
+          project-slug: easy-book-secrets
+          env-slug: prod
+          secret-path: /
+          recursive: true
+
+      - name: 从 common 读取共享 LLM 配置
+        uses: Infisical/secrets-action@v1.0.16
+        with:
+          method: oidc
+          identity-id: 2fcb7439-3d9d-4a03-868d-091f5d8aea35
+          oidc-audience: infisical://secrets.a4.fit/makewheels/easy-book
+          domain: https://secrets.a4.fit
+          project-slug: common-shared
+          env-slug: dev
+          secret-path: /llm/easy-book
 
       - name: 写入 SSH 密钥
         run: |
           mkdir -p ~/.ssh-tmp
-          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh-tmp/key
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh-tmp/key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh-tmp/known_hosts
           chmod 600 ~/.ssh-tmp/key
+          chmod 600 ~/.ssh-tmp/known_hosts
 
       - name: 同步代码到服务器
         run: |
           rsync -az --delete \
             --exclude '.git' --exclude '.env' --exclude '.mongodb-url' --exclude '.agent-env' \
-            -e "ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
-            ./ "${DEPLOY_USER}@${DEPLOY_HOST}:/home/ubuntu/easy-book/"
+            -e "ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh-tmp/known_hosts -o StrictHostKeyChecking=yes" \
+            ./ "${SERVER_USER}@${SERVER_HOST}:/home/ubuntu/easy-book/"
 
       - name: 执行部署
         run: |
-          ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
-            "${DEPLOY_USER}@${DEPLOY_HOST}" \
-            "cd /home/ubuntu/easy-book && ./deploy/deploy.sh"
+          emit_env() {
+            local key=$1
+            printf '%s=%s\n' "$key" "${!key}"
+          }
+          {
+            for key in \
+              MONGODB_URL DB_NAME ENVIRONMENT \
+              BOOK_AGENT_LLM_API_KEY BOOK_AGENT_LLM_MODEL \
+              LANGFUSE_HOST LANGFUSE_PUBLIC_KEY LANGFUSE_SECRET_KEY \
+              LANGFUSE_PROD_PUBLIC_KEY LANGFUSE_PROD_SECRET_KEY \
+              CHAINLIT_AUTH_SECRET EASY_BOOK_JWT_SECRET EASY_BOOK_SERVICE_KEY \
+              ADMIN_PHONE ADMIN_PASSWORD ADMIN_SOURCE_TYPE; do
+              emit_env "$key"
+            done
+          } | ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile=~/.ssh-tmp/known_hosts -o StrictHostKeyChecking=yes \
+            "${SERVER_USER}@${SERVER_HOST}" '
+              set -eu
+              runtime_root=$(cd "${TMPDIR:-/tmp}" && pwd -P)
+              runtime_file=$(mktemp "$runtime_root/easy-book-runtime.XXXXXX")
+              case "$runtime_file/" in "$runtime_root"/*) ;; *) exit 1 ;; esac
+              cleanup() {
+                case "$runtime_file/" in
+                  "$runtime_root"/*) [ ! -e "$runtime_file" ] || unlink "$runtime_file" ;;
+                esac
+              }
+              trap cleanup EXIT HUP INT TERM
+              chmod 600 "$runtime_file"
+              cat > "$runtime_file"
+              cd /home/ubuntu/easy-book
+              INFISICAL_ENV_FILE="$runtime_file" ./deploy/deploy.sh
+            '
 
   e2e-tests:
     name: E2E 冒烟测试（部署后）
     runs-on: ubuntu-latest
     needs: [deploy]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: 从 Infisical 读取 E2E 配置
+        uses: Infisical/secrets-action@v1.0.16
+        with:
+          method: oidc
+          identity-id: 2fcb7439-3d9d-4a03-868d-091f5d8aea35
+          oidc-audience: infisical://secrets.a4.fit/makewheels/easy-book
+          domain: https://secrets.a4.fit
+          project-slug: easy-book-secrets
+          env-slug: prod
+          secret-path: /
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Install e2e dependencies
         working-directory: e2e
-        run: npm install --no-fund --no-audit
+        run: pnpm install --frozen-lockfile
 
       - name: Install Chromium
         working-directory: e2e
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run e2e smoke tests
         working-directory: e2e
-        env:
-          E2E_BASE_URL: ${{ secrets.E2E_BASE_URL }}
-          E2E_PHONE: ${{ secrets.E2E_PHONE }}
-          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
-        run: npx playwright test --reporter=list
+        run: pnpm exec playwright test --reporter=list

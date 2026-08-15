@@ -1,0 +1,6 @@
+{
+  "workspaceId": "7663addf-9ca4-44a9-9721-ab135a2fe2dd",
+  "domain": "https://secrets.a4.fit",
+  "defaultEnvironment": "dev",
+  "gitBranchToEnvironmentMapping": null
+}

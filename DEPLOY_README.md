@@ -63,19 +63,13 @@
 
 ## 🔑 密钥管理
 
-### GitHub Secrets
+Infisical 的 `easy-book` 项目是应用配置真相源，dev/prod 分环境保存；共享 LLM key 只保存在 `common`，通过对应别名目录在运行时后加载。GitHub Actions 使用绑定仓库与 `master` 分支的 OIDC 短期身份，workflow 中提交的 identity ID 和 audience 均不是凭据。GitHub 不再需要保存业务密码或 Infisical client secret。
 
-| Secret | 说明 |
-|--------|------|
-| `SERVER_HOST` | services 机公网 IP（101.42.94.17） |
-| `SERVER_USER` | SSH 用户名（ubuntu） |
-| `SSH_PRIVATE_KEY` | easy-book CI 专用 SSH 私钥 |
-| `MONGODB_URL` | MongoDB 连接串（备份用途；部署实际读服务器上的 deploy/.mongodb-url） |
+生产部署读取 `easy-book/prod` 与 `common/dev:/llm/easy-book`，把所需键通过 SSH 标准输入传到系统临时目录。`deploy.sh` 仅在本次执行中读取 `INFISICAL_ENV_FILE`；退出、失败或中断都会删除临时文件。迁移期的 `deploy/.mongodb-url` 与 `deploy/.agent-env` 只作兼容回退，完成流水线验证后应删除。
 
 ### k8s Secret（easy-book namespace）
 
-`easy-book-config`：`MONGODB_URL` / `DB_NAME=easy_book` / `ENVIRONMENT=production`。
-由 deploy.sh 从 `deploy/.mongodb-url` 生成；密码曾于 2026-08-14 轮换。
+`easy-book-config` 保存后端、Agent、Langfuse 和内部鉴权所需环境变量。它由流水线从 Infisical 的一次性输入重建；密码曾于 2026-08-14 轮换。
 
 ### MongoDB
 
