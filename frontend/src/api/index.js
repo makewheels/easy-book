@@ -1,6 +1,32 @@
 import axios from 'axios'
 import { toast } from '@/utils/toast'
 
+// 全局 axios 拦截器：appointment/course/package 等模块直接用裸 axios，
+// 在这里统一挂登录令牌，避免加鉴权后这些请求 401
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('eb_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// 裸 axios 请求遇到 401 同样清凭据回登录页（登录接口自身除外）
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && !String(error.config?.url || '').includes('/auth/login')) {
+      localStorage.removeItem('eb_token')
+      localStorage.removeItem('eb_phone')
+      document.cookie = 'eb_token=; path=/; max-age=0'
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
+    }
+    return Promise.reject(error)
+  }
+)
+
 const request = axios.create({
   baseURL: '/api',
   timeout: 10000,
