@@ -69,7 +69,7 @@ const navigateTo = (page) => {
       router.push('/students')
       break
     case 'ai':
-      window.location.href = '/ai'
+      router.push('/assistant')
       break
   }
 }

@@ -9,6 +9,7 @@ import CalendarAppointment from '@/views/CalendarAppointment.vue'
 import AddPackage from '@/views/AddPackage.vue'
 import EditPackage from '@/views/EditPackage.vue'
 import Login from '@/views/Login.vue'
+import AssistantView from '@/views/AssistantView.vue'
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/assistant',
+    name: 'Assistant',
+    component: AssistantView
   }
 ]
 

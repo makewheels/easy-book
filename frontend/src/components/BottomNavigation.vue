@@ -45,7 +45,7 @@ defineEmits(['navigate'])
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1200px;
+  max-width: 430px;
   height: 70px;
   background: #fff;
   border-top: 1px solid #e0e0e0;

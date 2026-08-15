@@ -187,7 +187,8 @@ default_avatar_file_url = ""
     display_name = "管理后台"
     icon_url = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>"
     url = "/"
-    target = "_self"
+    # _top：嵌入 iframe 时点击跳出到顶层窗口，避免把管理界面加载进 iframe
+    target = "_top"
 
 [meta]
 generated_by = "2.11.1"
