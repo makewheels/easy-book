@@ -148,17 +148,19 @@ jobs:
 
       - name: 写入 SSH 密钥
         run: |
-          mkdir -p ~/.ssh-tmp
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh-tmp/key
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh-tmp/known_hosts
-          chmod 600 ~/.ssh-tmp/key
-          chmod 600 ~/.ssh-tmp/known_hosts
+          runner_temp_resolved=$(cd "$RUNNER_TEMP" && pwd -P)
+          ssh_tmp_dir=$(mktemp -d "$runner_temp_resolved/easy-book-ssh.XXXXXX")
+          printf 'SSH_TMP_DIR=%s\n' "$ssh_tmp_dir" >> "$GITHUB_ENV"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$ssh_tmp_dir/key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$ssh_tmp_dir/known_hosts"
+          chmod 600 "$ssh_tmp_dir/key"
+          chmod 600 "$ssh_tmp_dir/known_hosts"
 
       - name: 同步代码到服务器
         run: |
           rsync -az --delete \
             --exclude '.git' --exclude '.env' --exclude '.mongodb-url' --exclude '.agent-env' \
-            -e "ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh-tmp/known_hosts -o StrictHostKeyChecking=yes" \
+            -e "ssh -i $SSH_TMP_DIR/key -o IdentitiesOnly=yes -o UserKnownHostsFile=$SSH_TMP_DIR/known_hosts -o StrictHostKeyChecking=yes" \
             ./ "${SERVER_USER}@${SERVER_HOST}:/home/ubuntu/easy-book/"
 
       - name: 执行部署
@@ -177,8 +179,8 @@ jobs:
               ADMIN_PHONE ADMIN_PASSWORD ADMIN_SOURCE_TYPE; do
               emit_env "$key"
             done
-          } | ssh -i ~/.ssh-tmp/key -o IdentitiesOnly=yes \
-            -o UserKnownHostsFile=~/.ssh-tmp/known_hosts -o StrictHostKeyChecking=yes \
+          } | ssh -i "$SSH_TMP_DIR/key" -o IdentitiesOnly=yes \
+            -o UserKnownHostsFile="$SSH_TMP_DIR/known_hosts" -o StrictHostKeyChecking=yes \
             "${SERVER_USER}@${SERVER_HOST}" '
               set -eu
               runtime_root=$(cd "${TMPDIR:-/tmp}" && pwd -P)
@@ -195,6 +197,24 @@ jobs:
               cd /home/ubuntu/easy-book
               INFISICAL_ENV_FILE="$runtime_file" ./deploy/deploy.sh
             '
+
+      - name: 清理临时 SSH 文件
+        if: always()
+        run: |
+          [ -n "${SSH_TMP_DIR:-}" ] || exit 0
+          runner_temp_resolved=$(cd "$RUNNER_TEMP" && pwd -P)
+          ssh_tmp_dir_resolved=$(cd "$SSH_TMP_DIR" && pwd -P)
+          case "$ssh_tmp_dir_resolved" in
+            "$runner_temp_resolved"/easy-book-ssh.*)
+              [ -d "$ssh_tmp_dir_resolved" ]
+              [ ! -L "$ssh_tmp_dir_resolved" ]
+              rm -rf -- "$ssh_tmp_dir_resolved"
+              ;;
+            *)
+              echo "拒绝清理非 Runner 临时目录：$ssh_tmp_dir_resolved" >&2
+              exit 1
+              ;;
+          esac
 
   e2e-tests:
     name: E2E 冒烟测试（部署后）
