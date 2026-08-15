@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from book_agent.schema import ALL_TOOLS, WRITE_TOOLS
-from book_agent.tools import BookTools
+from book_agent.tools import BookTools, _weekday_of
 
 
 def test_write_requires_confirmation_by_default():
@@ -70,3 +70,35 @@ def test_tools_count_and_names_stable():
     # 20 个工具：9 查询 + 11 写操作
     assert len(names) == 20
     assert len(WRITE_TOOLS) == 11
+
+
+def test_weekday_of():
+    assert _weekday_of("2026-08-19T21:00:00") == "周三"
+    assert _weekday_of("2026-08-14") == "周五"
+    assert _weekday_of("not-a-date") is None
+    assert _weekday_of("") is None
+
+
+def test_book_appointment_planned_includes_weekday():
+    # 生产事故复现：模型曾把"下周三"算成 8/20（实为周四）；计划里带星期几供核对
+    tools = BookTools(api_url="http://localhost:1", confirm_write=False)
+    result = tools.execute("book_appointment", {"student_id": "s1", "start_time": "2026-08-19T21:00:00"})
+    assert result["requiresConfirmation"] is True
+    assert result["planned"]["weekday"] == "周三"
+
+
+def test_book_appointment_invalid_time_planned_still_works():
+    tools = BookTools(api_url="http://localhost:1", confirm_write=False)
+    result = tools.execute("book_appointment", {"student_id": "s1", "start_time": "乱七八糟"})
+    assert result["requiresConfirmation"] is True
+    assert "weekday" not in result["planned"]
+
+
+def test_book_appointment_result_includes_weekday(monkeypatch):
+    tools = BookTools(api_url="http://localhost:1", confirm_write=True)
+    monkeypatch.setattr(tools, "_request", lambda *a, **k: {"id": "apt1", "status": "scheduled"})
+    result = tools.execute(
+        "book_appointment", {"student_id": "s1", "start_time": "2026-08-19T21:00:00", "confirm": True}
+    )
+    assert result["id"] == "apt1"
+    assert result["weekday"] == "周三"

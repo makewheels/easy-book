@@ -11,12 +11,23 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any, Optional
 
 import requests
 
 from .schema import WRITE_TOOLS
 from . import trace as lf_trace
+
+_WEEKDAYS = ("周一", "周二", "周三", "周四", "周五", "周六", "周日")
+
+
+def _weekday_of(start_time: str) -> str | None:
+    """开始时间（ISO 或纯日期）→ 中文星期；解析失败返回 None，绝不拖累主路径。"""
+    try:
+        return _WEEKDAYS[datetime.fromisoformat(str(start_time)).weekday()]
+    except ValueError:
+        return None
 
 
 @dataclass
@@ -75,6 +86,11 @@ class BookTools:
         try:
             if name in WRITE_TOOLS and not (self.confirm_write or args.get("confirm")):
                 planned = {k: v for k, v in args.items() if k != "confirm"}
+                # 预约计划带上星期几：模型曾把"下周X"算错一天，确认前可据此核对
+                if name == "book_appointment":
+                    weekday = _weekday_of(planned.get("start_time", ""))
+                    if weekday:
+                        planned["weekday"] = weekday
                 result: Any = {"requiresConfirmation": True, "tool": name, "planned": planned}
             else:
                 result = method(**args)
@@ -257,11 +273,16 @@ class BookTools:
     # ── 写操作：预约/考勤 ───────────────────────────────────────
 
     def book_appointment(self, student_id: str, start_time: str, duration_minutes: int = 60, confirm: bool = False) -> Any:
-        return self._request("POST", "/api/appointments/", json_body={
+        result = self._request("POST", "/api/appointments/", json_body={
             "student_id": student_id,
             "start_time": start_time,
             "duration_in_minutes": duration_minutes,
         })
+        # 回带所约日期的星期几，便于模型核对是否符合用户意图（防"下周X"换算差一天）
+        weekday = _weekday_of(start_time)
+        if isinstance(result, dict) and weekday:
+            result["weekday"] = weekday
+        return result
 
     def cancel_appointment(self, appointment_id: str, confirm: bool = False) -> Any:
         return self._request("POST", f"/api/appointments/{appointment_id}/cancel")
