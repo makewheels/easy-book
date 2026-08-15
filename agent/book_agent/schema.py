@@ -19,6 +19,7 @@ ALL_TOOLS: list[dict[str, Any]] = [
             "description": (
                 "查询学员列表，可按姓名/电话模糊搜索。返回学员数组，含 id、name、phone、"
                 "remaining_lessons(剩余课时)、total_lessons(总课时)。"
+                "用户问“有几个学员/学员名单”时也用它（省略 search 返回全部）。"
                 "用户提到学员名字时，先用本工具拿到 student_id，再调其他工具；不要编造 id。"
             ),
             "parameters": {
@@ -315,6 +316,8 @@ ALL_TOOLS: list[dict[str, Any]] = [
             "description": (
                 "给学员预约上课。⚠️ 写操作需确认。"
                 "start_time 为 ISO 格式本地时间（如 2026-08-15T10:00:00），相对说法先换算。"
+                "返回带 weekday（所约日期的星期几）：向用户展示计划时务必核对它与用户说的星期是否一致，"
+                "不一致说明日期换算错了，重算后再约。"
                 "同一时段已有课程时自动并入该课程（多人班）；学员该时段已有预约会被拒绝。"
                 "可先 get_schedule 查看当天已有安排。"
             ),

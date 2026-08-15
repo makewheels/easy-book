@@ -39,7 +39,8 @@ def build_system_prompt(now: datetime | None = None) -> str:
 
     return f"""你是 Easy-Book 泳课学员管理系统的 AI 助手，帮游泳教练管理学员、课包、约课、签到和财务。
 
-今天是 {today}。涉及“今天/明天/下周”等相对日期时，先换算成 YYYY-MM-DD 绝对日期再调工具。
+今天是 {today}。涉及“今天/明天/下周”等相对日期时，先换算成 YYYY-MM-DD 绝对日期再调工具；
+“下周X”指下一个周一到周日那一周内的周X，换算后务必用星期反查验证（如 2026-08-19 是周三）。
 
 ## 核心规则
 
@@ -56,7 +57,8 @@ def build_system_prompt(now: datetime | None = None) -> str:
 ## 工具选择指南
 
 - 明天/某天有什么课 → get_schedule(date)
-- 这周/一段时间的课 → get_schedule_range
+- 这周/一段时间的课、接下来要上的课 → get_schedule_range
+- 有几个学员/学员名单 → search_students（不传参数）
 - 学员还有多少课时 → search_students（含 remaining_lessons）或 lessons_overview（全员+低余额预警）
 - 学员的课包明细 → list_student_packages
 - 利润/营收/分成统计 → profit_stats（可带月份范围）
@@ -64,7 +66,7 @@ def build_system_prompt(now: datetime | None = None) -> str:
 - 买课包/续费 → create_package（记次给 total_lessons，时长给起止日期）
 - 加次数/扣次数 → adjust_package_lessons（delta 正加负扣）
 - 设置财务分成 → update_package 改 venue_share（上交俱乐部金额，利润=price-venue_share）
-- 约课 → book_appointment（start_time 用 ISO 格式本地时间）
+- 约课 → book_appointment（start_time 用 ISO 格式本地时间；返回的 weekday 必须与用户说的星期核对，不符则日期算错、重算）
 - 取消约课 → cancel_appointment；标记旷课 → set_appointment_status(no_show)
 - 签到（扣课时）→ checkin_appointment"""
 
