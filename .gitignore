@@ -148,6 +148,8 @@ temp/
 *.sqlite
 *.sqlite3
 data/
+# 评测种子数据例外（真实台账导入，评测环境可复现的一部分）
+!agent/evals/seed/data/
 
 # Config files with secrets
 config.local.py

@@ -1,0 +1,8459 @@
+{
+  "source_files": [
+    "毕业学员.docx",
+    "学员课程表.xlsx"
+  ],
+  "generated_at": "2026-08-16T12:35:54",
+  "conventions": {
+    "year": "11/12月→2025，其余→2026（台账覆盖 2025-11~2026-08）",
+    "time": "小时≤8按下午场+12；9-11上午；≥12原样；5.30→17:30；时间为推断值，日期忠实",
+    "count": "考勤数>标注节数时取考勤数（视为续费未记账）；N人不算节数",
+    "venue_share": "台账无分成记录，导入统一 0，后续可用 agent 设置",
+    "multi_person": "合栏学员共享考勤；赵家三口按单一家庭记录"
+  },
+  "students": [
+    {
+      "name": "全智妍",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月24号2点",
+          "date": "2026-02-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2026-02-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-02-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号9点",
+          "date": "2026-02-28",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-02-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号9点",
+          "date": "2026-03-01",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "3月1号8点",
+          "date": "2026-03-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月2号7点",
+          "date": "2026-05-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月2号8点",
+          "date": "2026-05-02",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-05-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号8点",
+          "date": "2026-05-09",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-05-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "刘亚宁",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月25号8点",
+          "date": "2026-04-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号5.30",
+          "date": "2026-04-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号5.30",
+          "date": "2026-04-30",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月1号3点",
+          "date": "2026-05-01",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月1号8点",
+          "date": "2026-05-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号3点",
+          "date": "2026-05-02",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号8点",
+          "date": "2026-05-02",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号3点",
+          "date": "2026-05-03",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-05-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号3点",
+          "date": "2026-05-05",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号7点",
+          "date": "2026-05-05",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号7点",
+          "date": "2026-05-06",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孙维",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月12号2点",
+          "date": "2026-03-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-03-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-03-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-03-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月2号2点",
+          "date": "2026-04-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号5.30点",
+          "date": "2026-04-16",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号2点",
+          "date": "2026-04-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-04-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-04-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号2点",
+          "date": "2026-04-23",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月8号5.30",
+          "date": "2026-05-08",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李昕阳",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月7号",
+          "date": "2026-02-07",
+          "time": null,
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "3月1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-03-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-03-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号5.30",
+          "date": "2026-03-14",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号5.30",
+          "date": "2026-03-27",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-03-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2026-03-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月16号2点",
+          "date": "2026-04-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号2点",
+          "date": "2026-04-23",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "陈琳",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月27号2点",
+          "date": "2026-03-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月6号2点",
+          "date": "2026-05-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3点",
+          "date": "2026-05-06",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-05-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号3点",
+          "date": "2026-05-07",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-05-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-05-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号8点",
+          "date": "2026-05-09",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号7点",
+          "date": "2026-05-10",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号8点",
+          "date": "2026-05-10",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-05-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号3点",
+          "date": "2026-05-12",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "傅思琪",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12月6号4点",
+          "date": "2025-12-06",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月7号9点",
+          "date": "2025-12-07",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月11号5点",
+          "date": "2025-12-11",
+          "time": "17:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号4点",
+          "date": "2025-12-13",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号3点",
+          "date": "2025-12-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号3点",
+          "date": "2025-12-28",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号4点",
+          "date": "2026-01-03",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号6.3",
+          "date": "2026-01-13",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月8号2点",
+          "date": "2026-05-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号3点",
+          "date": "2026-05-08",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-05-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号3点",
+          "date": "2026-05-12",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孙博微",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月16号8点",
+          "date": "2026-04-16",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-04-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-04-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-04-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号8点",
+          "date": "2026-04-23",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-04-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月7号7点",
+          "date": "2026-05-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号7点",
+          "date": "2026-05-08",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号7点",
+          "date": "2026-05-10",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号7点",
+          "date": "2026-05-13",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "周洪洲",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月5号1点",
+          "date": "2026-05-05",
+          "time": "13:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-05-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号1点",
+          "date": "2026-05-07",
+          "time": "13:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-05-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "马钰",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月5号1点",
+          "date": "2026-05-05",
+          "time": "13:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-05-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号1点",
+          "date": "2026-05-07",
+          "time": "13:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-05-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "石雨",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 6,
+        "count_explicit": false,
+        "price": 1000,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号2点",
+          "date": "2026-06-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-06-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-06-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号2点",
+          "date": "2026-06-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张翠",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月8号2点",
+          "date": "2026-05-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3点",
+          "date": "2026-05-08",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张钰",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月16号8点",
+          "date": "2026-04-16",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-04-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-04-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-04-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号8点",
+          "date": "2026-04-23",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号3点",
+          "date": "2026-05-12",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-05-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号7点",
+          "date": "2026-06-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王小宇",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "26号9点",
+          "date": "2025-12-26",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "李咏昶",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "1月29号2点",
+          "date": "2026-01-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-01-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2月1号2点",
+          "date": "2026-02-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-02-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号2点",
+          "date": "2026-02-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号2点",
+          "date": "2026-02-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-02-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-03-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-03-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-03-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月10号2点",
+          "date": "2026-03-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号8点",
+          "date": "2026-03-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号8点",
+          "date": "2026-03-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-03-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-03-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号8点",
+          "date": "2026-03-19",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-03-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-03-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-03-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号8点",
+          "date": "2026-03-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号8点",
+          "date": "2026-03-30",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号8点",
+          "date": "2026-03-31",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-04-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号8点",
+          "date": "2026-04-20",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-04-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-04-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号2点",
+          "date": "2026-05-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号8点",
+          "date": "2026-06-03",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李玉秋",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "26日2点",
+          "date": "2026-02-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27日8点",
+          "date": "2026-02-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-02-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号8点",
+          "date": "2026-03-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号8点",
+          "date": "2026-03-03",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-03-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号8点",
+          "date": "2026-03-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-03-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号8点",
+          "date": "2026-03-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-03-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-03-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-03-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "赵家三口",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": 5100,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12月14号9点",
+          "date": "2025-12-14",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "18号9点",
+          "date": "2025-12-18",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "24号9点",
+          "date": "2025-12-24",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "1月20号9点",
+          "date": "2026-01-20",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "22号9点",
+          "date": "2026-01-22",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "27号9点",
+          "date": "2026-01-27",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "5号9点",
+          "date": "2026-02-05",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "3月3号9点",
+          "date": "2026-03-03",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "5号9点",
+          "date": "2026-03-05",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "10号9点",
+          "date": "2026-03-10",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12号9点",
+          "date": "2026-03-12",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "17号9点",
+          "date": "2026-03-17",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "贾恺诺",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "28号4点",
+          "date": "2025-12-28",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "31号2点",
+          "date": "2025-12-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号3点",
+          "date": "2026-01-02",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-01-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-01-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-01-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-02-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号4点",
+          "date": "2026-02-04",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-02-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-02-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号3点",
+          "date": "2026-02-26",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-03-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号9点",
+          "date": "2026-03-12",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李丹丹",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "15号4点",
+          "date": "2026-01-15",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-01-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-01-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-01-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-01-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号8点",
+          "date": "2026-02-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月4号5：30",
+          "date": "2026-03-04",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号8点",
+          "date": "2026-03-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李珊珊",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": [
+          "多人同行"
+        ]
+      },
+      "attendance": [
+        {
+          "raw": "27号2点",
+          "date": "2025-12-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "28号8点",
+          "date": "2025-12-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2025-12-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号8点",
+          "date": "2025-12-30",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号8点",
+          "date": "2025-12-31",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-01-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号8点",
+          "date": "2026-01-03",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1      -1",
+          "date": "2026-01-06",
+          "time": "13:00",
+          "time_inferred": true,
+          "notes": [
+            "原记录1-1点区间"
+          ]
+        },
+        {
+          "raw": "6号8点",
+          "date": "2026-01-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号8点",
+          "date": "2026-01-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号8点",
+          "date": "2026-01-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-01-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号8点",
+          "date": "2026-01-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张晶晶",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 10,
+        "count_explicit": false,
+        "price": 1700,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12月2号 4点",
+          "date": "2025-12-02",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月12号4点",
+          "date": "2025-12-12",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号4点",
+          "date": "2025-12-16",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号4点",
+          "date": "2025-12-24",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2025-12-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号4点",
+          "date": "2026-01-01",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-01-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-01-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-01-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-02-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-02-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "郭田蕊",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "17号8点",
+          "date": "2025-12-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "18号8点",
+          "date": "2025-12-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2025-12-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号8点",
+          "date": "2025-12-31",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-01-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号5.30",
+          "date": "2026-01-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-01-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-01-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "周昕",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月1号8点",
+          "date": "2026-02-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-02-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-02-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-02-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-02-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-02-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-02-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-02-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-02-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-02-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-02-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "夏思冉",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": [
+          "标注:+自"
+        ]
+      },
+      "attendance": [
+        {
+          "raw": "1月30号8点",
+          "date": "2026-01-30",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-02-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号8点",
+          "date": "2026-02-03",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-02-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号8点",
+          "date": "2026-02-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号8点",
+          "date": "2026-02-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-02-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号8点",
+          "date": "2026-02-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "姚宣羽",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月1号2",
+          "date": "2026-02-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-02-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-02-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-02-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-02-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-02-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-02-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号2点",
+          "date": "2026-02-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号",
+          "date": "2026-02-26",
+          "time": null,
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "27",
+          "date": "2026-02-27",
+          "time": null,
+          "time_inferred": false,
+          "notes": [
+            "仅日期，时间未记录"
+          ]
+        },
+        {
+          "raw": "28",
+          "date": "2026-02-28",
+          "time": null,
+          "time_inferred": false,
+          "notes": [
+            "仅日期，时间未记录"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "朱萌",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "21号6.3",
+          "date": "2026-01-21",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号3点",
+          "date": "2026-01-22",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号3点",
+          "date": "2026-01-31",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-02-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号5.30",
+          "date": "2026-02-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-02-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-02-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-02-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号5.30",
+          "date": "2026-03-04",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-03-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-03-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "付玉敏",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 15,
+        "count_explicit": true,
+        "price": 2100,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "11月12日 3点",
+          "date": "2025-11-12",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月13号 4点",
+          "date": "2025-11-13",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月14号 3点",
+          "date": "2025-11-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月16号 3点",
+          "date": "2025-11-16",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月18日 3点",
+          "date": "2025-11-18",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月20日 4点",
+          "date": "2025-11-20",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月23日 4点",
+          "date": "2025-11-23",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月3日 9点",
+          "date": "2025-12-03",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月11号9点",
+          "date": "2025-12-11",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月12号9点",
+          "date": "2025-12-12",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月13号2点",
+          "date": "2025-12-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号3点",
+          "date": "2025-12-16",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号2点",
+          "date": "2025-12-23",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张思媛",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 6,
+        "count_explicit": false,
+        "price": 1600,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "11月28号 8点",
+          "date": "2025-11-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月29号 4点",
+          "date": "2025-11-29",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月30号 4点",
+          "date": "2025-11-30",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月4号 8点",
+          "date": "2025-12-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月5号 8点",
+          "date": "2025-12-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月11号8点",
+          "date": "2025-12-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月12号8点",
+          "date": "2025-12-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月16号8点",
+          "date": "2025-12-16",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2025-12-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2025-12-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号8点",
+          "date": "2025-12-30",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号8点",
+          "date": "2025-12-31",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-01-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "董恬恬",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "21号5.30",
+          "date": "2026-03-21",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-03-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2026-03-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号8点",
+          "date": "2026-03-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号2点",
+          "date": "2026-03-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-04-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-04-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号2点",
+          "date": "2026-04-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-04-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月10号7点",
+          "date": "2026-05-10",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号5.30",
+          "date": "2026-05-12",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号5.30",
+          "date": "2026-06-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号5.30",
+          "date": "2026-06-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "何永鑫",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 15,
+        "count_explicit": false,
+        "price": 2000,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12月6号4点",
+          "date": "2025-12-06",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月7号2点",
+          "date": "2025-12-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月14号2点",
+          "date": "2025-12-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号4点",
+          "date": "2025-12-26",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2025-12-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2025-12-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号2点",
+          "date": "2025-12-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-01-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1月2号8点",
+          "date": "2026-01-02",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号3点",
+          "date": "2026-01-03",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-01-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-01-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-01-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孟凡秀",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 3,
+        "count_explicit": false,
+        "price": 2200,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "11月18号",
+          "date": "2025-11-18",
+          "time": null,
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "11月19号 3点",
+          "date": "2025-11-19",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月20号 3点",
+          "date": "2025-11-20",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月23日3点",
+          "date": "2025-11-23",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月2号9点",
+          "date": "2025-12-02",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月3号3点",
+          "date": "2025-12-03",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月4号 9点",
+          "date": "2025-12-04",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月5号3点",
+          "date": "2025-12-05",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月6号9点",
+          "date": "2025-12-06",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月7号8点",
+          "date": "2025-12-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月11号9点",
+          "date": "2025-12-11",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月12号9点",
+          "date": "2025-12-12",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月16号8点",
+          "date": "2025-12-16",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2025-12-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王春花",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": 2200,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "23号2点",
+          "date": "2025-12-23",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "24号8点",
+          "date": "2025-12-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2025-12-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2025-12-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2025-12-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号3点",
+          "date": "2026-01-03",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-01-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-01-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-01-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-01-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "曹赫",
+      "graduated": false,
+      "sources": [
+        "毕业学员.docx",
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": 600,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "21号8点",
+          "date": "2025-12-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "22号8点",
+          "date": "2025-12-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号8点",
+          "date": "2025-12-23",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2025-12-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号8点",
+          "date": "2025-12-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月16号8点",
+          "date": "2026-04-16",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-04-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-04-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-04-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-04-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-04-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-05-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号2点",
+          "date": "2026-06-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号7点",
+          "date": "2026-06-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王越",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 14,
+        "count_explicit": false,
+        "price": 1600,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12月5号2点",
+          "date": "2025-12-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月7号9点",
+          "date": "2025-12-07",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月11号5.30",
+          "date": "2025-12-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号3点",
+          "date": "2025-12-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号4点",
+          "date": "2025-12-24",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号5.30",
+          "date": "2025-12-25",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号4点",
+          "date": "2025-12-27",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-01-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9",
+          "date": "2026-02-09",
+          "time": null,
+          "time_inferred": false,
+          "notes": [
+            "仅日期，时间未记录"
+          ]
+        },
+        {
+          "raw": "13号6.3",
+          "date": "2026-02-13",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号3点",
+          "date": "2026-02-18",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号2点",
+          "date": "2026-02-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号2点",
+          "date": "2026-03-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "赵昕圆",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "28号2点",
+          "date": "2026-02-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号8点",
+          "date": "2026-03-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-03-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-03-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-03-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2026-03-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号8点",
+          "date": "2026-04-19",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-04-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月2号7点",
+          "date": "2026-05-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-05-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "举思言",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "8号8点",
+          "date": "2025-12-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "10号8点",
+          "date": "2025-12-10",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号8点",
+          "date": "2025-12-11",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号8点",
+          "date": "2025-12-12",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2025-12-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2025-12-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2025-12-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号8点",
+          "date": "2025-12-20",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2025-12-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2025-12-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2025-12-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号8点",
+          "date": "2025-12-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "徐可欣",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "25号6.30",
+          "date": "2025-12-25",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号6.30",
+          "date": "2026-01-09",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-01-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号6.30",
+          "date": "2026-01-21",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-01-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号5.30",
+          "date": "2026-01-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-03-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-03-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-03-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月2号5.30",
+          "date": "2026-04-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号5.30",
+          "date": "2026-04-28",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "杨少函",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "23号4点",
+          "date": "2025-12-23",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "24号4点",
+          "date": "2025-12-24",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26",
+          "date": "2025-12-26",
+          "time": null,
+          "time_inferred": false,
+          "notes": [
+            "仅日期，时间未记录"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "费艳年",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "17号3点",
+          "date": "2026-01-17",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号3点",
+          "date": "2026-02-04",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号3点",
+          "date": "2026-02-07",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号3点",
+          "date": "2026-02-10",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号3点",
+          "date": "2026-02-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号4点",
+          "date": "2026-03-07",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月8号2点",
+          "date": "2026-03-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号3点",
+          "date": "2026-03-12",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13日8点",
+          "date": "2026-03-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号9点",
+          "date": "2026-03-20",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "4月4号8点",
+          "date": "2026-04-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-04-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月2号8点",
+          "date": "2026-05-02",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4点",
+          "date": "2026-05-05",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月5号8点",
+          "date": "2026-05-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号4点",
+          "date": "2026-05-27",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号4点",
+          "date": "2026-06-01",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号4点",
+          "date": "2026-06-02",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号4点",
+          "date": "2026-06-03",
+          "time": "16:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李梦瑶",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "13号2点",
+          "date": "2025-12-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数12月"
+          ]
+        },
+        {
+          "raw": "14号2点",
+          "date": "2025-12-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "15号2点",
+          "date": "2025-12-15",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2025-12-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2025-12-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2025-12-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2025-12-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2025-12-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号2点",
+          "date": "2026-01-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-01-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-01-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-01-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "金冬雪",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月14号5.30",
+          "date": "2026-03-14",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-03-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号5.30",
+          "date": "2026-03-27",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号5.30",
+          "date": "2026-03-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "施威",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月27号5点",
+          "date": "2026-02-27",
+          "time": "17:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号晚上5点",
+          "date": "2026-03-11",
+          "time": "17:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号5.30",
+          "date": "2026-03-27",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张继红",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": 2000,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "11月29号 3点",
+          "date": "2025-11-29",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月30号 3点",
+          "date": "2025-11-30",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月6号3点",
+          "date": "2025-12-06",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月7号3点",
+          "date": "2025-12-07",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月11号5.30",
+          "date": "2025-12-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号3点",
+          "date": "2025-12-13",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号5.30",
+          "date": "2025-12-16",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号5.30",
+          "date": "2025-12-24",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号5.30",
+          "date": "2025-12-25",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号3点",
+          "date": "2025-12-27",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月4号2点",
+          "date": "2026-04-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-04-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "朱金才",
+      "graduated": true,
+      "sources": [
+        "毕业学员.docx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月18号2点",
+          "date": "2026-03-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-03-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2026-03-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-03-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-03-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月4号2点",
+          "date": "2026-04-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "15号2点",
+          "date": "2026-04-15",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-04-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-04-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-04-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号2点",
+          "date": "2026-04-23",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "赵子铷",
+      "graduated": false,
+      "sources": [
+        "毕业学员.docx",
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 4,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数6月"
+          ]
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "郑美琦",
+      "graduated": false,
+      "sources": [
+        "毕业学员.docx",
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 4,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数6月"
+          ]
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "庄晓彤",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月7号8点",
+          "date": "2026-03-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-03-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-03-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-03-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-06-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-06-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "菜欣妍",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月7号8点",
+          "date": "2026-03-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-03-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-03-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-03-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2026-03-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号8点",
+          "date": "2026-06-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "韩文旭",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月8号2点",
+          "date": "2026-04-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-04-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-04-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-04-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-04-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月8号6点",
+          "date": "2026-05-08",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月4日2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-06-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "刁夕然",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "8号2点",
+          "date": "2026-03-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-03-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-03-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-03-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-03-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月18号2点",
+          "date": "2026-04-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-04-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2026-04-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月8号6点",
+          "date": "2026-05-08",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月4日2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "狄晓蕾",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月29号5.30",
+          "date": "2026-04-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号5.30",
+          "date": "2026-04-30",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-05-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号7点",
+          "date": "2026-05-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-05-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号5.30",
+          "date": "2026-05-06",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-05-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "刘雪飞",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月18号2点",
+          "date": "2026-03-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2026-03-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-03-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月22号2点",
+          "date": "2026-04-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月3号2点",
+          "date": "2026-06-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "刘海明",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月22号2点",
+          "date": "2026-04-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-04-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-04-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月6号2点",
+          "date": "2026-05-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李佳臣",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": [
+          "标注:蛙"
+        ]
+      },
+      "attendance": [
+        {
+          "raw": "4月25号8点",
+          "date": "2026-04-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-04-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号8点",
+          "date": "2026-05-03",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号8点",
+          "date": "2026-05-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号8点",
+          "date": "2026-05-10",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-06-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-06-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "于捷",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月28号 8点",
+          "date": "2026-04-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-04-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-04-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "魏显双",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月30号7点",
+          "date": "2026-04-30",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月1号7点",
+          "date": "2026-05-01",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-05-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号7点",
+          "date": "2026-05-05",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月13号7点",
+          "date": "2026-06-13",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "宋雨",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月30号7点",
+          "date": "2026-04-30",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月1号7点",
+          "date": "2026-05-01",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-05-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号7点",
+          "date": "2026-05-05",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月13号7点",
+          "date": "2026-06-13",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "罗紫嫣",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "16号2点",
+          "date": "2026-01-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号8点",
+          "date": "2026-01-20",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "23号9点",
+          "date": "2026-01-23",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "25号9点",
+          "date": "2026-01-25",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "28号9点",
+          "date": "2026-01-28",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "31号9点",
+          "date": "2026-01-31",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "25号3点",
+          "date": "2026-02-25",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月7号9点",
+          "date": "2026-03-07",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2026-03-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月19号9点",
+          "date": "2026-04-19",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "罗梓睿",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "16号2点",
+          "date": "2026-01-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号8点",
+          "date": "2026-01-20",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号9点",
+          "date": "2026-01-25",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "28号9点",
+          "date": "2026-01-28",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "31号9点",
+          "date": "2026-01-31",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "25号3点",
+          "date": "2026-02-25",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月7号9点",
+          "date": "2026-03-07",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号8点",
+          "date": "2026-03-29",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月19号9点",
+          "date": "2026-04-19",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "姚欣灵",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月7号9点",
+          "date": "2026-03-07",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-03-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-03-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号8点",
+          "date": "2026-03-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月19号9点",
+          "date": "2026-04-19",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王忠民",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月24号2点",
+          "date": "2026-02-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号2点",
+          "date": "2026-02-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号2点",
+          "date": "2026-02-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-02-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-02-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-03-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-03-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李冬梅",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": true,
+        "price": 1888,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "45981",
+          "date": "2025-11-20",
+          "time": null,
+          "time_inferred": false,
+          "notes": [
+            "Excel序列日期，时间未记录"
+          ]
+        },
+        {
+          "raw": "11月25日 2点",
+          "date": "2025-11-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月27日 8点",
+          "date": "2025-11-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月28号 8点",
+          "date": "2025-11-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11月30号 3-5",
+          "date": "2025-11-30",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": [
+            "原记录3-5点区间"
+          ]
+        },
+        {
+          "raw": "12月2号 8点",
+          "date": "2025-12-02",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月5号 16点",
+          "date": "2025-12-05",
+          "time": "16:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "12月6号 8点",
+          "date": "2025-12-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12月7号8点",
+          "date": "2025-12-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月8号7点",
+          "date": "2026-05-08",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-05-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王铭",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "28号8点",
+          "date": "2026-06-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数6月"
+          ]
+        },
+        {
+          "raw": "30号8点",
+          "date": "2026-06-30",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号8点",
+          "date": "2026-07-31",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号8点",
+          "date": "2026-08-01",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号3点",
+          "date": "2026-08-03",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "钟美森",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月1号2点",
+          "date": "2026-05-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号2点",
+          "date": "2026-05-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-05-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号5.30",
+          "date": "2026-05-08",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号2点",
+          "date": "2026-05-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "何昊轩",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月1号2点",
+          "date": "2026-05-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号2点",
+          "date": "2026-05-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-05-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号5.30",
+          "date": "2026-05-08",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号2点",
+          "date": "2026-05-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "于美玲",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月5号2点",
+          "date": "2026-05-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号5.30",
+          "date": "2026-05-08",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号7点",
+          "date": "2026-05-10",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号5.30",
+          "date": "2026-05-12",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月5号5.30",
+          "date": "2026-06-05",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-06-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "吴恒敏",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月6号7点",
+          "date": "2026-05-06",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号7点",
+          "date": "2026-05-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-05-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号8点",
+          "date": "2026-05-13",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号7点",
+          "date": "2026-06-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号7点",
+          "date": "2026-06-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "朱俞好",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月6号8点",
+          "date": "2026-05-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号3点",
+          "date": "2026-05-09",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-05-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-05-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号2点",
+          "date": "2026-06-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "于海洋",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月6号5.30",
+          "date": "2026-05-06",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号7点",
+          "date": "2026-05-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号7点",
+          "date": "2026-05-08",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号5.30",
+          "date": "2026-06-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号7点",
+          "date": "2026-06-04",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "武佳音",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月19号8点",
+          "date": "2026-04-19",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-04-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月3号",
+          "date": "2026-05-03",
+          "time": null,
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号5.30",
+          "date": "2026-05-12",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月14号8点",
+          "date": "2026-06-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "迟杰",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月19号8点",
+          "date": "2026-04-19",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-04-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号5点30",
+          "date": "2026-05-12",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号5.30",
+          "date": "2026-06-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月14号8点",
+          "date": "2026-06-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "邹德明",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号2点",
+          "date": "2026-04-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号5.30",
+          "date": "2026-04-28",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王旭",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号2点",
+          "date": "2026-04-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号5.30",
+          "date": "2026-04-28",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2号2点",
+          "date": "2026-05-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-05-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "牟飞飞",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月2号2点",
+          "date": "2026-04-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-04-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-04-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "15号2点",
+          "date": "2026-04-15",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月5号2点",
+          "date": "2026-06-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "陶艺丹",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月2号5.30",
+          "date": "2026-04-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号8点",
+          "date": "2026-04-04",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-04-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号5.30",
+          "date": "2026-04-16",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-04-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号5.30",
+          "date": "2026-04-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-05-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-05-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李光",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "28号2点",
+          "date": "2026-02-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月1号2点",
+          "date": "2026-03-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号5.30",
+          "date": "2026-03-04",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号2点",
+          "date": "2026-03-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5点",
+          "date": "2026-03-11",
+          "time": "17:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-03-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号2点",
+          "date": "2026-03-28",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "付馨竹",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月17号8点",
+          "date": "2026-03-17",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号8点",
+          "date": "2026-03-18",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号8点",
+          "date": "2026-03-20",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-03-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月5号8点",
+          "date": "2026-05-05",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号8点",
+          "date": "2026-05-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-05-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-05-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "韩丽",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月28号8点",
+          "date": "2026-04-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "林美娜",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "16号3点",
+          "date": "2026-01-16",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-01-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号2点",
+          "date": "2026-01-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2026-01-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号2点",
+          "date": "2026-01-25",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-01-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-01-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李思宇",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月12号2点",
+          "date": "2026-03-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-03-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-03-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-03-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-03-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号8点",
+          "date": "2026-03-27",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-03-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "刘娟",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月14号5.30",
+          "date": "2026-03-14",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号8点",
+          "date": "2026-03-21",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号8点",
+          "date": "2026-03-22",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4月19号8点",
+          "date": "2026-04-19",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号8点",
+          "date": "2026-04-25",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月2号2点",
+          "date": "2026-05-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张赛月",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月14号3点",
+          "date": "2026-06-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张佳怡",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "14号3点",
+          "date": "2026-04-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "15号2点",
+          "date": "2026-04-15",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-04-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2026-04-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "21号2点",
+          "date": "2026-04-21",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-04-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号3点",
+          "date": "2026-05-07",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号3点",
+          "date": "2026-05-08",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号3点",
+          "date": "2026-05-10",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号3点",
+          "date": "2026-05-11",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月9号2点",
+          "date": "2026-06-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孟雪",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "3月10号2点",
+          "date": "2026-03-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "17号2点",
+          "date": "2026-03-17",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "19号2点",
+          "date": "2026-03-19",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月2号2点",
+          "date": "2026-06-02",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "黄蕊怡",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "4月26号2点",
+          "date": "2026-04-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "28号8点",
+          "date": "2026-04-28",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-05-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-05-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号7点",
+          "date": "2026-05-08",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-05-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-05-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李昱函",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "10号9点",
+          "date": "2026-01-10",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "11号9点",
+          "date": "2026-01-11",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "13号6.30",
+          "date": "2026-01-13",
+          "time": "18:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "18号2点",
+          "date": "2026-01-18",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-02-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3月8号2点",
+          "date": "2026-03-08",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-03-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5月5号2点",
+          "date": "2026-05-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "韩玉芬",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "23号9点",
+          "date": "2026-06-23",
+          "time": "09:00",
+          "time_inferred": false,
+          "notes": [
+            "月份取块内众数6月"
+          ]
+        },
+        {
+          "raw": "24号8点",
+          "date": "2026-06-24",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "25号3点",
+          "date": "2026-06-25",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "26号8点",
+          "date": "2026-06-26",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-06-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号3点",
+          "date": "2026-07-01",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "赵丽维",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "21号5.30",
+          "date": "2026-06-21",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": [
+            "月份取块内众数6月"
+          ]
+        },
+        {
+          "raw": "29号5.30",
+          "date": "2026-06-29",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "31号2点",
+          "date": "2026-07-31",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "1号2点",
+          "date": "2026-08-01",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "3号5.30",
+          "date": "2026-08-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-08-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "8号8点",
+          "date": "2026-08-08",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-08-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-08-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-08-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "伊冬梅",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "9号2点",
+          "date": "2026-01-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-01-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-01-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-01-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "20号2点",
+          "date": "2026-01-20",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "22号2点",
+          "date": "2026-01-22",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "24号2点",
+          "date": "2026-01-24",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "27号2点",
+          "date": "2026-01-27",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "29号2点",
+          "date": "2026-01-29",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "30号2点",
+          "date": "2026-01-30",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "2月26号2点",
+          "date": "2026-02-26",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王洪",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "2月3号2点",
+          "date": "2026-02-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王红柳",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "1月8号3点",
+          "date": "2026-01-08",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "朱丹彤",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "5月10号2点",
+          "date": "2026-05-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6月9号5点",
+          "date": "2026-06-09",
+          "time": "17:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "欧阳玉",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-06-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王珺",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-06-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "白洛凡",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张池",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-06-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-06-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "田雨",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月13号3点",
+          "date": "2026-06-13",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-06-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王璐瑶",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号2点",
+          "date": "2026-06-13",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号2点",
+          "date": "2026-06-14",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张鑫淼",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月14号6点",
+          "date": "2026-06-14",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "崔歆格",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号7点",
+          "date": "2026-06-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号6点",
+          "date": "2026-06-05",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号6点",
+          "date": "2026-06-09",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李美琦",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号7点",
+          "date": "2026-06-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号6点",
+          "date": "2026-06-05",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "关长英",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号7点",
+          "date": "2026-06-02",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号6点",
+          "date": "2026-06-05",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "尤庆峰",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号5.30",
+          "date": "2026-06-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号7点",
+          "date": "2026-06-06",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李欣芮",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月2号5.30",
+          "date": "2026-06-02",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张恩鑫",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月3号7点",
+          "date": "2026-06-03",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "4号7点",
+          "date": "2026-06-04",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号7点",
+          "date": "2026-06-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号7点",
+          "date": "2026-06-11",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "张月梅",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 10,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月4号6点",
+          "date": "2026-06-04",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号6点",
+          "date": "2026-06-05",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号7点",
+          "date": "2026-06-07",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号6点",
+          "date": "2026-06-09",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号6点",
+          "date": "2026-06-10",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号6点",
+          "date": "2026-06-11",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号6点",
+          "date": "2026-06-13",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号6点",
+          "date": "2026-06-14",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "杜琳",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月3号2点",
+          "date": "2026-06-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-06-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "房美彤",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月3号2点",
+          "date": "2026-06-03",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "魏诗博",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月3号5.30",
+          "date": "2026-06-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孙奇帅",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月3号5.30",
+          "date": "2026-06-03",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号5.30",
+          "date": "2026-06-09",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "崔东梅",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月4号2点",
+          "date": "2026-06-04",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "5号2点",
+          "date": "2026-06-05",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号2点",
+          "date": "2026-06-06",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号2点",
+          "date": "2026-06-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "包昕彤",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月5号5.30",
+          "date": "2026-06-05",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-06-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "9号2点",
+          "date": "2026-06-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号6点",
+          "date": "2026-06-13",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "徐文静",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月5号5.30",
+          "date": "2026-06-05",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号2点",
+          "date": "2026-06-07",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "郑秋萍",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月5号5.30",
+          "date": "2026-06-05",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-06-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号7点",
+          "date": "2026-06-13",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号8点",
+          "date": "2026-06-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "姜欢",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 13,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月6号8点",
+          "date": "2026-06-06",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "7号8点",
+          "date": "2026-06-07",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号7点",
+          "date": "2026-06-13",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号8点",
+          "date": "2026-06-14",
+          "time": "20:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "杨美熠",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "石佳乐",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号6点",
+          "date": "2026-06-10",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号7点",
+          "date": "2026-06-10",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号6点",
+          "date": "2026-06-11",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号7点",
+          "date": "2026-06-11",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号7点",
+          "date": "2026-06-12",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号6点",
+          "date": "2026-06-13",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号6点",
+          "date": "2026-06-14",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "白鸽",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月9号7点",
+          "date": "2026-06-09",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号6点",
+          "date": "2026-06-10",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号6点",
+          "date": "2026-06-11",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "13号6点",
+          "date": "2026-06-13",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号6点",
+          "date": "2026-06-14",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "申佳佳",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月9号2点",
+          "date": "2026-06-09",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号6点",
+          "date": "2026-06-12",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号6点",
+          "date": "2026-06-14",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "史希音",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月9号3点",
+          "date": "2026-06-09",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "10号5.30",
+          "date": "2026-06-10",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "14号3点",
+          "date": "2026-06-14",
+          "time": "15:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "杨佳欣",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 8,
+        "count_explicit": false,
+        "price": null,
+        "notes": [
+          "标注:蛙"
+        ]
+      },
+      "attendance": [
+        {
+          "raw": "6月9号",
+          "date": "2026-06-09",
+          "time": null,
+          "time_inferred": false,
+          "notes": []
+        },
+        {
+          "raw": "11号7点",
+          "date": "2026-06-11",
+          "time": "19:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号6点",
+          "date": "2026-06-16",
+          "time": "18:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "赵月明",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "12号2点",
+          "date": "2026-06-12",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "徐向楠",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": 12,
+        "count_explicit": false,
+        "price": null,
+        "notes": [
+          "标注:哈"
+        ]
+      },
+      "attendance": [
+        {
+          "raw": "6月10号2点",
+          "date": "2026-06-10",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "王思亮",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月10号5.30",
+          "date": "2026-06-10",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "彭思睿",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月10号5.30",
+          "date": "2026-06-10",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-06-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "孙睦涵",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月10号5.30",
+          "date": "2026-06-10",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        },
+        {
+          "raw": "11号5.30",
+          "date": "2026-06-11",
+          "time": "17:30",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "马闻妍",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "曾天一",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月11号2点",
+          "date": "2026-06-11",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "李雨菲",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": [
+        {
+          "raw": "6月16号2点",
+          "date": "2026-06-16",
+          "time": "14:00",
+          "time_inferred": true,
+          "notes": []
+        }
+      ]
+    },
+    {
+      "name": "冯文钰",
+      "graduated": false,
+      "sources": [
+        "学员课程表.xlsx"
+      ],
+      "package": {
+        "count": null,
+        "count_explicit": false,
+        "price": null,
+        "notes": []
+      },
+      "attendance": []
+    }
+  ],
+  "warnings": [
+    "王小宇: 无显式月份，按块内众数取12月",
+    "李咏昶: 日期回退 2026-06-03→2026-03-24（3月24号8点），按台账顺序保留",
+    "贾恺诺: 无显式月份，按块内众数取12月",
+    "李珊珊: 无显式月份，按块内众数取12月",
+    "郭田蕊: 无显式月份，按块内众数取12月",
+    "孟凡秀: 日期回退 2025-12-17→2025-12-11（12月11号9点），按台账顺序保留",
+    "王春花: 无显式月份，按块内众数取12月",
+    "曹赫: 无显式月份，按块内众数取12月",
+    "举思言: 无显式月份，按块内众数取12月",
+    "杨少函: 无显式月份，按块内众数取12月",
+    "费艳年: 日期回退 2026-06-04→2026-03-08（3月8号2点），按台账顺序保留",
+    "李梦瑶: 无显式月份，按块内众数取12月",
+    "赵子铷: 全部条目无月份，无法定位日期（共2条）",
+    "郑美琦: 全部条目无月份，无法定位日期（共2条）",
+    "王铭: 无显式月份，按块内众数取6月",
+    "于美玲: 日期回退 2026-06-09→2026-06-05（6月5号5.30），按台账顺序保留",
+    "韩玉芬: 无显式月份，按块内众数取6月",
+    "赵丽维: 无显式月份，按块内众数取6月",
+    "赵子铷: 无显式月份，按块内众数取6月",
+    "李咏昶: 跨文件合并",
+    "曹赫: 跨文件合并",
+    "赵子铷: 跨文件合并",
+    "郑美琦: 跨文件合并"
+  ],
+  "stats": {
+    "students": 129,
+    "graduated": 42,
+    "attendance_records": 917,
+    "with_price": 12,
+    "with_count": 42,
+    "no_attendance": [
+      "冯文钰"
+    ]
+  }
+}
