@@ -58,10 +58,13 @@ test.describe('登录与全局导航', () => {
 });
 
 test.describe('AI 助手（iframe 嵌入）', () => {
-  test('iframe 加载 Chainlit 且欢迎语出现', async ({ page }) => {
+  test('iframe 加载 Chainlit 且开场建议出现', async ({ page }) => {
     await login(page);
     await page.click('.bottom-nav .nav-item:has-text("AI")');
     const frame = page.frameLocator('iframe.assistant-frame');
-    await expect(frame.getByText('泳课管理 AI 助手')).toBeVisible({ timeout: 15000 });
+    // 开场建议按钮（后端按系统状态动态生成，标签因数据而异；
+    // 不再发欢迎语——starters 只在空会话显示，见 docs/agent-memory-and-suggestions.md）
+    const starters = frame.getByText(/课时总览|续课提醒|本月营收|今日课程|购买课包|明天课表|新增学员/);
+    await expect(starters.first()).toBeVisible({ timeout: 15000 });
   });
 });
