@@ -15,6 +15,9 @@ langfuse = [
 ]
 web = [
     "chainlit>=2.11.1",
+    # chainlit 2.11.1 未验证 starlette 1.x 兼容（静态资源 FileResponse 事件循环问题），
+    # 钉在 0.x；升级 chainlit 后可尝试放开
+    "starlette<1.0",
 ]
 
 [project.scripts]

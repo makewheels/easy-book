@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Cookie, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from api_server.database import get_database
@@ -162,11 +163,16 @@ TOKEN_COOKIE_NAME = "eb_token"
 
 @router.get("/check")
 async def check_session(eb_token: Optional[str] = Cookie(default=None)):
-    """供 nginx auth_request 调用：校验会话 cookie，200=已登录，401=未登录。"""
+    """供 nginx auth_request 调用：校验会话 cookie，200=已登录，401=未登录。
+
+    校验通过时在响应头带出 X-User-Id（手机号），nginx 用 auth_request_set
+    转给下游（/ai 的 Chainlit 用它做个性化建议与用户记忆）。
+    """
     if not auth_enabled():
         return {"valid": True}
-    if eb_token and verify_token(eb_token):
-        return {"valid": True}
+    username = verify_token(eb_token) if eb_token else None
+    if username:
+        return JSONResponse({"valid": True}, headers={"X-User-Id": username})
     raise HTTPException(status_code=401, detail="未登录或凭据无效")
 
 

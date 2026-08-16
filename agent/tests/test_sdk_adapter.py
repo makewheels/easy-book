@@ -14,7 +14,7 @@ from book_agent.tools import BookTools
 
 def test_function_tools_match_all_tools():
     ftools = build_agent_tools(BookTools(api_url="http://localhost:1"))
-    assert len(ftools) == len(ALL_TOOLS) == 20
+    assert len(ftools) == len(ALL_TOOLS) == 21
     assert [t.name for t in ftools] == [t["function"]["name"] for t in ALL_TOOLS]
 
 

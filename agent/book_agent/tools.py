@@ -39,6 +39,8 @@ class BookTools:
     timeout: float = 15.0
     # 服务间调用密钥（生产后端鉴权；对应后端 EASY_BOOK_SERVICE_KEY）
     service_key: str = ""
+    # 当前使用者（教练）标识：记忆/习惯按人存取；空 = 匿名（全局）
+    user_id: str = ""
 
     # 每次 execute 的记录，便于 agent 输出调用轨迹
     trace: list[dict[str, Any]] = field(default_factory=list)
@@ -295,3 +297,15 @@ class BookTools:
 
     def set_appointment_status(self, appointment_id: str, status: str, confirm: bool = False) -> Any:
         return self._request("PUT", f"/api/appointments/{appointment_id}", json_body={"status": status})
+
+    # ── 用户记忆 ───────────────────────────────────────────────
+
+    def save_user_memory(self, kind: str, content: str, confirm: bool = False) -> Any:
+        """把教练的习惯/事实/学员信息写入长期记忆（按 user_id 归属）。"""
+        return self._request("POST", "/api/agent/memories", json_body={
+            "user_id": self.user_id,
+            "kind": kind,
+            "content": content,
+            "source": "user_explicit",
+            "confidence": 0.9,
+        })

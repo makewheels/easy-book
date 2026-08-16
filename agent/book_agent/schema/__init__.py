@@ -16,12 +16,17 @@ from __future__ import annotations
 
 from typing import Any
 
-from . import appointments, packages, students
+from . import appointments, memory, packages, students
 
-ALL_TOOLS: list[dict[str, Any]] = students.TOOLS + appointments.TOOLS + packages.TOOLS
+ALL_TOOLS: list[dict[str, Any]] = (
+    students.TOOLS + appointments.TOOLS + packages.TOOLS + memory.TOOLS
+)
 
 # 写操作工具名单（执行前需要确认）= 各域声明的并集
-WRITE_TOOLS: set[str] = students.WRITE_TOOLS | appointments.WRITE_TOOLS | packages.WRITE_TOOLS
+WRITE_TOOLS: set[str] = (
+    students.WRITE_TOOLS | appointments.WRITE_TOOLS
+    | packages.WRITE_TOOLS | memory.WRITE_TOOLS
+)
 
 # 两步确认协议：写操作统一追加 confirm 参数。
 # 首次调用不带 confirm（或 false）只返回执行计划（requiresConfirmation）；

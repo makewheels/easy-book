@@ -67,9 +67,9 @@ def test_type_error_converted_to_value():
 
 def test_tools_count_and_names_stable():
     names = {t["function"]["name"] for t in ALL_TOOLS}
-    # 20 个工具：9 查询 + 11 写操作
-    assert len(names) == 20
-    assert len(WRITE_TOOLS) == 11
+    # 21 个工具：9 查询 + 12 写操作（含 save_user_memory 用户记忆）
+    assert len(names) == 21
+    assert len(WRITE_TOOLS) == 12
 
 
 def test_weekday_of():

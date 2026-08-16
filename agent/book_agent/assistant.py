@@ -236,10 +236,13 @@ class BookAssistant:
 
     MAX_TURNS = 8
 
-    def __init__(self, tools: BookTools | None = None, tool_hook: Any = None) -> None:
+    def __init__(self, tools: BookTools | None = None, tool_hook: Any = None,
+                 extra_system: str = "") -> None:
         cfg = get_config()
         self.tools = tools or BookTools(api_url=cfg.easy_book_api_url, service_key=cfg.service_key)
         self.tool_hook = tool_hook
+        # 追加到系统提示词末尾的会话级上下文（如该用户的长期记忆，由 Chainlit 层注入）
+        self.extra_system = extra_system.strip()
         # SDK input items 历史（chat 多轮用；ask 单轮不用）
         self.history: list[Any] = []
 
@@ -255,9 +258,12 @@ class BookAssistant:
         client = AsyncOpenAI(base_url=cfg.base_url, api_key=cfg.api_key, timeout=cfg.timeout)
         client = _instrument_client(client)
         model = _TracedModel(OpenAIChatCompletionsModel(model=cfg.model, openai_client=client), cfg.model)
+        instructions = build_system_prompt()
+        if self.extra_system:
+            instructions = f"{instructions}\n\n{self.extra_system}"
         return Agent(
             name="easy-book-assistant",
-            instructions=build_system_prompt(),
+            instructions=instructions,
             model=model,
             model_settings=ModelSettings(temperature=cfg.temperature, max_tokens=cfg.max_tokens),
             tools=build_agent_tools(self.tools, self.tool_hook),
