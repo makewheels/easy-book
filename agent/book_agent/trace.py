@@ -10,6 +10,10 @@
 - `_TracedModel.get_response`（assistant.py，包 Agents SDK 模型）→ generation（model / messages / usage / 延迟）
 - `BookTools.execute` → tool span
 
+generation 的 input/output 会被 HTTP 层拦截器（assistant.py 包装 `chat.completions.create`）
+回填为**发给 LLM 的完整原始请求体**（含 messages/tools/全部生成参数）与**完整原始响应体**，
+即 Langfuse 里看到的 generation input/output 就是线上真实收发的原文，一字不少。
+
 trace 结构：一次问答 = 一个 trace，期间产生的 generation 和 tool span 通过
 contextvars 自动挂到它下面；`session_id` / `environment` 是 trace 级属性，
 经 `propagate_attributes` 下发。
@@ -20,6 +24,7 @@ from __future__ import annotations
 import logging
 import os
 import time
+from contextvars import ContextVar
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -64,19 +69,30 @@ def _get_client() -> Any | None:
     return _client
 
 
+# 当前活跃的 generation 句柄：供 HTTP 层拦截器（assistant.py 的 create 包装）
+# 在不经过 SDK 参数链的情况下找到正在上报的 generation，回填完整原始请求/响应。
+_current_generation: ContextVar["_Handle | None"] = ContextVar(
+    "lf_current_generation", default=None
+)
+
+
 class _Handle:
     """一次观测的句柄：已 enter 的 context manager 列表 + 观测对象 + 起始时间。
 
     未启用 langfuse 时所有 start_* 返回 None，对应的 finish/end 收到 None 直接 no-op。
     """
 
-    __slots__ = ("cms", "obs", "t0", "trace_id")
+    __slots__ = ("cms", "obs", "t0", "trace_id", "cv_token", "full_input", "full_output")
 
     def __init__(self) -> None:
         self.cms: list[Any] = []
         self.obs: Any = None
         self.t0: float = time.monotonic()
         self.trace_id: str | None = None
+        self.cv_token: Any = None
+        # HTTP 层记录的完整原始请求/响应；finish 时优先于 SDK 级摘要上报
+        self.full_input: Any = None
+        self.full_output: Any = None
 
 
 def _close(handle: _Handle) -> None:
@@ -128,10 +144,25 @@ def start_generation(
             input=messages,
             metadata=metadata,
         )
+        handle.cv_token = _current_generation.set(handle)
         return handle
     except Exception as e:
         logger.warning("langfuse start_generation 失败（不影响主路径）: %s", e)
         return None
+
+
+def record_generation_request(*, request: Any) -> None:
+    """HTTP 层拦截器回填：发给 LLM 的完整原始请求体。无活跃 generation 时 no-op。"""
+    handle = _current_generation.get()
+    if handle is not None:
+        handle.full_input = request
+
+
+def record_generation_response(*, response: Any) -> None:
+    """HTTP 层拦截器回填：LLM 返回的完整原始响应体。无活跃 generation 时 no-op。"""
+    handle = _current_generation.get()
+    if handle is not None:
+        handle.full_output = response
 
 
 def finish_generation(
@@ -146,18 +177,28 @@ def finish_generation(
         return
     try:
         if handle.obs is not None:
-            handle.obs.update(
-                output=output,
-                usage_details=_usage_details(usage),
-                level="ERROR" if error else "DEFAULT",
-                status_message=str(error) if error else None,
-                metadata={"latencyMs": _latency_ms(handle)},
-            )
+            update_kw: dict[str, Any] = {
+                # HTTP 层记录的完整响应优先；没有才退回调用方传的摘要
+                "output": handle.full_output if handle.full_output is not None else output,
+                "usage_details": _usage_details(usage),
+                "level": "ERROR" if error else "DEFAULT",
+                "status_message": str(error) if error else None,
+                "metadata": {"latencyMs": _latency_ms(handle)},
+            }
+            # HTTP 层记录的完整请求（含 tools/参数）覆盖 start 时的 messages 快照
+            if handle.full_input is not None:
+                update_kw["input"] = handle.full_input
+            handle.obs.update(**update_kw)
             handle.obs.end()
     except Exception as e:
         logger.warning("langfuse finish_generation 失败（不影响主路径）: %s", e)
     finally:
         _close(handle)
+        if handle.cv_token is not None:
+            try:
+                _current_generation.reset(handle.cv_token)
+            except (LookupError, ValueError):
+                pass
 
 
 # ── tool span（工具执行） ──────────────────────────────────────

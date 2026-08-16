@@ -142,6 +142,59 @@ def _summarize_output(output: Any) -> Any:
     return summary or None
 
 
+# ── HTTP 层完整请求/响应记录 ───────────────────────────────────
+# `chat.completions.create(**kwargs)` 是发给 LLM 的最终请求体唯一出口：
+# Agents SDK 已在此前把 messages / tools / 生成参数全部转换进 kwargs。
+# 在这里拦截并回填到当前 generation，Langfuse 里看到的 input/output 即线上原文，一字不少。
+
+
+def _jsonable(obj: Any) -> Any:
+    """深度转成纯 JSON 可序列化结构（langfuse 上报要求）。"""
+    return json.loads(json.dumps(obj, ensure_ascii=False, default=str))
+
+
+def _snapshot_request(kwargs: dict[str, Any]) -> dict[str, Any]:
+    """create() kwargs → 实际发送的完整请求体快照。
+
+    去掉空值（None/Omit/NOT_GIVEN）与传输层参数（extra_headers/extra_query 不属于请求体）；
+    保留 model / messages / tools / 全部生成参数 / extra_body。
+    """
+    body: dict[str, Any] = {}
+    for key, value in kwargs.items():
+        if key in ("extra_headers", "extra_query"):
+            continue
+        if value is None or type(value).__name__ in ("Omit", "NotGiven"):
+            continue
+        body[key] = value
+    return _jsonable(body)
+
+
+def _snapshot_response(resp: Any) -> Any:
+    """LLM 响应 → 完整原始响应快照（非流式是 pydantic ChatCompletion，直接 dump）。"""
+    dump = getattr(resp, "model_dump", None)
+    if callable(dump):
+        try:
+            return dump(mode="json")
+        except Exception:  # noqa: BLE001 — dump 失败退回字符串，宁可有记录不丢
+            return {"repr": str(resp)[:5000]}
+    return {"type": type(resp).__name__, "note": "流式响应未展开"}
+
+
+def _instrument_client(client: AsyncOpenAI) -> AsyncOpenAI:
+    """给 AsyncOpenAI 的 chat.completions.create 打补丁：回填完整原始请求/响应到当前 generation。"""
+    completions = client.chat.completions
+    orig_create = completions.create
+
+    async def _create(**kwargs: Any) -> Any:
+        lf_trace.record_generation_request(request=_snapshot_request(kwargs))
+        resp = await orig_create(**kwargs)
+        lf_trace.record_generation_response(response=_snapshot_response(resp))
+        return resp
+
+    completions.create = _create
+    return client
+
+
 class _TracedModel(Model):
     """包装 OpenAIChatCompletionsModel：给每次 LLM 调用补 Langfuse generation span。"""
 
@@ -200,6 +253,7 @@ class BookAssistant:
         if not cfg.base_url:
             raise LLMError("未配置 LLM base_url：请设置 BOOK_AGENT_LLM_BASE_URL")
         client = AsyncOpenAI(base_url=cfg.base_url, api_key=cfg.api_key, timeout=cfg.timeout)
+        client = _instrument_client(client)
         model = _TracedModel(OpenAIChatCompletionsModel(model=cfg.model, openai_client=client), cfg.model)
         return Agent(
             name="easy-book-assistant",

@@ -80,3 +80,131 @@ def test_traced_model_without_system_prompt_keeps_input(monkeypatch):
     asyncio.run(traced.get_response(None, user_items, None, []))
 
     assert captured["messages"] == user_items
+
+
+# ── HTTP 层完整请求/响应记录 ───────────────────────────────────
+
+
+def test_snapshot_request_drops_absent_and_transport_keys():
+    class Omit:  # 模拟 openai SDK 的 Omit sentinel
+        pass
+
+    snap = assistant_mod._snapshot_request(
+        {
+            "model": "qwen3-max",
+            "messages": [{"role": "user", "content": "hi"}],
+            "tools": [{"type": "function", "function": {"name": "t"}}],
+            "temperature": None,  # 空值过滤
+            "stream": Omit(),  # sentinel 过滤
+            "extra_headers": {"X": "1"},  # 传输层，不属于请求体
+            "extra_query": {"q": "1"},
+            "extra_body": {"k": "v"},  # extra_body 属于请求体，保留
+        }
+    )
+    assert snap == {
+        "model": "qwen3-max",
+        "messages": [{"role": "user", "content": "hi"}],
+        "tools": [{"type": "function", "function": {"name": "t"}}],
+        "extra_body": {"k": "v"},
+    }
+
+
+def test_instrument_client_records_full_request_and_response(monkeypatch):
+    captured: dict = {}
+    monkeypatch.setattr(
+        assistant_mod.lf_trace,
+        "record_generation_request",
+        lambda *, request: captured.update(req=request),
+    )
+    monkeypatch.setattr(
+        assistant_mod.lf_trace,
+        "record_generation_response",
+        lambda *, response: captured.update(resp=response),
+    )
+
+    class _FakeCompletions:
+        def __init__(self):
+            self.calls = []
+
+        async def create(self, **kwargs):
+            self.calls.append(kwargs)
+            return SimpleNamespace(model_dump=lambda mode=None: {"echo": kwargs["messages"]})
+
+    completions = _FakeCompletions()
+    client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+
+    instrumented = assistant_mod._instrument_client(client)
+    resp = asyncio.run(
+        instrumented.chat.completions.create(
+            model="qwen3-max",
+            messages=[{"role": "system", "content": "SYS"}, {"role": "user", "content": "hi"}],
+            tools=[{"type": "function", "function": {"name": "search_students"}}],
+            temperature=None,
+            extra_headers={"Authorization": "Bearer ***"},
+        )
+    )
+
+    # 请求快照：model/messages/tools 一字不少，空值与传输层参数不进记录
+    assert captured["req"]["model"] == "qwen3-max"
+    assert captured["req"]["messages"] == [
+        {"role": "system", "content": "SYS"},
+        {"role": "user", "content": "hi"},
+    ]
+    assert captured["req"]["tools"][0]["function"]["name"] == "search_students"
+    assert "temperature" not in captured["req"]
+    assert "extra_headers" not in captured["req"]
+    # 响应快照来自 model_dump，原样透传给调用方
+    assert captured["resp"] == {"echo": [{"role": "system", "content": "SYS"}, {"role": "user", "content": "hi"}]}
+    assert len(completions.calls) == 1
+    assert resp is not None
+
+
+class _FakeObs:
+    def __init__(self):
+        self.updates: dict = {}
+
+    def update(self, **kw):
+        self.updates.update(kw)
+
+    def end(self):
+        pass
+
+
+def test_finish_generation_reports_full_io_from_http_layer():
+    """HTTP 层回填的完整请求/响应优先于 SDK 级摘要进入 generation。"""
+    from book_agent import trace as trace_mod
+
+    handle = trace_mod._Handle()
+    handle.obs = _FakeObs()
+    handle.cv_token = trace_mod._current_generation.set(handle)
+    try:
+        trace_mod.record_generation_request(request={"model": "m", "tools": [{"name": "t"}]})
+        trace_mod.record_generation_response(response={"choices": [{"message": {"content": "全文"}}]})
+        trace_mod.finish_generation(
+            handle,
+            output=[{"text": "摘要（应被覆盖）"}],
+            usage={"prompt_tokens": 5, "completion_tokens": 2},
+        )
+    finally:
+        # 正常路径 finish_generation 自己 reset；这里兜底防泄漏
+        try:
+            trace_mod._current_generation.set(None)
+        except Exception:
+            pass
+
+    assert handle.obs.updates["input"] == {"model": "m", "tools": [{"name": "t"}]}
+    assert handle.obs.updates["output"] == {"choices": [{"message": {"content": "全文"}}]}
+    assert handle.obs.updates["usage_details"] == {"input": 5, "output": 2, "total": 7}
+    assert trace_mod._current_generation.get() is None
+
+
+def test_finish_generation_falls_back_without_full_io():
+    """HTTP 层没回填时（如拦截器未触发），退回调用方传的摘要，input 不动。"""
+    from book_agent import trace as trace_mod
+
+    handle = trace_mod._Handle()
+    handle.obs = _FakeObs()
+    trace_mod.finish_generation(handle, output=[{"text": "fallback"}])
+
+    assert handle.obs.updates["output"] == [{"text": "fallback"}]
+    assert "input" not in handle.obs.updates
