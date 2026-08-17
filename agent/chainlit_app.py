@@ -243,7 +243,7 @@ async def on_suggest_question(action: cl.Action) -> None:
 
 
 @cl.on_chat_end
-async def on_chat_end() -> None:
+async def on_chat_end() -> None:  # noqa: C901
     """会话结束：用轻量调用从对话里抽取长期记忆（习惯/规则/学员信息/未完成事项）。"""
     assistant: BookAssistant | None = cl.user_session.get("assistant")
     user_id: str = cl.user_session.get("user_id", "")

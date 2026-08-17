@@ -131,7 +131,7 @@ def _parse_dt(value) -> datetime | None:
         return None
 
 
-def check_state(check: dict, exp: dict) -> tuple[bool, str]:
+def check_state(check: dict, exp: dict) -> tuple[bool, str]:  # noqa: PLR0911
     t = check["type"]
     if t == "student_exists":
         ok = find_student(check["name"]) is not None
@@ -212,7 +212,7 @@ def check_trace(check: dict, trace: list[dict]) -> tuple[bool, str]:
 
 
 # ── 单任务执行 ─────────────────────────────────────────
-def run_task(task: dict, exp: dict, run_id: str, pass_no: int) -> dict:
+def run_task(task: dict, exp: dict, run_id: str, pass_no: int) -> dict:  # noqa: C901, PLR0912, PLR0915
     session_id = f"eval-{run_id}-{task['id']}-p{pass_no}"
     assistant = BookAssistant(tools=BookTools(api_url=API))
     trace: list[dict] = []
@@ -408,7 +408,9 @@ def main() -> None:
             "tool_sequences": [r["tool_sequence"] for r in runs],
         }
     scored = [v for v in per_task.values() if not v["gap_probe"]]
-    summary["pass_rate"] = round(sum(v["pass_count"] for v in scored) / max(1, sum(v["passes_total"] for v in scored)), 3)
+    summary["pass_rate"] = round(
+        sum(v["pass_count"] for v in scored) / max(1, sum(v["passes_total"] for v in scored)), 3
+    )
     summary["tasks"] = per_task
 
     # read-back 结论

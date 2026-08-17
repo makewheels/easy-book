@@ -22,7 +22,7 @@ def _parse_date(value: str, field: str) -> datetime:
 
 
 @router.get("/profit")
-async def profit_stats(
+async def profit_stats(  # noqa: C901
     start_date: Optional[str] = Query(None, description="开始日期 YYYY-MM-DD（默认全部）"),
     end_date: Optional[str] = Query(None, description="结束日期 YYYY-MM-DD（默认今天）"),
 ):

@@ -149,7 +149,11 @@ TOOLS: list[dict[str, Any]] = [
                 "properties": {
                     "package_id": {"type": "string", "description": "套餐ID"},
                     "delta": {"type": "integer", "description": "课时变化量，正数加、负数扣"},
-                    "adjust_total": {"type": "boolean", "description": "是否同步调整总课时，默认 false", "default": False},
+                    "adjust_total": {
+                        "type": "boolean",
+                        "description": "是否同步调整总课时，默认 false",
+                        "default": False,
+                    },
                     "reason": {"type": "string", "description": "调整原因，如“续费赠送”"},
                 },
                 "required": ["package_id", "delta"],

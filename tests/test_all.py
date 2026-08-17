@@ -69,7 +69,7 @@ def parse_test_results(output):
 
     return passed, failed
 
-def main():
+def main():  # noqa: C901, PLR0912, PLR0915
     """主函数"""
     print("开始运行完整的模块化测试套件")
     print(f"Python版本: {sys.version}")

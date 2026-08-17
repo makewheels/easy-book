@@ -161,7 +161,7 @@ class EasyBookAutomationTest:
 
         print("PASS: Test 2 passed: Page loading normal")
 
-    def test_3_create_student_ui(self):
+    def test_3_create_student_ui(self):  # noqa: C901, PLR0912, PLR0915
         """Test 3: UI create student"""
         print("\nTEST: Test 3: UI create student")
 
@@ -185,7 +185,10 @@ class EasyBookAutomationTest:
                     add_button = btn
                     break
 
-            self.assert_true(add_button is not None, f"Found add student button in empty state. Available buttons: {[btn.text for btn in buttons]}")
+            self.assert_true(
+                add_button is not None,
+                f"Found add student button in empty state. Available buttons: {[btn.text for btn in buttons]}",
+            )
             add_button.click()
         else:
             # Has existing students - try to find the add student div by specific CSS selector
@@ -212,7 +215,10 @@ class EasyBookAutomationTest:
                         add_button = div
                         break
 
-            self.assert_true(add_button is not None, f"Found add student button: {add_button.text if add_button else 'None'}")
+            self.assert_true(
+                add_button is not None,
+                f"Found add student button: {add_button.text if add_button else 'None'}",
+            )
 
             # Use JavaScript click to ensure it works
             self.driver.execute_script("arguments[0].click();", add_button)
@@ -377,7 +383,10 @@ class EasyBookAutomationTest:
         updated_appointment = self.db.appointments.find_one({"_id": appointment["id"]})
         self.assert_equal(updated_appointment.get("status"), "checked", "Appointment status update")
 
-        print(f"PASS: Test 5 passed: Check-in functionality normal - Lessons {lessons_before} -> {student_after['remaining_lessons']}")
+        print(
+            f"PASS: Test 5 passed: Check-in functionality normal - "
+            f"Lessons {lessons_before} -> {student_after['remaining_lessons']}"
+        )
 
     def test_6_page_ui_updates(self):
         """Test 6: Page UI updates"""
@@ -403,7 +412,10 @@ class EasyBookAutomationTest:
             self.assert_contains(page_source, student["name"], "Student name displayed on page")
         elif "暂无预约" in page_source:
             # If no appointments today, that's still valid - just check that page loads properly
-            self.assert_true("暂无预约" in page_source or student["name"] in page_source, "Page shows either no appointments or student data")
+            self.assert_true(
+                "暂无预约" in page_source or student["name"] in page_source,
+                "Page shows either no appointments or student data",
+            )
 
         # Check that page is functioning properly
         self.assert_contains(page_source, "泳课预约系统", "Page displays correctly")

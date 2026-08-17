@@ -119,7 +119,9 @@ class TestMondayRestriction(TestBase):
                 date_input.send_keys(next_monday)
 
                 # 选择时间
-                time_options = self.driver.find_elements(By.CSS_SELECTOR, "select[name='time'] option, select[name='timeSlot'] option")
+                time_options = self.driver.find_elements(
+                    By.CSS_SELECTOR, "select[name='time'] option, select[name='timeSlot'] option"
+                )
                 if time_options:
                     time_options[1].click()
 

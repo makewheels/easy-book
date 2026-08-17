@@ -219,7 +219,11 @@ class StudentAppointmentModel(BaseModel):
     student_id: str = Field(..., description="学生ID")
     course_id: str = Field(..., description="课程ID")
     # checked/cancel 为考勤接口写入的状态，与 completed/cancelled 语义相同（历史原因并存）
-    status: str = Field(default="scheduled", pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$", description="预约状态")
+    status: str = Field(
+        default="scheduled",
+        pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$",
+        description="预约状态",
+    )
     lesson_consumed: bool = Field(default=False, description="是否已消耗课程")
     course: Optional[dict] = Field(default=None, description="关联课程信息（列表接口附带）")
     student: Optional[dict] = Field(default=None, description="关联学员信息（列表接口附带）")
@@ -231,7 +235,11 @@ class StudentAppointmentCreate(BaseModel):
     course_id: str = Field(..., description="课程ID")
 
 class StudentAppointmentUpdate(BaseModel):
-    status: Optional[str] = Field(None, pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$", description="预约状态")
+    status: Optional[str] = Field(
+        None,
+        pattern="^(scheduled|completed|cancelled|no_show|checked|cancel)$",
+        description="预约状态",
+    )
     lesson_consumed: Optional[bool] = Field(None, description="是否已消耗课程")
 
 class AppointmentUpdate(BaseModel):
@@ -260,7 +268,9 @@ class PackageModel(BaseModel):
     venue_share: float = Field(..., ge=0, description="上交俱乐部(元)")
 
     # 记次套餐详情
-    count_based_info: Optional[dict] = Field(None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}")
+    count_based_info: Optional[dict] = Field(
+        None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}"
+    )
 
     # 时长套餐详情
     time_based_info: Optional[dict] = Field(None, description="时长套餐信息：{start_date: str, end_date: str}")
@@ -338,7 +348,9 @@ class PackageCreate(BaseModel):
     venue_share: float = Field(..., ge=0, description="上交俱乐部(元)")
 
     # 记次套餐详情
-    count_based_info: Optional[dict] = Field(None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}")
+    count_based_info: Optional[dict] = Field(
+        None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}"
+    )
 
     # 时长套餐详情
     time_based_info: Optional[dict] = Field(None, description="时长套餐信息：{start_date: str, end_date: str}")
@@ -349,7 +361,9 @@ class PackageUpdate(BaseModel):
     package_type: Optional[str] = Field(None)
     price: Optional[float] = Field(None, gt=0)
     venue_share: Optional[float] = Field(None, ge=0)
-    count_based_info: Optional[dict] = Field(None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}")
+    count_based_info: Optional[dict] = Field(
+        None, description="记次套餐信息：{total_lessons: int, remaining_lessons: int}"
+    )
     time_based_info: Optional[dict] = Field(None, description="时长套餐信息：{start_date: str, end_date: str}")
 
 

@@ -98,7 +98,9 @@ class TestStudents(TestBase):
         updated_student = response.json()
         self.assert_equal(updated_student.get("name"), update_data["name"], "Name updated")
         self.assert_equal(updated_student.get("gender"), update_data["gender"], "Gender updated")
-        self.assert_equal(updated_student.get("emergency_contact"), update_data["emergency_contact"], "Emergency contact updated")
+        self.assert_equal(
+            updated_student.get("emergency_contact"), update_data["emergency_contact"], "Emergency contact updated"
+        )
 
         print(f"通过：测试4通过 - 更新学生信息成功 - {updated_student['name']}")
 
@@ -149,7 +151,9 @@ class TestStudents(TestBase):
             self.assert_contains(page_source, "+ 新增学生", "Add student button exists")
 
             # 点击新增学生按钮
-            add_button = self.driver.find_element(By.XPATH, "//button[contains(text(), '新增学生') or contains(text(), '+')]")
+            add_button = self.driver.find_element(
+                By.XPATH, "//button[contains(text(), '新增学生') or contains(text(), '+')]"
+            )
             add_button.click()
             time.sleep(2)
 
@@ -167,7 +171,9 @@ class TestStudents(TestBase):
             self.driver.find_element(By.NAME, "venue_share").send_keys("300")
 
             # 提交表单
-            submit_button = self.driver.find_element(By.XPATH, "//button[contains(text(), '保存') or contains(text(), '提交')]")
+            submit_button = self.driver.find_element(
+                By.XPATH, "//button[contains(text(), '保存') or contains(text(), '提交')]"
+            )
             submit_button.click()
             time.sleep(3)
 

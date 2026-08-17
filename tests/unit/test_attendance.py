@@ -244,7 +244,10 @@ class TestAttendance(TestBase):
 
         self.assert_equal(actual_attended, expected_attended, "Attended lessons calculation correct")
 
-        print(f"通过：测试6通过 - 课程扣费逻辑验证成功 - 总:{test_student['total_lessons']}, 剩余:{lessons_after}, 已上:{actual_attended}")
+        print(
+            f"通过：测试6通过 - 课程扣费逻辑验证成功 - "
+            f"总:{test_student['total_lessons']}, 剩余:{lessons_after}, 已上:{actual_attended}"
+        )
 
     def test_07_insufficient_lessons_checkin(self):
         """测试7：课程不足时签到"""

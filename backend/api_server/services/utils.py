@@ -74,7 +74,9 @@ def calculate_dynamic_status(db_status: str, appointment_date: Union[date, str],
     # 解析时间段
     try:
         hour, minute = map(int, time_slot.split(":"))
-        appointment_datetime = datetime.combine(appointment_date_obj, datetime.min.time().replace(hour=hour, minute=minute))
+        appointment_datetime = datetime.combine(
+            appointment_date_obj, datetime.min.time().replace(hour=hour, minute=minute)
+        )
     except (ValueError, AttributeError):
         # 如果时间解析失败，返回原状态
         return db_status

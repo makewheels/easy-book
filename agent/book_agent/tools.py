@@ -159,7 +159,7 @@ class BookTools:
 
     # ── 写操作：学员 ────────────────────────────────────────────
 
-    def create_student(
+    def create_student(  # noqa: PLR0913
         self,
         name: str,
         gender: Optional[str] = None,
@@ -175,7 +175,7 @@ class BookTools:
                 body[key] = val
         return self._request("POST", "/api/students/", json_body=body)
 
-    def update_student(
+    def update_student(  # noqa: PLR0913
         self,
         student_id: str,
         name: Optional[str] = None,
@@ -183,8 +183,7 @@ class BookTools:
         age: Optional[int] = None,
         phone: Optional[str] = None,
         emergency_contact: Optional[str] = None,
-    
-                                                                                                                                                                                                                                                              confirm: bool = False,
+        confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {}
         for key, val in (("name", name), ("gender", gender), ("age", age),
@@ -200,7 +199,7 @@ class BookTools:
 
     # ── 写操作：套餐 ────────────────────────────────────────────
 
-    def create_package(
+    def create_package(  # noqa: PLR0913
         self,
         student_id: str,
         name: str,
@@ -210,8 +209,7 @@ class BookTools:
         total_lessons: Optional[int] = None,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
-    
-                                                                                                                                                                                                                                                                                          confirm: bool = False,
+        confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {
             "student_id": student_id,
@@ -236,15 +234,14 @@ class BookTools:
             }
         return self._request("POST", "/api/packages/", json_body=body)
 
-    def update_package(
+    def update_package(  # noqa: PLR0913
         self,
         package_id: str,
         name: Optional[str] = None,
         package_type: Optional[str] = None,
         price: Optional[float] = None,
         venue_share: Optional[float] = None,
-    
-                                                                                                                                                                                                                               confirm: bool = False,
+        confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {}
         for key, val in (("name", name), ("package_type", package_type),
@@ -261,8 +258,7 @@ class BookTools:
         delta: int,
         adjust_total: bool = False,
         reason: Optional[str] = None,
-    
-                                                                                                                                                                 confirm: bool = False,
+        confirm: bool = False,
     ) -> Any:
         body: dict[str, Any] = {"delta": delta, "adjust_total": adjust_total}
         if reason:
@@ -274,7 +270,13 @@ class BookTools:
 
     # ── 写操作：预约/考勤 ───────────────────────────────────────
 
-    def book_appointment(self, student_id: str, start_time: str, duration_minutes: int = 60, confirm: bool = False) -> Any:
+    def book_appointment(
+        self,
+        student_id: str,
+        start_time: str,
+        duration_minutes: int = 60,
+        confirm: bool = False,
+    ) -> Any:
         result = self._request("POST", "/api/appointments/", json_body={
             "student_id": student_id,
             "start_time": start_time,

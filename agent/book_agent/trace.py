@@ -61,7 +61,9 @@ def _get_client() -> Any | None:
         logger.info(
             "langfuse trace 已启用 → %s（%s key）",
             os.environ.get("LANGFUSE_HOST", "(cloud)"),
-            "prod" if os.environ.get("LANGFUSE_PROD_SECRET_KEY") and get_config().environment == "production" else "dev",
+            "prod"
+            if os.environ.get("LANGFUSE_PROD_SECRET_KEY") and get_config().environment == "production"
+            else "dev",
         )
     except Exception as e:
         logger.warning("langfuse 初始化失败，trace 关闭（不影响主路径）: %s", e)
@@ -246,7 +248,7 @@ def finish_tool_span(
 # ── trace（一次问答） ─────────────────────────────────────────
 
 
-def start_trace(
+def start_trace(  # noqa: PLR0913
     *,
     name: str,
     input: Any = None,

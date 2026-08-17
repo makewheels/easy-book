@@ -54,7 +54,7 @@ class PackageService:
         return None
 
     @staticmethod
-    def get_package_status_text(package_data: Dict[str, Any]) -> str:
+    def get_package_status_text(package_data: Dict[str, Any]) -> str:  # noqa: PLR0911
         """
         获取套餐状态文本
 

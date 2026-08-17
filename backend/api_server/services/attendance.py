@@ -13,7 +13,7 @@ class AttendanceService:
     """考勤服务类"""
 
     @staticmethod
-    async def checkin(appointment_id: str, student_id: str) -> AttendanceModel:
+    async def checkin(appointment_id: str, student_id: str) -> AttendanceModel:  # noqa: C901, PLR0912
         """
         学员签到 — 从有效记次套餐中扣减课时
         """

@@ -75,7 +75,7 @@ def fraction_minute(tok: str | None) -> int | None:
     return int(tok) * 10 if len(tok) == 1 else int(tok)  # "6.3" → 6:30
 
 
-def extract_entries(text: str, warnings: list) -> tuple[list[dict], str]:
+def extract_entries(text: str, warnings: list) -> tuple[list[dict], str]:  # noqa: C901
     """抽取考勤条目。返回 (entries, 归一化文本)；entry 位置基于归一化文本。"""
     text = normalize(text)
     entries: list[dict] = []
@@ -184,7 +184,7 @@ def mask_entries(text: str, entries: list[dict]) -> str:
     return "".join(chars)
 
 
-def parse_annotation(text: str, name: str) -> dict:
+def parse_annotation(text: str, name: str) -> dict:  # noqa: C901
     """名字前后数字标注 → count/price/notes。≥100 为价格；"N节"明确节数；N人不算节数。"""
     ann = {"count": None, "count_explicit": False, "price": None, "notes": []}
     before, _, after = text.partition(name)
@@ -225,7 +225,7 @@ def year_for_month(month: int) -> int:
     return 2025 if month >= 11 else 2026
 
 
-def resolve_dates(entries: list[dict], warnings: list, name: str,
+def resolve_dates(entries: list[dict], warnings: list, name: str,  # noqa: C901, PLR0912, PLR0915
                   initial_month: int | None = None) -> None:
     # 孤立时间点挂到前一条：前一条没时间 → 补全（"11月12日\t3点"是一节课）；
     # 前一条已有时间 → 同日加课（"5月6号2点 / 3点"是两节）
@@ -353,7 +353,7 @@ def new_student(name: str, ann: dict, sources: list, graduated: bool) -> dict:
 
 
 # ── docx 解析 ───────────────────────────────────────────────
-def parse_docx(warnings: list) -> tuple[list[dict], list[list[dict]]]:
+def parse_docx(warnings: list) -> tuple[list[dict], list[list[dict]]]:  # noqa: C901, PLR0912
     doc = Document(DOCX)
     students: list[dict] = []
     blocks: list[list[dict]] = []
@@ -416,7 +416,7 @@ def parse_docx(warnings: list) -> tuple[list[dict], list[list[dict]]]:
 
 
 # ── xlsx 解析 ───────────────────────────────────────────────
-def parse_xlsx(warnings: list) -> tuple[list[dict], list[list[dict]]]:
+def parse_xlsx(warnings: list) -> tuple[list[dict], list[list[dict]]]:  # noqa: C901, PLR0912
     wb = load_workbook(XLSX, data_only=True)
     students: list[dict] = []
     blocks: list[list[dict]] = []

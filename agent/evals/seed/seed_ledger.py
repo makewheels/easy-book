@@ -52,7 +52,7 @@ def wipe(client: MongoClient) -> None:
     print(f"已清空 {DB_NAME} 的 students/packages/appointments/courses/attendance")
 
 
-def main() -> None:
+def main() -> None:  # noqa: C901, PLR0912, PLR0915
     parser = argparse.ArgumentParser()
     parser.add_argument("--wipe", action="store_true", help="导入前清空本地 dev 库")
     args = parser.parse_args()
