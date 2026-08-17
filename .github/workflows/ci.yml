@@ -7,6 +7,56 @@ on:
     branches: [ master ]
 
 jobs:
+  lint:
+    name: 代码质量门禁
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Ruff (agent)
+        working-directory: agent
+        run: uv sync --frozen && uv run ruff check
+
+      - name: Ruff (backend)
+        working-directory: backend
+        run: uv sync --frozen && uv run ruff check
+
+      - name: Ruff (tests)
+        working-directory: tests
+        run: uv sync --frozen && uv run ruff check
+
+      - name: 文件长度检查
+        run: python scripts/check_file_length.py
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+
+      - name: ESLint (frontend)
+        working-directory: frontend
+        run: pnpm run lint
+
   backend-unit-tests:
     name: 后端单元测试
     runs-on: ubuntu-latest
