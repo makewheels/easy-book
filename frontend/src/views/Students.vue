@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import BottomNavigation from '@/components/BottomNavigation.vue'

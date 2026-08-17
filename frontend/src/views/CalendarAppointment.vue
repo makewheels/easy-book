@@ -241,7 +241,7 @@ const fetchStudents = async () => {
 
     // 获取当前时间段已预约的学生
     await fetchExistingAppointments()
-  } catch (error) {
+  } catch {
     toast.error('获取学员列表失败')
   }
 }
@@ -318,8 +318,7 @@ const getRemainingLessons = (appointment) => {
 }
 
 // 获取非标签课程类型的描述
-const getNonOneOnOneText = (student) => {
-  const packageType = student.package_type || ''
+const getNonOneOnOneText = () => {
   // 现在所有课程类型都有标签了，所以右侧不显示课程类型
   return ''
 }

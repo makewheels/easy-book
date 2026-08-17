@@ -26,8 +26,8 @@ export const toast = {
       duration
     })
     
-    const instance = app.mount(mountPoint)
-    
+    app.mount(mountPoint)
+
     toastPool.push({
       app,
       mountPoint

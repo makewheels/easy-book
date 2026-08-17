@@ -130,31 +130,7 @@ const form = reactive({
 })
 
 // 计算属性
-const minDate = computed(() => {
-  const today = new Date()
-  return today.toISOString().split('T')[0]
-})
-
-const startDateTime = computed(() => {
-  if (form.selectedDate && form.selectedHour !== null) {
-    return new Date(`${form.selectedDate}T${form.selectedHour.toString().padStart(2, '0')}:00:00`)
-  }
-  return null
-})
-
-const formatEndTime = computed(() => {
-  if (startDateTime && form.duration) {
-    const endTime = new Date(startDateTime.getTime() + form.duration * 60 * 1000)
-    return endTime.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
-  return ''
-})
+const minDate = computed(() => new Date().toISOString().split('T')[0])
 
 // 日期选项
 const dateOptions = computed(() => {
@@ -285,7 +261,7 @@ onMounted(async () => {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
     form.selectedDate = tomorrow.toISOString().split('T')[0]
-  } catch (error) {
+  } catch {
     toast.error('获取学生信息失败')
     router.back()
   }

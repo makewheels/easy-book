@@ -43,7 +43,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppointmentStore } from '@/stores/appointment'
 import { appointmentApi } from '@/api/appointment'
-import { format, addDays, isSameDay, addWeeks, subWeeks } from 'date-fns'
+import { format, addDays, isSameDay } from 'date-fns'
 import BottomNavigation from '@/components/BottomNavigation.vue'
 import TimeColumn from '@/components/calendar/TimeColumn.vue'
 import CalendarTable from '@/components/calendar/CalendarTable.vue'
@@ -58,9 +58,7 @@ const calendarWrapper = ref(null)
 // Infinite scrolling setup - 进一步减少初始加载数量
 const weeksBefore = ref(0) // 显示前0周（不显示过去周）
 const weeksAfter = ref(2)  // 显示后2周（当前周+未来2周）
-const currentWeekIndex = ref(0) // 当前周在数组中的索引
 const dayWidth = 120 // 每天的宽度
-const timeColumnWidth = 60 // 时间列宽度
 const weekDays = 6 // 每周显示6天（周二到周日）
 
 // 时间槽定义
@@ -106,15 +104,6 @@ const visibleWeeks = computed(() => {
   }
 
   return dates
-})
-
-// 计算总宽度
-const totalWidth = computed(() => {
-  return timeColumnWidth + (visibleWeeks.value.length * dayWidth)
-})
-
-const todayDate = computed(() => {
-  return format(new Date(), 'yyyy-MM-dd')
 })
 
 // 批量获取多周数据 - 使用新的批量接口优化性能

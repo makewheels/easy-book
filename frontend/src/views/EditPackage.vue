@@ -109,15 +109,6 @@ const packageTypeData = ref({
   unlimited_access: false
 })
 
-// 上交俱乐部金额建议列表
-const venueShareSuggestions = [
-  600
-]
-
-const selectVenueShare = (amount) => {
-  form.venue_share = amount
-}
-
 // 监听套餐类型数据变化，将其合并到表单数据中
 watch(packageTypeData, (newData) => {
   Object.assign(form, newData)
@@ -245,32 +236,6 @@ const handleSubmit = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const calculateEndDate = (durationType, customDays) => {
-  const now = new Date()
-  const endDate = new Date(now)
-
-  switch (durationType) {
-    case 'monthly':
-      endDate.setMonth(endDate.getMonth() + 1)
-      break
-    case 'quarterly':
-      endDate.setMonth(endDate.getMonth() + 3)
-      break
-    case 'yearly':
-      endDate.setFullYear(endDate.getFullYear() + 1)
-      break
-    case 'custom':
-      if (customDays && customDays > 0) {
-        endDate.setDate(endDate.getDate() + customDays)
-      }
-      break
-    default:
-      return null
-  }
-
-  return endDate
 }
 </script>
 

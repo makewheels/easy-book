@@ -51,7 +51,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
 import StudentCard from './StudentCard.vue'
 
 const props = defineProps({
@@ -68,8 +67,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const emit = defineEmits(['slot-click', 'student-click', 'checkin-updated'])
 
 const hasStudents = (date, timeSlot) => {
   const dayData = props.weekData[date]

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { appointmentApi } from '@/api/appointment'
-import { format, addDays, startOfWeek, endOfWeek, parseISO } from 'date-fns'
+import { format, addDays, startOfWeek } from 'date-fns'
 
 export const useAppointmentStore = defineStore('appointment', {
   state: () => ({
@@ -18,7 +18,6 @@ export const useAppointmentStore = defineStore('appointment', {
       try {
         // 计算一周的日期范围
         const weekStart = startOfWeek(startDate, { weekStartsOn: 1 }) // 周一开始
-        const weekEnd = endOfWeek(startDate, { weekStartsOn: 1 }) // 周日结束
 
         // 初始化一周的数据结构
         const appointmentsByDate = {}

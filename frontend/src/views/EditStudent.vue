@@ -128,7 +128,7 @@ const fetchStudentData = async (studentId) => {
       form.phone = student.phone || ''
       form.emergency_contact = student.emergency_contact || ''
     }
-  } catch (error) {
+  } catch {
     toast.error('获取学员信息失败')
     router.back() // 如果获取学员信息失败，返回上一个页面
   }

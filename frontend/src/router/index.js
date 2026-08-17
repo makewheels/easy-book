@@ -77,7 +77,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior() {
     // 总是滚动到页面顶部
     return { top: 0 }
   }

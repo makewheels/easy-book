@@ -101,7 +101,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 
-const props = defineProps({
+defineProps({
   show: {
     type: Boolean,
     default: false
@@ -156,9 +156,6 @@ const timeGroups = [
     nowrap: true
   }
 ]
-
-// 可选的小时列表（7:00 - 19:00）
-const availableHours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
 // 日期快捷选项
 const dateOptions = computed(() => {

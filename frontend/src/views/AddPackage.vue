@@ -231,32 +231,6 @@ const handleSubmit = async () => {
     loading.value = false
   }
 }
-
-const calculateEndDate = (durationType, customDays) => {
-  const now = new Date()
-  const endDate = new Date(now)
-
-  switch (durationType) {
-    case 'monthly':
-      endDate.setMonth(endDate.getMonth() + 1)
-      break
-    case 'quarterly':
-      endDate.setMonth(endDate.getMonth() + 3)
-      break
-    case 'yearly':
-      endDate.setFullYear(endDate.getFullYear() + 1)
-      break
-    case 'custom':
-      if (customDays && customDays > 0) {
-        endDate.setDate(endDate.getDate() + customDays)
-      }
-      break
-    default:
-      return null
-  }
-
-  return endDate
-}
 </script>
 
 <style scoped>

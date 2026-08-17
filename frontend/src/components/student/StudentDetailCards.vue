@@ -148,7 +148,6 @@ import { useRouter } from 'vue-router'
 import { packageApi } from '@/api/package'
 
 const router = useRouter()
-const emit = defineEmits(['add-package', 'edit-package'])
 
 const props = defineProps({
   student: {

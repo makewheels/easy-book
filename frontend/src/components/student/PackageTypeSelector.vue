@@ -123,9 +123,8 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { PackageService } from '@/services/package'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   modelValue: {
@@ -141,7 +140,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const route = useRoute()
-const router = useRouter()
 
 // 套餐数据
 const packageData = ref({
@@ -172,52 +170,6 @@ const packageTypeSuggestions = [
   { value: '1v3', display: '1 v 3' },
   { value: '1v5', display: '1 v 5' }
 ]
-
-// 计算属性
-const packageCategoryText = computed(() => {
-  return packageData.value.package_category === 'count_based' ? '记次套餐' : '时长套餐'
-})
-
-const originalPackageTypeText = computed(() => {
-  return packageData.value.original_package_type_display || '1 v 1'
-})
-
-const durationTypeText = computed(() => {
-  if (packageData.value.unlimited_access) return '永久有效'
-  if (!packageData.value.package_duration_type) return '未设置'
-
-  const typeMap = {
-    'monthly': '月卡',
-    'yearly': '年卡',
-    'custom': `自定义${packageData.value.package_duration_days || 0}天`
-  }
-  return typeMap[packageData.value.package_duration_type] || '未设置'
-})
-
-const showPreviewEndDate = computed(() => {
-  return packageData.value.package_category === 'time_based' &&
-         packageData.value.package_duration_type
-})
-
-const previewEndDate = computed(() => {
-  if (!showPreviewEndDate.value) return ''
-
-  try {
-    const startDate = packageData.value.package_start_date ? new Date(packageData.value.package_start_date) : new Date()
-    const endDate = PackageService.calculatePackageEndDate(
-      packageData.value.package_duration_type,
-      startDate,
-      packageData.value.package_duration_days
-    )
-    return endDate ? endDate.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }) : ''
-  } catch (error) {
-    return '计算错误'
-  }
-})
 
 const onStartDateChange = () => {
   // 当开始日期改变时，重新计算结束日期
@@ -277,14 +229,6 @@ const onCategoryChange = () => {
     // 时长套餐自动设置课程类型为通用的"时长套餐"
     packageData.value.original_package_type = 'time_based'
     packageData.value.original_package_type_display = '时长套餐'
-  }
-  emitUpdate()
-}
-
-const onDurationTypeChange = () => {
-  // 当选择时长类型时，自动计算结束日期
-  if (packageData.value.package_duration_type) {
-    calculateEndDate()
   }
   emitUpdate()
 }
@@ -357,12 +301,6 @@ const emitUpdate = () => {
   emit('update:modelValue', { ...packageData.value })
 }
 
-// 更新URL参数
-const updateURL = () => {
-  // 移除所有查询参数，保持URL干净
-  router.replace({ query: {} })
-}
-
 // 从URL参数初始化数据
 const initFromURL = () => {
   const { category, type } = route.query
@@ -381,7 +319,7 @@ const initFromURL = () => {
 }
 
 // 监听变化（但排除 selectDurationType 的操作）
-watch(packageData, (newVal) => {
+watch(packageData, () => {
   // 只在不是由内部更新触发的情况下才更新
   if (!isInternalUpdate.value) {
     emitUpdate()

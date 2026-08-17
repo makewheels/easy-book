@@ -66,7 +66,7 @@ request.interceptors.response.use(
     return data
   },
   (error) => {
-    let message = '网络错误'
+    let message
 
     if (error.response) {
       const { status, data } = error.response

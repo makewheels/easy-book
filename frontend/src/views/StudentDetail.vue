@@ -31,7 +31,6 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStudentStore } from '@/stores/student'
 import { appointmentApi } from '@/api/appointment'
-import { isMonday } from '@/utils/date'
 import { toast } from '@/utils/toast'
 
 // 导入组件
@@ -76,7 +75,7 @@ onMounted(async () => {
       if (referrer.origin === currentOrigin && !referrer.pathname.includes('/edit')) {
         referrerUrl.value = referrer.pathname
       }
-    } catch (error) {
+    } catch {
       console.log('无法解析referrer:', document.referrer)
     }
   }
@@ -91,7 +90,7 @@ const fetchStudentData = async (studentId) => {
   loading.value = true
   try {
     await studentStore.fetchStudentById(studentId)
-  } catch (error) {
+  } catch {
     toast.error('获取学员信息失败')
     // 智能返回导航：优先使用记录的referrer，其次使用router.back()
     if (referrerUrl.value) {
